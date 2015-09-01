@@ -8,7 +8,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 <p align="left">
 
-	<img src="./Preview/demo.gif" width=44%"> 
+	<img src="./Preview/demo.gif" width=44%">
 
 </p>
 
@@ -16,23 +16,26 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 ## How to use
 
--Like the `UITableView` API, We have `DataSource` an `Delegate` for load data and handle action
+- Like the `UITableView` API, We have `DataSource` an `Delegate` for load data and handle action
 
--Tell `PhotoBrowser` how many pages would you like to present by conforms protocol `PBViewControllerDataSource` and implement `numberOfPagesInViewController:` selector
 
--Optional set the initialize page by invoke `setInitializePageIndex:` method
+- Tell `PhotoBrowser` how many pages would you like to present by conforms protocol `PBViewControllerDataSource` and implement `numberOfPagesInViewController:` selector
 
--Use for static Image
 
- Conforms protocol `PBViewControllerDataSource` and implement `viewController:imageForPageAtIndex:` selector
+- Optional set the initialize page by invoke `setInitializePageIndex:` method
 
--Use for web image
 
- Conforms protocol `PBViewControllerDataSource` and implement `viewController:presentImageView:forPageAtIndex:` selector
+- Use for static Image
+  
+  	Conforms protocol `PBViewControllerDataSource` and implement `viewController:imageForPageAtIndex:` selector
+  
+- Use for web image
 
--Handle action
+	 Conforms protocol `PBViewControllerDataSource` and implement `viewController:presentImageView:forPageAtIndex:` selector
 
- Conforms protocol `PBViewControllerDataSource` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
+- Handle action
+
+	 Conforms protocol `PBViewControllerDataSource` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
 
 
 
@@ -41,7 +44,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 
 ``` objective-c
-...    
+...
 PBViewController *pbViewController = [PBViewController new];
 pbViewController.pb_dataSource = self;
 pbViewController.pb_delegate = self;
@@ -67,7 +70,7 @@ pbViewController.pb_delegate = self;
     });
 }
 ...
-  
+
 ...
 #pragma mark - PBViewControllerDelegate
 
@@ -78,12 +81,12 @@ pbViewController.pb_delegate = self;
 
 - (void)viewController:(PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
     NSLog(@"didLongPressedPageAtIndex: %@", @(index));
-}  
+}
 ```
 
 For more information checkout the Sample in project
 
- ​
+
 
 ## License
 
@@ -93,10 +96,4 @@ For more information checkout the Sample in project
 
 ## Contact
 
-Follow me on Twitter ([@mochxiao](twitter.com/mochxiao))
-
-
-
- ​
-
- ​
+Follow me on Twitter ([@mochxiao](https://twitter.com/mochxiao))
