@@ -32,15 +32,14 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
+@property (nonatomic, assign, getter=isObserved) BOOL observed;
 @end
 
 @implementation PBImageScrollerViewController
 
 - (void)dealloc {
-    @try {
+    if (self.isObserved) {
         [self removeObserver:self forKeyPath:PBObservedKeyPath];
-    }
-    @catch (NSException *exception) {
     }
 }
 
@@ -48,7 +47,7 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor blackColor];
-
+    
     [self.scrollView addSubview:self.imageView];
     [self.view addSubview:self.scrollView];
     
@@ -67,6 +66,7 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
     [self.scrollView addGestureRecognizer:singleTap];
     
     [self addObserver:self forKeyPath:PBObservedKeyPath options:NSKeyValueObservingOptionNew context:nil];
+    self.observed = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -106,18 +106,10 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
     
     if (self.imageView.image) {
         [self.indicatorView stopAnimating];
     }
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 }
 
 #pragma mark - KVO
@@ -168,7 +160,7 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
     self.scrollView.contentInset = UIEdgeInsetsMake(verticalSpace, horizontalSpace, verticalSpace, horizontalSpace);
 }
 
-- (void)_handleSingleTap:(UITapGestureRecognizer *)sender {    
+- (void)_handleSingleTap:(UITapGestureRecognizer *)sender {
     if (self.didSingleTaped) {
         self.didSingleTaped(self.imageView.image);
     }
