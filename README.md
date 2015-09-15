@@ -4,7 +4,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 
 
-## How does is look like?
+## How does it look like?
 
 <p align="left">
 
