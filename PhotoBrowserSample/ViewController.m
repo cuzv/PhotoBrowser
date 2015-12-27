@@ -36,30 +36,30 @@
     return 4;
 }
 
-- (UIImage *)viewController:(PBViewController *)viewController imageForPageAtIndex:(NSInteger)index {
-    NSString *name = [NSString stringWithFormat:@"%@.jpg", @(index+1)];
-    return [UIImage imageNamed:name];
-//    return [UIImage imageNamed:@"zombies.jpg"];
-//    return [UIImage imageNamed:@"long"];
-}
-
-//- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index {
-////    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-////        NSString *name = [NSString stringWithFormat:@"%@.jpg", @(index+1)];
-////        UIImage *image = [UIImage imageNamed:name];
-////        imageView.image = image;
-////    });
-//    
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        NSString *path = self.urls[index];
-//        NSData *data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:path] options:0 error:nil];
-//        UIImage *image = [[UIImage alloc] initWithData:data];
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            // 主线程
-//            imageView.image = image;
-//        });
-//    });
+//- (UIImage *)viewController:(PBViewController *)viewController imageForPageAtIndex:(NSInteger)index {
+//    NSString *name = [NSString stringWithFormat:@"%@.jpg", @(index+1)];
+//    return [UIImage imageNamed:name];
+////    return [UIImage imageNamed:@"zombies.jpg"];
+////    return [UIImage imageNamed:@"long"];
 //}
+
+- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index {
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        NSString *name = [NSString stringWithFormat:@"%@.jpg", @(index+1)];
+//        UIImage *image = [UIImage imageNamed:name];
+//        imageView.image = image;
+//    });
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *path = self.urls[index];
+        NSData *data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:path] options:0 error:nil];
+        UIImage *image = [[UIImage alloc] initWithData:data];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // 主线程
+            imageView.image = image;
+        });
+    });
+}
 
 #pragma mark - PBViewControllerDelegate
 

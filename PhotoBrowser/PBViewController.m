@@ -97,6 +97,10 @@
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 }
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
 #pragma mark - Inner methods
 
 - (PBImageScrollerViewController *)_imageScrollerViewControllerForPage:(NSInteger)page {
