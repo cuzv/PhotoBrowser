@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface PBImageScrollView : UIScrollView <UIScrollViewDelegate>
+
 @property (nonatomic, strong) UIImageView *imageView;
 
-- (void)setImage:(UIImage *)image;
 @end
