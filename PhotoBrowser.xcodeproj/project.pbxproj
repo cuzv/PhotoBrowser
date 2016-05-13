@@ -116,6 +116,7 @@
 		46A0384B1CE5565800CBC57E /* DemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
 		46A0384C1CE5565800CBC57E /* DemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
 		46A0384E1CE558C500CBC57E /* 9.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 9.jpg; sourceTree = "<group>"; };
+		46A038551CE629F400CBC57E /* PBImageScrollView+internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PBImageScrollView+internal.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +178,7 @@
 		4655F2C61B9434D200CE5C50 /* PhotoBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				46A038551CE629F400CBC57E /* PBImageScrollView+internal.h */,
 				4602B3331CE4099A009205CF /* PBImageScrollView.h */,
 				4602B3341CE4099A009205CF /* PBImageScrollView.m */,
 				4655F2C91B9434D200CE5C50 /* PhotoBrowser.h */,

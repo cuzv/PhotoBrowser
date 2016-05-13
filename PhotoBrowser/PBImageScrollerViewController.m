@@ -55,23 +55,23 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
     
     [self.view addSubview:self.indicatorView];
     
-//    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_handleLongPress:)];
-//    longPress.delaysTouchesEnded = NO;
-//    [self.scrollView addGestureRecognizer:longPress];
-//    
-//    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleDoubleTap:)];
-//    doubleTap.numberOfTapsRequired = 2;
-//    [doubleTap requireGestureRecognizerToFail:longPress];
-//    doubleTap.delaysTouchesEnded = NO;
-//    [self.scrollView addGestureRecognizer:doubleTap];
-//    
-//    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleSingleTap:)];
-//    singleTap.numberOfTapsRequired = 1;
-//    [singleTap requireGestureRecognizerToFail:doubleTap];
-//    [singleTap requireGestureRecognizerToFail:longPress];
-//    singleTap.delaysTouchesEnded = NO;
-//    [self.scrollView addGestureRecognizer:singleTap];
-//    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_handleLongPress:)];
+    longPress.delaysTouchesEnded = NO;
+    [self.scrollView addGestureRecognizer:longPress];
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleDoubleTap:)];
+    doubleTap.numberOfTapsRequired = 2;
+    [doubleTap requireGestureRecognizerToFail:longPress];
+    doubleTap.delaysTouchesEnded = NO;
+    [self.scrollView addGestureRecognizer:doubleTap];
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleSingleTap:)];
+    singleTap.numberOfTapsRequired = 1;
+    [singleTap requireGestureRecognizerToFail:doubleTap];
+    [singleTap requireGestureRecognizerToFail:longPress];
+    singleTap.delaysTouchesEnded = NO;
+    [self.scrollView addGestureRecognizer:singleTap];
+    
     [self addObserver:self forKeyPath:PBObservedKeyPath options:NSKeyValueObservingOptionNew context:nil];
     self.observed = YES;
 //
@@ -260,8 +260,9 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
         _scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
         _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _scrollView.backgroundColor = [UIColor blackColor];
-        _scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
+        _scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
         _scrollView.delegate = self;
+        _scrollView.alwaysBounceVertical = YES;
     }
     return _scrollView;
 }
