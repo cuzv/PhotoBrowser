@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="j2X-ty-XLj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="QOm-2G-Sjd">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -13,11 +14,11 @@
                         <viewControllerLayoutGuide type="bottom" id="RxE-nV-AHY"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="dAH-1v-C8c">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="278-WB-2Bw">
-                                <rect key="frame" x="227" y="285" width="145" height="30"/>
+                                <rect key="frame" x="89" y="269" width="142" height="30"/>
                                 <state key="normal" title="Show Photo Browser">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -32,8 +33,52 @@
                             <constraint firstItem="278-WB-2Bw" firstAttribute="centerX" secondItem="dAH-1v-C8c" secondAttribute="centerX" id="r3U-km-MwH"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="Ex9-Kl-8KY">
+                        <barButtonItem key="rightBarButtonItem" title="Test" id="VUx-bB-JL4">
+                            <connections>
+                                <segue destination="pKL-aW-u4x" kind="presentation" id="ldh-yU-dYc"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="b3j-qq-XGa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="572" y="331"/>
+        </scene>
+        <!--Demo View Controller-->
+        <scene sceneID="GQ0-Ap-c2s">
+            <objects>
+                <viewController id="pKL-aW-u4x" customClass="DemoViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="eRr-2a-XVC"/>
+                        <viewControllerLayoutGuide type="bottom" id="j72-ea-XQb"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="EKX-Zv-fFQ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ThL-u2-5Ki" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="939" y="331"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="aXv-6r-vL3">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="QOm-2G-Sjd" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Ppy-9z-JAs">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="j2X-ty-XLj" kind="relationship" relationship="rootViewController" id="end-BI-ttg"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lpm-ct-Z3e" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="171" y="331"/>
         </scene>
