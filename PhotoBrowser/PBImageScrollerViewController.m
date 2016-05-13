@@ -37,6 +37,8 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
 
 @implementation PBImageScrollerViewController
 
+#pragma mark - respondsToSelector
+
 - (void)dealloc {
     if (self.isObserved) {
         [self removeObserver:self forKeyPath:PBObservedKeyPath];
@@ -53,20 +55,28 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
     
     [self.view addSubview:self.indicatorView];
     
-    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleDoubleTap:)];
-    doubleTap.numberOfTapsRequired = 2;
-    [self.scrollView addGestureRecognizer:doubleTap];
-    
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_handleLongPress:)];
-    [self.scrollView addGestureRecognizer:longPress];
-    
-    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleSingleTap:)];
-    singleTap.numberOfTapsRequired = 1;
-    [singleTap requireGestureRecognizerToFail:doubleTap];
-    [self.scrollView addGestureRecognizer:singleTap];
-    
+//    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_handleLongPress:)];
+//    longPress.delaysTouchesEnded = NO;
+//    [self.scrollView addGestureRecognizer:longPress];
+//    
+//    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleDoubleTap:)];
+//    doubleTap.numberOfTapsRequired = 2;
+//    [doubleTap requireGestureRecognizerToFail:longPress];
+//    doubleTap.delaysTouchesEnded = NO;
+//    [self.scrollView addGestureRecognizer:doubleTap];
+//    
+//    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleSingleTap:)];
+//    singleTap.numberOfTapsRequired = 1;
+//    [singleTap requireGestureRecognizerToFail:doubleTap];
+//    [singleTap requireGestureRecognizerToFail:longPress];
+//    singleTap.delaysTouchesEnded = NO;
+//    [self.scrollView addGestureRecognizer:singleTap];
+//    
     [self addObserver:self forKeyPath:PBObservedKeyPath options:NSKeyValueObservingOptionNew context:nil];
     self.observed = YES;
+//
+//    NSLog(@"%@", self.scrollView.gestureRecognizers);
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -161,12 +171,14 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
 }
 
 - (void)_handleSingleTap:(UITapGestureRecognizer *)sender {
+    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
     if (self.didSingleTaped) {
         self.didSingleTaped(self.imageView.image);
     }
 }
 
 - (void)_handleDoubleTap:(UITapGestureRecognizer *)sender {
+    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
     if (!self.imageView.image) {
         return;
     }
@@ -179,6 +191,7 @@ static NSString * const PBObservedKeyPath = @"imageView.image";
 }
 
 - (void)_handleLongPress:(UILongPressGestureRecognizer *)sender {
+    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
     if (sender.state != UIGestureRecognizerStateEnded) {
         return;
     }

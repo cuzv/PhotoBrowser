@@ -42,6 +42,17 @@
 
 @implementation PBViewController
 
+#pragma mark - respondsToSelector
+
+#if DEBUG
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    printf("FILE: %s | SELECTOR: %s\n",
+           [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String],
+           [NSStringFromSelector(aSelector) UTF8String]);
+    return [super respondsToSelector:aSelector];
+}
+#endif
+
 - (instancetype)initWithTransitionStyle:(UIPageViewControllerTransitionStyle)style
                   navigationOrientation:(UIPageViewControllerNavigationOrientation)navigationOrientation
                                 options:(NSDictionary *)options {
@@ -151,8 +162,22 @@
             };
         }
     }
-
+    
     return imageScrollerViewController;
+}
+
+- (NSArray *)_gestures {
+    NSMutableArray<UIGestureRecognizer *> *gestures = [@[] mutableCopy];
+    for (UIView *subview in self.view.subviews) {
+        if ([subview isKindOfClass:[UIScrollView class]]) {
+            NSArray *ges = subview.gestureRecognizers;
+            if (ges) {
+                [gestures addObjectsFromArray:ges];
+            }
+        }
+    }
+    
+    return gestures;
 }
 
 - (void)_updateIndicator {
