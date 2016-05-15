@@ -25,8 +25,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PBImageScrollView.h"
 
-@class PBImageScrollView;
 @interface PBImageScrollerViewController : UIViewController
 
 @property (nonatomic, assign) NSInteger page;
@@ -35,6 +35,9 @@
 @property (nonatomic, copy) UIImage *(^fetchImageHandler)(void);
 /// Configure image for current imageView
 @property (nonatomic, copy) void (^configureImageViewHandler)(UIImageView *imageView);
+
+/// Configure image for current imageView with progress
+@property (nonatomic, copy) void (^configureImageViewWithDownloadProgressHandler)(UIImageView *imageView, PBImageDownloadProgressHandler handler);
 
 @property (nonatomic, strong, readonly) PBImageScrollView *imageScrollView;
 

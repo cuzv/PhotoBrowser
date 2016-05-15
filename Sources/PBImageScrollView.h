@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^PBImageDownloadProgressHandler)(NSInteger receivedSize, NSInteger expectedSize);
+
 @interface PBImageScrollView : UIScrollView <UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong, readonly) UIImageView *imageView;
+@property (nonatomic, copy, readonly) PBImageDownloadProgressHandler downloadProgressHandler;
 
 @end

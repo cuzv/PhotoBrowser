@@ -41,7 +41,10 @@
 - (UIImage *)viewController:(PBViewController *)viewController imageForPageAtIndex:(NSInteger)index;
 
 /// Configure the imageView's image, implement one of this or upper method
-- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index;
+- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index __attribute__((deprecated("use `viewController:presentImageView:forPageAtIndex:progressHandler` instead.")));
+/// Configure the imageView's image, implement one of this or upper method
+- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(void(^)(NSInteger receivedSize, NSInteger expectedSize))progressHandler;
+
 
 @end
 

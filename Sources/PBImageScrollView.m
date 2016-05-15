@@ -12,7 +12,12 @@
 #define observe_keypath @"image"
 
 @interface PBImageScrollView ()
+
+@property (nonatomic, strong, readwrite) UIImageView *imageView;
+@property (nonatomic, copy, readwrite) PBImageDownloadProgressHandler downloadProgressHandler;
 @property (nonatomic, weak) id <NSObject> notification;
+@property (nonatomic, strong) CAShapeLayer *progressLayer;
+
 @end
 
 @implementation PBImageScrollView
@@ -41,14 +46,22 @@
     self.delegate = self;
     
     [self addSubview:self.imageView];
+    [self.layer addSublayer:self.progressLayer];
     [self _addObserver];
     [self _addNotificationIfNeeded];
+    [self _setupDownloadProgressHandler];
     
     return self;
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    
+    CGPoint center = CGPointMake(CGRectGetWidth(self.bounds) / 2.0, CGRectGetHeight(self.bounds) / 2.0);
+    CGRect frame = self.progressLayer.frame;
+    frame.origin.x = center.x - CGRectGetWidth(frame) / 2.0f;
+    frame.origin.y = center.y - CGRectGetHeight(frame) / 2.0f;
+    self.progressLayer.frame = frame;
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
@@ -157,6 +170,29 @@
     }
 }
 
+- (void)_setupDownloadProgressHandler {
+    __weak typeof(self) weak_self = self;
+    self.downloadProgressHandler = ^(NSInteger receivedSize, NSInteger expectedSize) {
+        __strong typeof(weak_self) strong_self = weak_self;
+        CGFloat progress = (receivedSize * 1.0f) / (expectedSize * 1.0f);
+        strong_self.progressLayer.hidden = NO;
+        strong_self.progressLayer.strokeEnd = progress;
+        if (progress == 1.0f) {
+            strong_self.progressLayer.hidden = YES;
+        }
+    };
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return self.imageView;
+}
+
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    [self _recenterImage];
+}
+
 #pragma mark - Accessor
 
 - (UIImageView *)imageView {
@@ -168,14 +204,24 @@
     return _imageView;
 }
 
-#pragma mark - UIScrollViewDelegate
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
-    return self.imageView;
-}
-
-- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
-    [self _recenterImage];
+- (CAShapeLayer *)progressLayer {
+    if (!_progressLayer) {
+        _progressLayer = [CAShapeLayer layer];
+        _progressLayer.frame = CGRectMake(0, 0, 40, 40);
+        _progressLayer.cornerRadius = 20;
+        _progressLayer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;
+        
+        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(_progressLayer.bounds, 7, 7) cornerRadius:(40 / 2.0f - 7)];
+        _progressLayer.path = path.CGPath;
+        _progressLayer.fillColor = [UIColor clearColor].CGColor;
+        _progressLayer.strokeColor = [UIColor whiteColor].CGColor;
+        _progressLayer.lineWidth = 4;
+        _progressLayer.lineCap = kCALineCapRound;
+        _progressLayer.strokeStart = 0;
+        _progressLayer.strokeEnd = 0;
+        _progressLayer.hidden = YES;
+    }
+    return _progressLayer;
 }
 
 @end
