@@ -33,6 +33,8 @@
 
 @property (nonatomic, weak) id<PBViewControllerDataSource> pb_dataSource;
 @property (nonatomic, weak) id<PBViewControllerDelegate> pb_delegate;
-- (void)setInitializePageIndex:(NSInteger)pageIndex;
+
+@property (nonatomic, assign) NSInteger pb_startPage;
+- (void)setInitializePageIndex:(NSInteger)pageIndex __attribute__((deprecated("use `pb_startPage` instead.")));
 
 @end
