@@ -38,7 +38,6 @@
 @property (nonatomic, strong) NSArray<PBImageScrollerViewController *> *reusableImageScrollerViewControllers;
 @property (nonatomic, assign) NSInteger numberOfPages;
 @property (nonatomic, assign) NSInteger currentPage;
-//@property (nonatomic, weak) PBImageScrollerViewController *currentImageScrollerViewController;
 
 /// Images count >9, use this for indicate
 @property (nonatomic, strong) UILabel *indicatorLabel;
@@ -194,7 +193,7 @@
     }
     
     // Get the reusable `PBImageScrollerViewController`
-    PBImageScrollerViewController *imageScrollerViewController = self.reusableImageScrollerViewControllers[self.currentPage % 3];
+    PBImageScrollerViewController *imageScrollerViewController = self.reusableImageScrollerViewControllers[page % 3];
 
     // Set new data
     if (!self.pb_dataSource) {
@@ -230,19 +229,28 @@
 
 #pragma mark - Actions
 
+- (void)_handleSingleTapAction:(UITapGestureRecognizer *)sender {
+    if (sender.state != UIGestureRecognizerStateEnded) {
+        return;
+    }
+    [self _showStatusBarIfNeeded];
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)_handleDoubleTapAction:(UITapGestureRecognizer *)sender {
+    if (sender.state != UIGestureRecognizerStateEnded) {
+        return;
+    }
     CGPoint location = [sender locationInView:self.view];
     PBImageScrollView *imageScrollView =  self.reusableImageScrollerViewControllers[self.currentPage % 3].imageScrollView;
     [imageScrollView _handleZoomForLocation:location];
 }
 
-- (void)_handleSingleTapAction:(UITapGestureRecognizer *)sender {
-    [self _showStatusBarIfNeeded];
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
 - (void)_handleLongPressAction:(UILongPressGestureRecognizer *)sender {
     if (!self.pb_delegate) {
+        return;
+    }
+    if (sender.state != UIGestureRecognizerStateEnded) {
         return;
     }
     if ([self.pb_delegate conformsToProtocol:@protocol(PBViewControllerDelegate)]) {
@@ -284,10 +292,6 @@
     }
     return _reusableImageScrollerViewControllers;
 }
-
-//- (PBImageScrollerViewController *)currentImageScrollerViewController {
-//    return self.reusableImageScrollerViewControllers[self.currentPage % 3];
-//}
 
 - (UILabel *)indicatorLabel {
     if (!_indicatorLabel) {
