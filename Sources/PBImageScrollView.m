@@ -40,7 +40,7 @@
     self.multipleTouchEnabled = YES;
     self.showsVerticalScrollIndicator = YES;
     self.showsHorizontalScrollIndicator = YES;
-    self.alwaysBounceVertical = YES;
+    self.alwaysBounceVertical = NO;
     self.minimumZoomScale = 1.0f;
     self.maximumZoomScale = 1.0f;
     self.delegate = self;
@@ -77,10 +77,14 @@
     if (![object isEqual:self.imageView]) {
         return;
     }
+    if (!self.imageView.image) {
+        return;
+    }
 
     [self _updateFrame];
     [self _recenterImage];
     [self _setMaximumZoomScale];
+    self.alwaysBounceVertical = YES;
 }
 
 #pragma mark - Internal Methods
@@ -209,10 +213,7 @@
         _progressLayer = [CAShapeLayer layer];
         _progressLayer.frame = CGRectMake(0, 0, 40, 40);
         _progressLayer.cornerRadius = 20;
-        _progressLayer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;
-        
-        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(_progressLayer.bounds, 7, 7) cornerRadius:(40 / 2.0f - 7)];
-        _progressLayer.path = path.CGPath;
+        _progressLayer.backgroundColor = [UIColor clearColor].CGColor;
         _progressLayer.fillColor = [UIColor clearColor].CGColor;
         _progressLayer.strokeColor = [UIColor whiteColor].CGColor;
         _progressLayer.lineWidth = 4;
@@ -220,6 +221,8 @@
         _progressLayer.strokeStart = 0;
         _progressLayer.strokeEnd = 0;
         _progressLayer.hidden = YES;
+        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(_progressLayer.bounds, 7, 7) cornerRadius:(40 / 2.0f - 7)];
+        _progressLayer.path = path.CGPath;
     }
     return _progressLayer;
 }
