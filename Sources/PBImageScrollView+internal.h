@@ -13,7 +13,7 @@
 
 @interface PBImageScrollView()
 
-- (void)_handleZoomForGestureRecognizer:(UITapGestureRecognizer *)sender;
+- (void)_handleZoomForLocation:(CGPoint)location;
 
 @end
 

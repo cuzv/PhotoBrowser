@@ -26,8 +26,38 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol PBViewControllerDataSource;
-@protocol PBViewControllerDelegate;
+@class PBViewController;
+
+#pragma mark - PBViewControllerDataSource
+
+@protocol PBViewControllerDataSource <NSObject>
+
+/// Return the pages count
+- (NSInteger)numberOfPagesInViewController:(PBViewController *)viewController;
+
+@optional
+
+/// Return the image, implement one of this or follow method
+- (UIImage *)viewController:(PBViewController *)viewController imageForPageAtIndex:(NSInteger)index;
+
+/// Configure the imageView's image, implement one of this or upper method
+- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index;
+
+@end
+
+#pragma mark - PBViewControllerDelegate
+
+@protocol PBViewControllerDelegate <NSObject>
+
+@optional
+
+/// Action call back for long press, presentedImage will be nil untill loaded image
+- (void)viewController:(PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage;
+
+@end
+
+
+#pragma mark - PBViewController
 
 @interface PBViewController : UIPageViewController
 

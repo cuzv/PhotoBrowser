@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
-        <!--Local Images Example View Controller-->
+        <!--Root View Controller-->
         <scene sceneID="ORb-KX-OC6">
             <objects>
-                <viewController id="j2X-ty-XLj" customClass="LocalImagesExampleViewController" sceneMemberID="viewController">
+                <viewController id="j2X-ty-XLj" customClass="RootViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MNz-CB-1bu"/>
                         <viewControllerLayoutGuide type="bottom" id="RxE-nV-AHY"/>
@@ -23,7 +23,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="showPhotoBrowser:" destination="j2X-ty-XLj" eventType="touchUpInside" id="Xtk-sz-XGe"/>
+                                    <segue destination="f8a-f0-vAF" kind="show" id="I50-ao-2pc"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XrL-W5-Cfq">
@@ -32,37 +32,16 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="showPhotoBrowser:" destination="j2X-ty-XLj" eventType="touchUpInside" id="x2l-gh-ED9"/>
-                                    <segue destination="pKL-aW-u4x" kind="presentation" id="15G-v7-37I"/>
+                                    <segue destination="pKL-aW-u4x" kind="show" id="hwJ-cS-cSH"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dlT-JK-rdh">
-                                <rect key="frame" x="0.0" y="64" width="320" height="80"/>
-                                <color key="backgroundColor" red="1" green="0.53911389799999998" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="80" id="kuQ-cV-fme"/>
-                                </constraints>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZqB-cG-tej">
-                                <rect key="frame" x="0.0" y="151" width="320" height="80"/>
-                                <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="80" id="OzH-hS-kVr"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="XrL-W5-Cfq" firstAttribute="top" secondItem="278-WB-2Bw" secondAttribute="bottom" constant="20" id="BOa-Fx-hp1"/>
-                            <constraint firstItem="ZqB-cG-tej" firstAttribute="top" secondItem="dlT-JK-rdh" secondAttribute="bottom" constant="7" id="G6W-S7-Pf6"/>
-                            <constraint firstAttribute="trailing" secondItem="ZqB-cG-tej" secondAttribute="trailing" id="TEl-qU-kUc"/>
-                            <constraint firstItem="dlT-JK-rdh" firstAttribute="top" secondItem="MNz-CB-1bu" secondAttribute="bottom" id="bCx-3g-jk0"/>
-                            <constraint firstItem="dlT-JK-rdh" firstAttribute="leading" secondItem="dAH-1v-C8c" secondAttribute="leading" id="bOD-2L-O5g"/>
-                            <constraint firstAttribute="trailing" secondItem="dlT-JK-rdh" secondAttribute="trailing" id="cc9-zg-GfR"/>
                             <constraint firstItem="278-WB-2Bw" firstAttribute="centerY" secondItem="dAH-1v-C8c" secondAttribute="centerY" constant="-10" id="fZz-mK-fOm"/>
                             <constraint firstItem="XrL-W5-Cfq" firstAttribute="centerX" secondItem="dAH-1v-C8c" secondAttribute="centerX" id="lWo-11-gTg"/>
                             <constraint firstItem="278-WB-2Bw" firstAttribute="centerX" secondItem="dAH-1v-C8c" secondAttribute="centerX" id="r3U-km-MwH"/>
-                            <constraint firstItem="ZqB-cG-tej" firstAttribute="leading" secondItem="dAH-1v-C8c" secondAttribute="leading" id="r4N-2j-4L9"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Ex9-Kl-8KY"/>
@@ -71,7 +50,26 @@
             </objects>
             <point key="canvasLocation" x="572" y="331"/>
         </scene>
-        <!--Remote Images Example View Controller-->
+        <!--Local Images Example-->
+        <scene sceneID="aBg-CO-ens">
+            <objects>
+                <viewController id="f8a-f0-vAF" customClass="LocalImagesExampleViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="lNl-qN-g2K"/>
+                        <viewControllerLayoutGuide type="bottom" id="SG8-jU-0UD"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="SaM-Zd-zno">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Local Images Example" id="wcX-jc-uut"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Zkx-2m-EX9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="947" y="169"/>
+        </scene>
+        <!--Remote Images Example-->
         <scene sceneID="GQ0-Ap-c2s">
             <objects>
                 <viewController id="pKL-aW-u4x" customClass="RemoteImagesExampleViewController" sceneMemberID="viewController">
@@ -84,10 +82,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Remote Images Example" id="Kct-fL-WDC"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ThL-u2-5Ki" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="956" y="674"/>
+            <point key="canvasLocation" x="971" y="779"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="aXv-6r-vL3">

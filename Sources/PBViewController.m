@@ -26,24 +26,31 @@
 
 #import "PBViewController.h"
 #import "PBImageScrollerViewController.h"
-#import "PBViewControllerDataSource.h"
-#import "PBViewControllerDelegate.h"
+#import "UIView+PBSnapshot.h"
+#import "PBImageScrollView.h"
+#import "PBImageScrollView+internal.h"
 
 @interface PBViewController () <
     UIPageViewControllerDataSource,
     UIPageViewControllerDelegate
 >
 
-@property (nonatomic, strong) NSArray *reusableImageScrollerViewControllers;
+@property (nonatomic, strong) NSArray<PBImageScrollerViewController *> *reusableImageScrollerViewControllers;
 @property (nonatomic, assign) NSInteger numberOfPages;
 @property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, weak) PBImageScrollerViewController *currentImageScrollerViewController;
 
 /// Images count >9, use this for indicate
 @property (nonatomic, strong) UILabel *indicatorLabel;
 /// Images count <=9, use this for indicate
 @property (nonatomic, strong) UIPageControl *indicatorPageControl;
-
+/// Blur background view
 @property (nonatomic, strong) UIView *blurBackgroundView;
+
+/// Gestures
+@property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @end
 
@@ -77,7 +84,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     // Set numberOfPages
     if ([self.pb_dataSource conformsToProtocol:@protocol(PBViewControllerDataSource)] &&
         [self.pb_dataSource respondsToSelector:@selector(numberOfPagesInViewController:)]) {
@@ -94,14 +101,22 @@
     // Blur background
     [self _addBlurBackgroundView];
     
+    self.view.layer.contents = (id)[self.presentingViewController.view pb_snapshotAfterScreenUpdates:NO].CGImage;
+
+    [self.view addGestureRecognizer:self.longPressGestureRecognizer];
+    [self.view addGestureRecognizer:self.doubleTapGestureRecognizer];
+    [self.view addGestureRecognizer:self.singleTapGestureRecognizer];
+    [self.singleTapGestureRecognizer requireGestureRecognizerToFail:self.longPressGestureRecognizer];
+    [self.singleTapGestureRecognizer requireGestureRecognizerToFail:self.doubleTapGestureRecognizer];
+    
     self.dataSource = self;
     self.delegate = self;
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    if ([self isBeingDismissed]) {
-        self.blurBackgroundView.window.windowLevel = UIWindowLevelNormal;
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if ([self isBeingPresented]) {
+        [self _hideStatusBarIfNeeded];
     }
 }
 
@@ -133,17 +148,17 @@
 }
 
 - (void)_updateIndicator {
-    CGPoint center = CGPointMake(CGRectGetWidth(self.view.bounds) / 2.0f,
-                                 CGRectGetHeight(self.view.bounds) - CGRectGetHeight(self.indicatorLabel.bounds)/2 - 15);
     if (self.numberOfPages <= 9) {
         self.indicatorPageControl.currentPage = self.currentPage;
         [self.indicatorPageControl sizeToFit];
-        self.indicatorPageControl.center = center;
+        self.indicatorPageControl.center = CGPointMake(CGRectGetWidth(self.view.bounds) / 2.0f,
+                                                       CGRectGetHeight(self.view.bounds) - CGRectGetHeight(self.indicatorPageControl.bounds) / 2.0f);
     } else {
         NSString *indicatorText = [NSString stringWithFormat:@"%@/%@", @(self.currentPage + 1), @(self.numberOfPages)];
         self.indicatorLabel.text = indicatorText;
         [self.indicatorLabel sizeToFit];
-        self.indicatorLabel.center = center;
+        self.indicatorLabel.center = CGPointMake(CGRectGetWidth(self.view.bounds) / 2.0f,
+                                                 CGRectGetHeight(self.view.bounds) - CGRectGetHeight(self.indicatorLabel.bounds));
     }
 }
 
@@ -154,58 +169,76 @@
 
 - (void)_updateBlurBackgroundView {
     self.blurBackgroundView.frame = self.view.bounds;
-    self.blurBackgroundView.window.windowLevel = UIWindowLevelStatusBar;
+}
+
+- (void)_hideStatusBarIfNeeded {
+    if ([UIApplication sharedApplication].statusBarHidden) {
+        return;
+    }
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+}
+
+- (void)_showStatusBarIfNeeded {
+    if (![UIApplication sharedApplication].statusBarHidden) {
+        return;
+    }
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 }
 
 - (PBImageScrollerViewController *)_imageScrollerViewControllerForPage:(NSInteger)page {
-    if (page > self.numberOfPages-1 ||
-        page < 0) {
+    if (page > self.numberOfPages - 1 || page < 0) {
         return nil;
     }
     
     // Get the reusable `PBImageScrollerViewController`
-    NSInteger index = page % 3;
-    // Get reusable controller
-    PBImageScrollerViewController *imageScrollerViewController = [self.reusableImageScrollerViewControllers objectAtIndex:index];
-
-    __weak typeof(self) weak_self = self;
+    PBImageScrollerViewController *imageScrollerViewController = self.currentImageScrollerViewController;
 
     // Set new data
-    if (self.pb_dataSource &&
-        [self.pb_dataSource conformsToProtocol:@protocol(PBViewControllerDataSource)]) {
+    if (!self.pb_dataSource) {
+        [NSException raise:@"Must implement `PBViewControllerDataSource` protocol." format:@""];
+    }
+    
+    __weak typeof(self) weak_self = self;
+    if ([self.pb_dataSource conformsToProtocol:@protocol(PBViewControllerDataSource)]) {
         imageScrollerViewController.page = page;
         if ([self.pb_dataSource respondsToSelector:@selector(viewController:imageForPageAtIndex:)]) {
-            imageScrollerViewController.fetchImageBlock = ^UIImage*(void) {
+            imageScrollerViewController.fetchImageHandler = ^UIImage *(void) {
                 __strong typeof(weak_self) strong_self = weak_self;
-                UIImage *image = [strong_self.pb_dataSource viewController:strong_self imageForPageAtIndex:page];
-                return image;
+                return [strong_self.pb_dataSource viewController:strong_self imageForPageAtIndex:page];
             };
         }
         if ([self.pb_dataSource respondsToSelector:@selector(viewController:presentImageView:forPageAtIndex:)]) {
-            imageScrollerViewController.configureImageViewBlock = ^(UIImageView *imageView) {
+            imageScrollerViewController.configureImageViewHandler = ^(UIImageView *imageView) {
                 __strong typeof(weak_self) strong_self = weak_self;
                 [strong_self.pb_dataSource viewController:strong_self presentImageView:imageView forPageAtIndex:page];
             };
         }
     }
-    // Set delegate callback
-    if (self.pb_delegate &&
-        [self.pb_delegate conformsToProtocol:@protocol(PBViewControllerDelegate)]) {
-        if ([self.pb_delegate respondsToSelector:@selector(viewController:didSingleTapedPageAtIndex:presentedImage:)]) {
-            imageScrollerViewController.didSingleTaped = ^(UIImage *image) {
-                __strong typeof(weak_self) strong_self = weak_self;
-                [strong_self.pb_delegate viewController:strong_self didSingleTapedPageAtIndex:page presentedImage:image];
-            };
-        }
+    return imageScrollerViewController;
+}
+
+- (void)_handleDoubleTapAction:(UITapGestureRecognizer *)sender {
+    CGPoint location = [sender locationInView:self.view];
+    PBImageScrollView *imageScrollView =  self.currentImageScrollerViewController.imageScrollView;
+    [imageScrollView _handleZoomForLocation:location];
+}
+
+- (void)_handleSingleTapAction:(UITapGestureRecognizer *)sender {
+    [self _showStatusBarIfNeeded];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    });
+}
+
+- (void)_handleLongPressAction:(UILongPressGestureRecognizer *)sender {
+    if (!self.pb_delegate) {
+        return;
+    }
+    if ([self.pb_delegate conformsToProtocol:@protocol(PBViewControllerDelegate)]) {
         if ([self.pb_delegate respondsToSelector:@selector(viewController:didLongPressedPageAtIndex:presentedImage:)]) {
-            imageScrollerViewController.didLongPressed = ^(UIImage *image) {
-                __strong typeof(weak_self) strong_self = weak_self;
-                [strong_self.pb_delegate viewController:strong_self didLongPressedPageAtIndex:page presentedImage:image];
-            };
+            [self.pb_delegate viewController:self didLongPressedPageAtIndex:self.currentPage presentedImage:self.currentImageScrollerViewController.imageScrollView.imageView.image];
         }
     }
-    
-    return imageScrollerViewController;
 }
 
 #pragma mark - UIPageViewControllerDataSource
@@ -228,22 +261,28 @@
 
 #pragma mark - Accessor
 
-- (NSArray *)reusableImageScrollerViewControllers {
+- (NSArray<PBImageScrollerViewController *> *)reusableImageScrollerViewControllers {
     if (!_reusableImageScrollerViewControllers) {
-        NSMutableArray *controllers = [NSMutableArray new];
+        NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:3];
         for (NSInteger index = 0; index < 3; index++) {
             PBImageScrollerViewController *imageScrollerViewController = [PBImageScrollerViewController new];
             imageScrollerViewController.page = index;
             [controllers addObject:imageScrollerViewController];
         }
-        _reusableImageScrollerViewControllers = [NSArray arrayWithArray:controllers];
+        _reusableImageScrollerViewControllers = [[NSArray alloc] initWithArray:controllers];
     }
     return _reusableImageScrollerViewControllers;
+}
+
+- (PBImageScrollerViewController *)currentImageScrollerViewController {
+    return self.reusableImageScrollerViewControllers[self.currentPage % 3];
 }
 
 - (UILabel *)indicatorLabel {
     if (!_indicatorLabel) {
         _indicatorLabel = [UILabel new];
+        _indicatorLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+        _indicatorLabel.textAlignment = NSTextAlignmentCenter;
         _indicatorLabel.textColor = [UIColor whiteColor];
     }
     return _indicatorLabel;
@@ -270,6 +309,28 @@
         
     }
     return _blurBackgroundView;
+}
+
+- (UITapGestureRecognizer *)singleTapGestureRecognizer {
+    if (!_singleTapGestureRecognizer) {
+        _singleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleSingleTapAction:)];
+    }
+    return _singleTapGestureRecognizer;
+}
+
+- (UITapGestureRecognizer *)doubleTapGestureRecognizer {
+    if (!_doubleTapGestureRecognizer) {
+        _doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleDoubleTapAction:)];
+        _doubleTapGestureRecognizer.numberOfTapsRequired = 2;
+    }
+    return _doubleTapGestureRecognizer;
+}
+
+- (UILongPressGestureRecognizer *)longPressGestureRecognizer {
+    if (!_longPressGestureRecognizer) {
+        _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_handleLongPressAction:)];
+    }
+    return _longPressGestureRecognizer;
 }
 
 @end
