@@ -53,8 +53,9 @@
     
     if (self.fetchImageHandler) {
         self.imageView.image = self.fetchImageHandler();
-    }
-    if (self.configureImageViewHandler) {
+    } else if (self.configureImageViewWithDownloadProgressHandler) {
+        self.configureImageViewWithDownloadProgressHandler(self.imageView, self.imageScrollView.downloadProgressHandler);
+    } else if (self.configureImageViewHandler) {
         self.configureImageViewHandler(self.imageView);
     }
 }

@@ -38,7 +38,7 @@
 @property (nonatomic, strong) NSArray<PBImageScrollerViewController *> *reusableImageScrollerViewControllers;
 @property (nonatomic, assign) NSInteger numberOfPages;
 @property (nonatomic, assign) NSInteger currentPage;
-@property (nonatomic, weak) PBImageScrollerViewController *currentImageScrollerViewController;
+//@property (nonatomic, weak) PBImageScrollerViewController *currentImageScrollerViewController;
 
 /// Images count >9, use this for indicate
 @property (nonatomic, strong) UILabel *indicatorLabel;
@@ -172,17 +172,20 @@
 }
 
 - (void)_hideStatusBarIfNeeded {
-    if ([UIApplication sharedApplication].statusBarHidden) {
-        return;
-    }
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    self.blurBackgroundView.window.windowLevel = UIWindowLevelStatusBar;
+
+//    if ([UIApplication sharedApplication].statusBarHidden) {
+//        return;
+//    }
+//    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 }
 
 - (void)_showStatusBarIfNeeded {
-    if (![UIApplication sharedApplication].statusBarHidden) {
-        return;
-    }
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    self.blurBackgroundView.window.windowLevel = UIWindowLevelNormal;
+//    if (![UIApplication sharedApplication].statusBarHidden) {
+//        return;
+//    }
+//    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 }
 
 - (PBImageScrollerViewController *)_imageScrollerViewControllerForPage:(NSInteger)page {
@@ -191,7 +194,7 @@
     }
     
     // Get the reusable `PBImageScrollerViewController`
-    PBImageScrollerViewController *imageScrollerViewController = self.currentImageScrollerViewController;
+    PBImageScrollerViewController *imageScrollerViewController = self.reusableImageScrollerViewControllers[self.currentPage % 3];
 
     // Set new data
     if (!self.pb_dataSource) {
@@ -201,33 +204,41 @@
     __weak typeof(self) weak_self = self;
     if ([self.pb_dataSource conformsToProtocol:@protocol(PBViewControllerDataSource)]) {
         imageScrollerViewController.page = page;
+        
         if ([self.pb_dataSource respondsToSelector:@selector(viewController:imageForPageAtIndex:)]) {
             imageScrollerViewController.fetchImageHandler = ^UIImage *(void) {
                 __strong typeof(weak_self) strong_self = weak_self;
                 return [strong_self.pb_dataSource viewController:strong_self imageForPageAtIndex:page];
             };
-        }
-        if ([self.pb_dataSource respondsToSelector:@selector(viewController:presentImageView:forPageAtIndex:)]) {
+        } else if ([self.pb_dataSource respondsToSelector:@selector(viewController:presentImageView:forPageAtIndex:progressHandler:)]) {
+            imageScrollerViewController.configureImageViewWithDownloadProgressHandler = ^(UIImageView *imageView, PBImageDownloadProgressHandler handler) {
+                __strong typeof(weak_self) strong_self = weak_self;
+                [strong_self.pb_dataSource viewController:strong_self presentImageView:imageView forPageAtIndex:page progressHandler:handler];
+            };
+        } else if ([self.pb_dataSource respondsToSelector:@selector(viewController:presentImageView:forPageAtIndex:)]) {
             imageScrollerViewController.configureImageViewHandler = ^(UIImageView *imageView) {
                 __strong typeof(weak_self) strong_self = weak_self;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 [strong_self.pb_dataSource viewController:strong_self presentImageView:imageView forPageAtIndex:page];
+#pragma clang diagnostic pop
             };
         }
     }
     return imageScrollerViewController;
 }
 
+#pragma mark - Actions
+
 - (void)_handleDoubleTapAction:(UITapGestureRecognizer *)sender {
     CGPoint location = [sender locationInView:self.view];
-    PBImageScrollView *imageScrollView =  self.currentImageScrollerViewController.imageScrollView;
+    PBImageScrollView *imageScrollView =  self.reusableImageScrollerViewControllers[self.currentPage % 3].imageScrollView;
     [imageScrollView _handleZoomForLocation:location];
 }
 
 - (void)_handleSingleTapAction:(UITapGestureRecognizer *)sender {
     [self _showStatusBarIfNeeded];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-    });
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)_handleLongPressAction:(UILongPressGestureRecognizer *)sender {
@@ -236,7 +247,7 @@
     }
     if ([self.pb_delegate conformsToProtocol:@protocol(PBViewControllerDelegate)]) {
         if ([self.pb_delegate respondsToSelector:@selector(viewController:didLongPressedPageAtIndex:presentedImage:)]) {
-            [self.pb_delegate viewController:self didLongPressedPageAtIndex:self.currentPage presentedImage:self.currentImageScrollerViewController.imageScrollView.imageView.image];
+            [self.pb_delegate viewController:self didLongPressedPageAtIndex:self.currentPage presentedImage:self.reusableImageScrollerViewControllers[self.currentPage % 3].imageScrollView.imageView.image];
         }
     }
 }
@@ -244,11 +255,11 @@
 #pragma mark - UIPageViewControllerDataSource
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(PBImageScrollerViewController *)viewController {
-    return [self _imageScrollerViewControllerForPage:viewController.page-1];
+    return [self _imageScrollerViewControllerForPage:viewController.page - 1];
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(PBImageScrollerViewController *)viewController {
-    return [self _imageScrollerViewControllerForPage:viewController.page+1];
+    return [self _imageScrollerViewControllerForPage:viewController.page + 1];
 }
 
 #pragma mark - UIPageViewControllerDelegate
@@ -274,9 +285,9 @@
     return _reusableImageScrollerViewControllers;
 }
 
-- (PBImageScrollerViewController *)currentImageScrollerViewController {
-    return self.reusableImageScrollerViewControllers[self.currentPage % 3];
-}
+//- (PBImageScrollerViewController *)currentImageScrollerViewController {
+//    return self.reusableImageScrollerViewControllers[self.currentPage % 3];
+//}
 
 - (UILabel *)indicatorLabel {
     if (!_indicatorLabel) {
