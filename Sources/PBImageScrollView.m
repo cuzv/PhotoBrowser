@@ -20,7 +20,9 @@
 - (void)dealloc {
     [self _removeObserver];
     [self _removeNotificationIfNeeded];
+#if DEBUG
     NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
+#endif
 }
 
 - (instancetype)init {
@@ -34,8 +36,8 @@
     self.showsVerticalScrollIndicator = YES;
     self.showsHorizontalScrollIndicator = YES;
     self.alwaysBounceVertical = YES;
-    self.minimumZoomScale = 1;
-    self.maximumZoomScale = 1;
+    self.minimumZoomScale = 1.0f;
+    self.maximumZoomScale = 1.0f;
     self.delegate = self;
     
     [self addSubview:self.imageView];
@@ -73,7 +75,7 @@
 - (void)_handleZoomForGestureRecognizer:(UITapGestureRecognizer *)sender {
     if (self.zoomScale > 1) {
         [self setZoomScale:1 animated:YES];
-    } else {
+    } else if (self.maximumZoomScale > 1) {
         CGPoint touchPoint = [sender locationInView:self.imageView];
         CGFloat newZoomScale = self.maximumZoomScale;
         CGFloat horizontalSize = CGRectGetWidth(self.bounds) / newZoomScale;
@@ -116,7 +118,12 @@
 - (void)_updateFrame {
     self.frame = [UIScreen mainScreen].bounds;
     
-    CGSize properSize = [self _properPresentSizeForImage:self.imageView.image];
+    UIImage *image = self.imageView.image;
+    if (!image) {
+        return;
+    }
+    
+    CGSize properSize = [self _properPresentSizeForImage:image];
     self.imageView.frame = CGRectMake(0, 0, properSize.width, properSize.height);
     self.contentSize = properSize;
 }
@@ -139,8 +146,15 @@
 }
 
 - (void)_setMaximumZoomScale {
+    [self setZoomScale:1.0f animated:NO];
     CGSize imageSize = self.imageView.image.size;
-    self.maximumZoomScale = MAX(MIN(imageSize.width / CGRectGetWidth(self.bounds), imageSize.height / CGRectGetHeight(self.bounds)), 3);
+    CGFloat selfWidth = CGRectGetWidth(self.bounds);
+    CGFloat selfHeight = CGRectGetHeight(self.bounds);
+    if (imageSize.width <= selfWidth && imageSize.height <= selfHeight) {
+        self.maximumZoomScale = 1.0f;
+    } else {
+        self.maximumZoomScale = MAX(MIN(imageSize.width / selfWidth, imageSize.height / selfHeight), 3.0f);
+    }
 }
 
 #pragma mark - Accessor

@@ -6,18 +6,18 @@
 //  Copyright © 2016 Moch Xiao. All rights reserved.
 //
 
-#import "DemoViewController.h"
+#import "RemoteImagesExampleViewController.h"
 #import "PBImageScrollView.h"
 #import "PBImageScrollView+internal.h"
 
-@interface DemoViewController ()
+@interface RemoteImagesExampleViewController ()
 @property (nonatomic, strong) PBImageScrollView *imageScrollView;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 
 @end
 
-@implementation DemoViewController
+@implementation RemoteImagesExampleViewController
 
 - (void)dealloc {
     NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
@@ -27,11 +27,9 @@
     [super viewDidLoad];
     
     [self.view addSubview:self.imageScrollView];
-    UIImage *image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"9" ofType:@"jpg"]];
-//    UIImage *image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"3" ofType:@"jpg"]];
+    UIImage *image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"7" ofType:@"jpg"]];
     self.imageScrollView.imageView.image = image;
-    
-    
+
     [self.view addGestureRecognizer:self.doubleTapGestureRecognizer];
     
     [self.view addGestureRecognizer:self.singleTapGestureRecognizer];

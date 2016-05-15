@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DemoViewController : UIViewController
+@interface RemoteImagesExampleViewController : UIViewController
 
 @end

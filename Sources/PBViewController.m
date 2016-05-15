@@ -37,7 +37,14 @@
 @property (nonatomic, strong) NSArray *reusableImageScrollerViewControllers;
 @property (nonatomic, assign) NSInteger numberOfPages;
 @property (nonatomic, assign) NSInteger currentPage;
+
+/// Images count >9, use this for indicate
 @property (nonatomic, strong) UILabel *indicatorLabel;
+/// Images count <=9, use this for indicate
+@property (nonatomic, strong) UIPageControl *indicatorPageControl;
+
+@property (nonatomic, strong) UIView *blurBackgroundView;
+
 @end
 
 @implementation PBViewController
@@ -45,19 +52,15 @@
 #pragma mark - respondsToSelector
 
 #if DEBUG
-- (BOOL)respondsToSelector:(SEL)aSelector {
-    printf("FILE: %s | SELECTOR: %s\n",
-           [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String],
-           [NSStringFromSelector(aSelector) UTF8String]);
-    return [super respondsToSelector:aSelector];
+- (void)dealloc {
+    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
 }
 #endif
 
 - (instancetype)initWithTransitionStyle:(UIPageViewControllerTransitionStyle)style
                   navigationOrientation:(UIPageViewControllerNavigationOrientation)navigationOrientation
                                 options:(NSDictionary *)options {
-    options = options ?: @{};
-    NSMutableDictionary *dict = [options mutableCopy];
+    NSMutableDictionary *dict = [(options ?: @{}) mutableCopy];
     [dict setObject:@(20) forKey:UIPageViewControllerOptionInterPageSpacingKey];
     self = [super initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
                     navigationOrientation:navigationOrientation
@@ -66,11 +69,14 @@
         return nil;
     }
     
+    self.modalPresentationStyle = UIModalPresentationCustom;
+    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    
     return self;
 }
 
 - (void)viewDidLoad {
-    self.view.backgroundColor = [UIColor blackColor];
+    [super viewDidLoad];
     
     // Set numberOfPages
     if ([self.pb_dataSource conformsToProtocol:@protocol(PBViewControllerDataSource)] &&
@@ -78,41 +84,78 @@
         self.numberOfPages = [self.pb_dataSource numberOfPagesInViewController:self];
     }
     
-    // Set indicatorLabel
-    [self.view addSubview:self.indicatorLabel];
-
     // Set visible view controllers
     self.currentPage = 0 < self.currentPage && self.currentPage < self.numberOfPages ? self.currentPage : 0;
     PBImageScrollerViewController *firstImageScrollerViewController = [self _imageScrollerViewControllerForPage:self.currentPage];
     [self setViewControllers:@[firstImageScrollerViewController] direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
     
+    // Set indicatorLabel
+    [self _addIndicator];
+    // Blur background
+    [self _addBlurBackgroundView];
+    
     self.dataSource = self;
     self.delegate = self;
 }
 
-- (void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
-    
-    [self _updateIndicator];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-}
-
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    if ([self isBeingDismissed]) {
+        self.blurBackgroundView.window.windowLevel = UIWindowLevelNormal;
+    }
 }
 
-- (BOOL)prefersStatusBarHidden {
-    return YES;
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    [self _updateIndicator];
+    [self _updateBlurBackgroundView];
 }
 
-#pragma mark - Inner methods
+#pragma mark - Public method
+
+- (void)setInitializePageIndex:(NSInteger)pageIndex {
+    self.pb_startPage = pageIndex;
+}
+
+- (void)setPb_startPage:(NSInteger)pb_startPage {
+    _pb_startPage = pb_startPage;
+    _currentPage = pb_startPage;
+}
+
+#pragma mark - Private methods
+
+- (void)_addIndicator {
+    if (self.numberOfPages <= 9) {
+        [self.view addSubview:self.indicatorPageControl];
+    } else {
+        [self.view addSubview:self.indicatorLabel];
+    }
+}
+
+- (void)_updateIndicator {
+    CGPoint center = CGPointMake(CGRectGetWidth(self.view.bounds) / 2.0f,
+                                 CGRectGetHeight(self.view.bounds) - CGRectGetHeight(self.indicatorLabel.bounds)/2 - 15);
+    if (self.numberOfPages <= 9) {
+        self.indicatorPageControl.currentPage = self.currentPage;
+        [self.indicatorPageControl sizeToFit];
+        self.indicatorPageControl.center = center;
+    } else {
+        NSString *indicatorText = [NSString stringWithFormat:@"%@/%@", @(self.currentPage + 1), @(self.numberOfPages)];
+        self.indicatorLabel.text = indicatorText;
+        [self.indicatorLabel sizeToFit];
+        self.indicatorLabel.center = center;
+    }
+}
+
+- (void)_addBlurBackgroundView {
+    [self.view addSubview:self.blurBackgroundView];
+    [self.view sendSubviewToBack:self.blurBackgroundView];
+}
+
+- (void)_updateBlurBackgroundView {
+    self.blurBackgroundView.frame = self.view.bounds;
+    self.blurBackgroundView.window.windowLevel = UIWindowLevelStatusBar;
+}
 
 - (PBImageScrollerViewController *)_imageScrollerViewControllerForPage:(NSInteger)page {
     if (page > self.numberOfPages-1 ||
@@ -122,7 +165,6 @@
     
     // Get the reusable `PBImageScrollerViewController`
     NSInteger index = page % 3;
-    NSLog(@"page:%@ -> index: %@", @(page), @(index));
     // Get reusable controller
     PBImageScrollerViewController *imageScrollerViewController = [self.reusableImageScrollerViewControllers objectAtIndex:index];
 
@@ -166,34 +208,6 @@
     return imageScrollerViewController;
 }
 
-- (NSArray *)_gestures {
-    NSMutableArray<UIGestureRecognizer *> *gestures = [@[] mutableCopy];
-    for (UIView *subview in self.view.subviews) {
-        if ([subview isKindOfClass:[UIScrollView class]]) {
-            NSArray *ges = subview.gestureRecognizers;
-            if (ges) {
-                [gestures addObjectsFromArray:ges];
-            }
-        }
-    }
-    
-    return gestures;
-}
-
-- (void)_updateIndicator {
-    NSString *indicator = [NSString stringWithFormat:@"%@/%@", @(self.currentPage+1), @(self.numberOfPages)];
-    self.indicatorLabel.text = indicator;
-    [self.indicatorLabel sizeToFit];
-    self.indicatorLabel.center = CGPointMake(CGRectGetWidth(self.view.bounds)/2.0,
-                                             CGRectGetHeight(self.view.bounds) - CGRectGetHeight(self.indicatorLabel.bounds)/2);
-}
-
-#pragma mark - Public method
-
-- (void)setInitializePageIndex:(NSInteger)pageIndex {
-    self.currentPage = pageIndex;
-}
-
 #pragma mark - UIPageViewControllerDataSource
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(PBImageScrollerViewController *)viewController {
@@ -233,6 +247,29 @@
         _indicatorLabel.textColor = [UIColor whiteColor];
     }
     return _indicatorLabel;
+}
+
+- (UIPageControl *)indicatorPageControl {
+    if (!_indicatorPageControl) {
+        _indicatorPageControl = [UIPageControl new];
+        _indicatorPageControl.numberOfPages = self.numberOfPages;
+        _indicatorPageControl.currentPage = self.currentPage;
+    }
+    return _indicatorPageControl;
+}
+
+- (UIView *)blurBackgroundView {
+    if (!_blurBackgroundView) {
+        UIToolbar *view = [[UIToolbar alloc] initWithFrame:self.view.bounds];
+        view.barStyle = UIBarStyleBlack;
+        view.translucent = YES;
+        view.clipsToBounds = YES;
+        view.multipleTouchEnabled = NO;
+        view.userInteractionEnabled = NO;
+        _blurBackgroundView = view;
+        
+    }
+    return _blurBackgroundView;
 }
 
 @end
