@@ -29,12 +29,8 @@
 #import "PBImageScrollView+internal.h"
 
 @interface PBImageScrollerViewController ()
-@property (nonatomic, strong) PBImageScrollView *imageScrollView;
-@property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
-@property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
-
-@property (nonatomic, assign) UIImageView *imageView;
-@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
+@property (nonatomic, strong, readwrite) PBImageScrollView *imageScrollView;
+@property (nonatomic, weak, readwrite) UIImageView *imageView;
 @end
 
 @implementation PBImageScrollerViewController
@@ -47,16 +43,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self.view addSubview:self.imageScrollView];
-    UIImage *image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"9" ofType:@"jpg"]];
-    self.imageScrollView.imageView.image = image;
-    
-    
-    [self.view addGestureRecognizer:self.doubleTapGestureRecognizer];
-    
-    [self.view addGestureRecognizer:self.singleTapGestureRecognizer];
-    [self.singleTapGestureRecognizer requireGestureRecognizerToFail:self.doubleTapGestureRecognizer];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -64,73 +51,27 @@
     
     [self _prepareForReuse];
     
-    if (self.fetchImageBlock) {
-        self.imageView.image = self.fetchImageBlock();
+    if (self.fetchImageHandler) {
+        self.imageView.image = self.fetchImageHandler();
     }
-    if (self.configureImageViewBlock) {
-        self.configureImageViewBlock(self.imageView);
-    }
-    
-    if (!self.imageView.image) {
-        [self.indicatorView startAnimating];
+    if (self.configureImageViewHandler) {
+        self.configureImageViewHandler(self.imageView);
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    if (self.imageView.image) {
-        [self.indicatorView stopAnimating];
-    }
-}
+#pragma mark - Private methods
 
 - (void)_prepareForReuse {
     self.imageView.image = nil;
 }
 
-- (void)handleDoubleTapAction: (UITapGestureRecognizer *)sender {
-    [self.imageScrollView _handleZoomForGestureRecognizer:sender];
-}
-
-- (void)dismiss {
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-    
-    if (self.didSingleTaped) {
-        self.didSingleTaped(self.imageView.image);
-    }
-}
-
-#pragma mark -
+#pragma mark - Accessor
 
 - (PBImageScrollView *)imageScrollView {
     if (!_imageScrollView) {
         _imageScrollView = [PBImageScrollView new];
     }
     return _imageScrollView;
-}
-
-- (UITapGestureRecognizer *)singleTapGestureRecognizer {
-    if (!_singleTapGestureRecognizer) {
-        _singleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss)];
-    }
-    return _singleTapGestureRecognizer;
-}
-
-- (UITapGestureRecognizer *)doubleTapGestureRecognizer {
-    if (!_doubleTapGestureRecognizer) {
-        _doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTapAction:)];
-        _doubleTapGestureRecognizer.numberOfTapsRequired = 2;
-    }
-    
-    return _doubleTapGestureRecognizer;
-}
-
-
-- (UIActivityIndicatorView *)indicatorView {
-    if (!_indicatorView) {
-        _indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    }
-    return _indicatorView;
 }
 
 - (UIImageView *)imageView {

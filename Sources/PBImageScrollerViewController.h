@@ -26,18 +26,17 @@
 
 #import <UIKit/UIKit.h>
 
+@class PBImageScrollView;
 @interface PBImageScrollerViewController : UIViewController
 
 @property (nonatomic, assign) NSInteger page;
 
-/// Get the image for current imageView
-@property (nonatomic, copy) UIImage *(^fetchImageBlock)(void);
-/// Set Image for current imageView
-@property (nonatomic, copy) void (^configureImageViewBlock)(UIImageView *imageView);
+/// Return the image for current imageView
+@property (nonatomic, copy) UIImage *(^fetchImageHandler)(void);
+/// Configure image for current imageView
+@property (nonatomic, copy) void (^configureImageViewHandler)(UIImageView *imageView);
 
-/// Action call back for single tap
-@property (nonatomic, copy) void (^didSingleTaped)(UIImage *image);
-/// Action call back for long press
-@property (nonatomic, copy) void (^didLongPressed)(UIImage *image);
+@property (nonatomic, strong, readonly) PBImageScrollView *imageScrollView;
+
 
 @end

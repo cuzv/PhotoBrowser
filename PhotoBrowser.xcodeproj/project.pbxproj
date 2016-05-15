@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		4602B3351CE4099A009205CF /* PBImageScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4602B3331CE4099A009205CF /* PBImageScrollView.h */; };
 		4602B3361CE4099A009205CF /* PBImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4602B3341CE4099A009205CF /* PBImageScrollView.m */; };
-		461B1C9E1B9584670046D210 /* PBViewControllerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 461B1C9D1B9584670046D210 /* PBViewControllerDelegate.h */; };
 		4655F2CA1B9434D200CE5C50 /* PhotoBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = 4655F2C91B9434D200CE5C50 /* PhotoBrowser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4655F2E91B94350800CE5C50 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4655F2E81B94350800CE5C50 /* main.m */; };
 		4655F2F41B94350800CE5C50 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4655F2F31B94350800CE5C50 /* Images.xcassets */; };
@@ -18,7 +17,9 @@
 		4655F3F01B943B8700CE5C50 /* PhotoBrowser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4655F2C41B9434D200CE5C50 /* PhotoBrowser.framework */; };
 		4655F3F71B943C6800CE5C50 /* PBImageScrollerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4655F3F51B943C6800CE5C50 /* PBImageScrollerViewController.h */; };
 		4655F3F81B943C6800CE5C50 /* PBImageScrollerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4655F3F61B943C6800CE5C50 /* PBImageScrollerViewController.m */; };
-		4655F3FA1B9448B200CE5C50 /* PBViewControllerDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 4655F3F91B9448B200CE5C50 /* PBViewControllerDataSource.h */; };
+		465F89701CE8993A00255FC9 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 465F896F1CE8993A00255FC9 /* RootViewController.m */; };
+		465F89731CE8A5A500255FC9 /* UIView+PBSnapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 465F89721CE8A5A500255FC9 /* UIView+PBSnapshot.m */; };
+		465F89761CE8B01800255FC9 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 465F89751CE8B01800255FC9 /* Info.plist */; };
 		46A038431CE555F300CBC57E /* 1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 46A0383B1CE555F300CBC57E /* 1.jpg */; };
 		46A038441CE555F300CBC57E /* 2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 46A0383C1CE555F300CBC57E /* 2.jpg */; };
 		46A038451CE555F300CBC57E /* 3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 46A0383D1CE555F300CBC57E /* 3.jpg */; };
@@ -35,6 +36,7 @@
 		46A038791CE8856500CBC57E /* 8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 46A038781CE8856500CBC57E /* 8.jpg */; };
 		46A0387B1CE8857300CBC57E /* 9.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 46A0387A1CE8857300CBC57E /* 9.jpg */; };
 		46EA118A1CD1A2A000D2CB71 /* PhotoBrowser.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4655F2C41B9434D200CE5C50 /* PhotoBrowser.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EE8BAD003CF3A635D435B4B5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD5DBACC629DD637BEA7FE87 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,11 +64,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		112C322FA477B2555013D40D /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		4602B3331CE4099A009205CF /* PBImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBImageScrollView.h; sourceTree = "<group>"; };
 		4602B3341CE4099A009205CF /* PBImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBImageScrollView.m; sourceTree = "<group>"; };
-		461B1C9D1B9584670046D210 /* PBViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBViewControllerDelegate.h; sourceTree = "<group>"; };
 		4655F2C41B9434D200CE5C50 /* PhotoBrowser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PhotoBrowser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4655F2C81B9434D200CE5C50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Supporting Files/Info.plist"; sourceTree = "<group>"; };
 		4655F2C91B9434D200CE5C50 /* PhotoBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoBrowser.h; sourceTree = "<group>"; };
 		4655F2E41B94350800CE5C50 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4655F2E71B94350800CE5C50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -76,7 +77,11 @@
 		4655F30F1B94355900CE5C50 /* PBViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBViewController.m; sourceTree = "<group>"; };
 		4655F3F51B943C6800CE5C50 /* PBImageScrollerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBImageScrollerViewController.h; sourceTree = "<group>"; };
 		4655F3F61B943C6800CE5C50 /* PBImageScrollerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBImageScrollerViewController.m; sourceTree = "<group>"; };
-		4655F3F91B9448B200CE5C50 /* PBViewControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBViewControllerDataSource.h; sourceTree = "<group>"; };
+		465F896E1CE8993A00255FC9 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		465F896F1CE8993A00255FC9 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		465F89711CE8A5A500255FC9 /* UIView+PBSnapshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+PBSnapshot.h"; sourceTree = "<group>"; };
+		465F89721CE8A5A500255FC9 /* UIView+PBSnapshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+PBSnapshot.m"; sourceTree = "<group>"; };
+		465F89751CE8B01800255FC9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		46A0383B1CE555F300CBC57E /* 1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1.jpg; sourceTree = "<group>"; };
 		46A0383C1CE555F300CBC57E /* 2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2.jpg; sourceTree = "<group>"; };
 		46A0383D1CE555F300CBC57E /* 3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 3.jpg; sourceTree = "<group>"; };
@@ -96,6 +101,8 @@
 		46A038761CE8852300CBC57E /* 10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 10.jpg; sourceTree = "<group>"; };
 		46A038781CE8856500CBC57E /* 8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 8.jpg; sourceTree = "<group>"; };
 		46A0387A1CE8857300CBC57E /* 9.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 9.jpg; sourceTree = "<group>"; };
+		AD5DBACC629DD637BEA7FE87 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		DACEF52C354DB8083E80488F /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE8BAD003CF3A635D435B4B5 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +131,8 @@
 				4655F2C61B9434D200CE5C50 /* Sources */,
 				4655F2E51B94350800CE5C50 /* Example */,
 				4655F2C51B9434D200CE5C50 /* Products */,
+				AF4C981E78CD9210A535C97D /* Pods */,
+				E22BF29632B746A545115D90 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -138,17 +148,17 @@
 		4655F2C61B9434D200CE5C50 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				465F89751CE8B01800255FC9 /* Info.plist */,
 				4655F2C91B9434D200CE5C50 /* PhotoBrowser.h */,
-				4655F3F91B9448B200CE5C50 /* PBViewControllerDataSource.h */,
-				461B1C9D1B9584670046D210 /* PBViewControllerDelegate.h */,
 				46A038551CE629F400CBC57E /* PBImageScrollView+internal.h */,
 				4602B3331CE4099A009205CF /* PBImageScrollView.h */,
 				4602B3341CE4099A009205CF /* PBImageScrollView.m */,
-				4655F30E1B94355900CE5C50 /* PBViewController.h */,
-				4655F30F1B94355900CE5C50 /* PBViewController.m */,
 				4655F3F51B943C6800CE5C50 /* PBImageScrollerViewController.h */,
 				4655F3F61B943C6800CE5C50 /* PBImageScrollerViewController.m */,
-				4655F2C81B9434D200CE5C50 /* Info.plist */,
+				4655F30E1B94355900CE5C50 /* PBViewController.h */,
+				4655F30F1B94355900CE5C50 /* PBViewController.m */,
+				465F89711CE8A5A500255FC9 /* UIView+PBSnapshot.h */,
+				465F89721CE8A5A500255FC9 /* UIView+PBSnapshot.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -217,8 +227,27 @@
 				46A038681CE882E500CBC57E /* AppDelegate.h */,
 				46A038691CE882E500CBC57E /* AppDelegate.m */,
 				46A0386D1CE882E500CBC57E /* Main.storyboard */,
+				465F896E1CE8993A00255FC9 /* RootViewController.h */,
+				465F896F1CE8993A00255FC9 /* RootViewController.m */,
 			);
 			path = Application;
+			sourceTree = "<group>";
+		};
+		AF4C981E78CD9210A535C97D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DACEF52C354DB8083E80488F /* Pods.debug.xcconfig */,
+				112C322FA477B2555013D40D /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		E22BF29632B746A545115D90 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AD5DBACC629DD637BEA7FE87 /* libPods.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -231,8 +260,6 @@
 				4602B3351CE4099A009205CF /* PBImageScrollView.h in Headers */,
 				4655F2CA1B9434D200CE5C50 /* PhotoBrowser.h in Headers */,
 				4655F3101B94355900CE5C50 /* PBViewController.h in Headers */,
-				461B1C9E1B9584670046D210 /* PBViewControllerDelegate.h in Headers */,
-				4655F3FA1B9448B200CE5C50 /* PBViewControllerDataSource.h in Headers */,
 				4655F3F71B943C6800CE5C50 /* PBImageScrollerViewController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,10 +271,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4655F2DA1B9434D200CE5C50 /* Build configuration list for PBXNativeTarget "PhotoBrowser" */;
 			buildPhases = (
+				B50426C47429A85A00B1AD83 /* Check Pods Manifest.lock */,
 				4655F2BF1B9434D200CE5C50 /* Sources */,
 				4655F2C01B9434D200CE5C50 /* Frameworks */,
 				4655F2C11B9434D200CE5C50 /* Headers */,
 				4655F2C21B9434D200CE5C50 /* Resources */,
+				F8E44CCCE23A86A88E7BD15E /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -320,6 +349,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				465F89761CE8B01800255FC9 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,6 +375,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		B50426C47429A85A00B1AD83 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F8E44CCCE23A86A88E7BD15E /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		4655F2BF1B9434D200CE5C50 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -362,8 +425,10 @@
 			files = (
 				46A0386E1CE882E500CBC57E /* AppDelegate.m in Sources */,
 				4655F2E91B94350800CE5C50 /* main.m in Sources */,
+				465F89731CE8A5A500255FC9 /* UIView+PBSnapshot.m in Sources */,
 				46A038661CE882AE00CBC57E /* LocalImagesExampleViewController.m in Sources */,
 				46A038751CE8831200CBC57E /* RemoteImagesExampleViewController.m in Sources */,
+				465F89701CE8993A00255FC9 /* RootViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,13 +536,14 @@
 		};
 		4655F2DB1B9434D200CE5C50 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DACEF52C354DB8083E80488F /* Pods.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Sources/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mochxiao.PhotoBrowser;
@@ -488,13 +554,14 @@
 		};
 		4655F2DC1B9434D200CE5C50 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 112C322FA477B2555013D40D /* Pods.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Sources/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mochxiao.PhotoBrowser;

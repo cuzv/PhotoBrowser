@@ -8,41 +8,77 @@
 
 #import "LocalImagesExampleViewController.h"
 #import "PBViewController.h"
-#import "PBViewControllerDataSource.h"
 #import "PBImageScrollerViewController.h"
-#import "PBViewControllerDelegate.h"
+#import "UIView+PBSnapshot.h"
 
 @interface LocalImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
-@property (nonatomic, strong) NSArray *urls;
+@property (nonatomic, strong) NSArray *frames;
+@property (nonatomic, strong) NSArray *imageViews;
 @end
 
 @implementation LocalImagesExampleViewController
 
-- (IBAction)showPhotoBrowser:(UIButton *)sender {
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    for (NSInteger index = 0; index < self.frames.count; ++index) {
+        UIImageView *imageView = [UIImageView new];
+        imageView.clipsToBounds = YES;
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.backgroundColor = [UIColor blackColor];
+        imageView.frame = [self.frames[index] CGRectValue];
+        imageView.tag = index;
+        imageView.userInteractionEnabled = YES;
+        NSString *imageName = [NSString stringWithFormat:@"%@", @(index + 1)];
+        imageView.image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"]];
+        [self.view addSubview:imageView];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapedImageView:)];
+        [imageView addGestureRecognizer:tap];
+    }
+}
+
+- (void)handleTapedImageView:(UITapGestureRecognizer *)sender {
+    [self _showPhotoBrowser:(UIImageView *)sender.view];
+}
+
+- (void)_showPhotoBrowser:(UIImageView *)sender {
     PBViewController *pbViewController = [PBViewController new];
     pbViewController.pb_dataSource = self;
     pbViewController.pb_delegate = self;
-    pbViewController.pb_startPage = 2;
+    pbViewController.pb_startPage = sender.tag;
     [self presentViewController:pbViewController animated:YES completion:nil];
+}
+
+- (NSArray *)frames {
+    NSValue *frame1 = [NSValue valueWithCGRect:CGRectMake(20, 80, 80, 80)];
+    NSValue *frame2 = [NSValue valueWithCGRect:CGRectMake(110, 80, 120, 90)];
+    NSValue *frame3 = [NSValue valueWithCGRect:CGRectMake(240, 90, 100, 85)];
+    
+    NSValue *frame4 = [NSValue valueWithCGRect:CGRectMake(20, 180, 75, 110)];
+    NSValue *frame5 = [NSValue valueWithCGRect:CGRectMake(110, 185, 150, 90)];
+    NSValue *frame6 = [NSValue valueWithCGRect:CGRectMake(270, 190, 100, 100)];
+    
+    NSValue *frame7 = [NSValue valueWithCGRect:CGRectMake(20, 300, 90, 90)];
+    NSValue *frame8 = [NSValue valueWithCGRect:CGRectMake(120, 290, 120, 150)];
+    NSValue *frame9 = [NSValue valueWithCGRect:CGRectMake(250, 305, 100, 100)];
+    
+    NSValue *frame10 = [NSValue valueWithCGRect:CGRectMake(120, 470, 120, 100)];
+    
+    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10];
 }
 
 #pragma mark - PBViewControllerDataSource
 
 - (NSInteger)numberOfPagesInViewController:(PBViewController *)viewController {
-    return 9;
+    return self.frames.count;
 }
 
 - (UIImage *)viewController:(PBViewController *)viewController imageForPageAtIndex:(NSInteger)index {
-    NSString *name = [NSString stringWithFormat:@"%@.jpg", @(index+1)];
-    return [UIImage imageNamed:name];
+    return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[@(index + 1) stringValue] ofType:@"jpg"]];
 }
 
 #pragma mark - PBViewControllerDelegate
-
-- (void)viewController:(PBViewController *)viewController didSingleTapedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
-    NSLog(@"didSingleTapedPageAtIndex: %@", @(index));
-    [viewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
 
 - (void)viewController:(PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
     NSLog(@"didLongPressedPageAtIndex: %@", @(index));

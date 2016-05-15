@@ -38,7 +38,7 @@
 
 - (void)handleDoubleTapAction: (UITapGestureRecognizer *)sender {
     NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
-    [self.imageScrollView _handleZoomForGestureRecognizer:sender];
+//    [self.imageScrollView _handleZoomForGestureRecognizer:sender];
 }
 
 - (void)dismiss {

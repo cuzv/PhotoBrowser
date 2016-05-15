@@ -72,11 +72,11 @@
 
 #pragma mark - Internal Methods
 
-- (void)_handleZoomForGestureRecognizer:(UITapGestureRecognizer *)sender {
+- (void)_handleZoomForLocation:(CGPoint)location {
+    CGPoint touchPoint = [self.superview convertPoint:location toView:self.imageView];
     if (self.zoomScale > 1) {
         [self setZoomScale:1 animated:YES];
     } else if (self.maximumZoomScale > 1) {
-        CGPoint touchPoint = [sender locationInView:self.imageView];
         CGFloat newZoomScale = self.maximumZoomScale;
         CGFloat horizontalSize = CGRectGetWidth(self.bounds) / newZoomScale;
         CGFloat verticalSize = CGRectGetHeight(self.bounds) / newZoomScale;
@@ -162,8 +162,8 @@
 - (UIImageView *)imageView {
     if (!_imageView) {
         _imageView = [UIImageView new];
+        _imageView.contentMode = UIViewContentModeScaleAspectFill;
         _imageView.clipsToBounds = YES;
-        _imageView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
     }
     return _imageView;
 }
