@@ -212,17 +212,17 @@
     if (!_progressLayer) {
         _progressLayer = [CAShapeLayer layer];
         _progressLayer.frame = CGRectMake(0, 0, 40, 40);
-        _progressLayer.cornerRadius = 20;
+        _progressLayer.cornerRadius = MIN(CGRectGetWidth(_progressLayer.bounds) / 2.0f, CGRectGetHeight(_progressLayer.bounds) / 2.0f);
+        _progressLayer.lineWidth = 4;
         _progressLayer.backgroundColor = [UIColor clearColor].CGColor;
         _progressLayer.fillColor = [UIColor clearColor].CGColor;
         _progressLayer.strokeColor = [UIColor whiteColor].CGColor;
-        _progressLayer.lineWidth = 4;
         _progressLayer.lineCap = kCALineCapRound;
         _progressLayer.strokeStart = 0;
         _progressLayer.strokeEnd = 0;
-        _progressLayer.hidden = YES;
-        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(_progressLayer.bounds, 7, 7) cornerRadius:(40 / 2.0f - 7)];
+        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:_progressLayer.bounds cornerRadius:_progressLayer.cornerRadius];
         _progressLayer.path = path.CGPath;
+        _progressLayer.hidden = YES;
     }
     return _progressLayer;
 }
