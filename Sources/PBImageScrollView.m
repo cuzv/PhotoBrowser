@@ -7,6 +7,7 @@
 //
 
 #import "PBImageScrollView.h"
+#import "PBImageScrollView+internal.h"
 
 #define system_version ([UIDevice currentDevice].systemVersion.doubleValue)
 #define observe_keypath @"image"
@@ -187,6 +188,26 @@
     };
 }
 
+- (CGFloat)_contentOffSetVerticalPercent {
+    CGFloat percent = 0;
+    
+    CGFloat contentHeight = self.contentSize.height;
+    CGFloat scrollViewHeight = CGRectGetHeight(self.bounds);
+    CGFloat offsetY = self.contentOffset.y;
+    
+    if (offsetY < 0 || contentHeight < scrollViewHeight) {
+        percent = MIN(fabs(offsetY / (scrollViewHeight / 3.0f)), 1.0f);
+    } else {
+        offsetY += scrollViewHeight;
+        CGFloat contentHeight = self.contentSize.height;
+        if (offsetY > contentHeight) {
+            percent = MIN((offsetY - contentHeight) / (scrollViewHeight / 3.0f), 1.0f);
+        }
+    }
+
+    return percent;
+}
+
 #pragma mark - UIScrollViewDelegate
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
@@ -195,6 +216,25 @@
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
     [self _recenterImage];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (!self.contentOffSetVerticalPercent) {
+        return;
+    }
+    self.contentOffSetVerticalPercent([self _contentOffSetVerticalPercent]);
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!self.didEndDraggingWithScrollEnough) {
+        return;
+    }
+    if (!decelerate) {
+        return;
+    }
+    if ([self _contentOffSetVerticalPercent] > 0.4) {
+        self.didEndDraggingWithScrollEnough();
+    }
 }
 
 #pragma mark - Accessor

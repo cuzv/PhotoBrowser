@@ -224,6 +224,7 @@
             };
         }
     }
+    
     return imageScrollerViewController;
 }
 
@@ -233,6 +234,10 @@
     if (sender.state != UIGestureRecognizerStateEnded) {
         return;
     }
+    [self _dismiss];
+}
+
+- (void)_dismiss {
     [self _showStatusBarIfNeeded];
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
@@ -286,6 +291,16 @@
         for (NSInteger index = 0; index < 3; index++) {
             PBImageScrollerViewController *imageScrollerViewController = [PBImageScrollerViewController new];
             imageScrollerViewController.page = index;
+            __weak typeof(self) weak_self = self;
+            imageScrollerViewController.imageScrollView.contentOffSetVerticalPercent = ^(CGFloat percent) {
+                __strong typeof(weak_self) strong_self = weak_self;
+                strong_self.blurBackgroundView.alpha = 1.0f - percent;
+                NSLog(@"%@", @(percent));
+            };
+            imageScrollerViewController.imageScrollView.didEndDraggingWithScrollEnough = ^{
+                __strong typeof(weak_self) strong_self = weak_self;
+                [strong_self _dismiss];
+            };
             [controllers addObject:imageScrollerViewController];
         }
         _reusableImageScrollerViewControllers = [[NSArray alloc] initWithArray:controllers];
