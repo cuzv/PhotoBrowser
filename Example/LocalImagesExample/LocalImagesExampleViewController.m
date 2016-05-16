@@ -10,6 +10,7 @@
 #import "PBViewController.h"
 #import "PBImageScrollerViewController.h"
 #import "UIView+PBSnapshot.h"
+#import "PhotoBrowser.h"
 
 @interface LocalImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;

@@ -1,9 +1,9 @@
 //
 //  main.m
-//  PhotoBrowserSample
+//  Example
 //
-//  Created by Moch Xiao on 8/31/15.
-//  Copyright (c) 2015 Moch Xiao. All rights reserved.
+//  Created by Moch Xiao on 5/17/16.
+//  Copyright © 2016 Moch. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

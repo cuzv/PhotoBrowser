@@ -14,23 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4655F2C31B9434D200CE5C50"
+               BlueprintIdentifier = "4686F8181CEA2C4000AFEA65"
                BuildableName = "PhotoBrowser.framework"
                BlueprintName = "PhotoBrowser"
-               ReferencedContainer = "container:PhotoBrowser.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4655F2E31B94350800CE5C50"
-               BuildableName = "Example.app"
-               BlueprintName = "Example"
                ReferencedContainer = "container:PhotoBrowser.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4655F2C31B9434D200CE5C50"
-            BuildableName = "PhotoBrowser.framework"
-            BlueprintName = "PhotoBrowser"
-            ReferencedContainer = "container:PhotoBrowser.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -68,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4655F2C31B9434D200CE5C50"
+            BlueprintIdentifier = "4686F8181CEA2C4000AFEA65"
             BuildableName = "PhotoBrowser.framework"
             BlueprintName = "PhotoBrowser"
             ReferencedContainer = "container:PhotoBrowser.xcodeproj">
@@ -86,7 +63,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4655F2C31B9434D200CE5C50"
+            BlueprintIdentifier = "4686F8181CEA2C4000AFEA65"
             BuildableName = "PhotoBrowser.framework"
             BlueprintName = "PhotoBrowser"
             ReferencedContainer = "container:PhotoBrowser.xcodeproj">

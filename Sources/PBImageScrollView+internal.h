@@ -15,6 +15,11 @@
 
 - (void)_handleZoomForLocation:(CGPoint)location;
 
+/// Scrolling content offset'y percent.
+@property (nonatomic, copy) void(^contentOffSetVerticalPercent)(CGFloat);
+/// loosen hand with decelerate
+@property (nonatomic, copy) void(^didEndDraggingWithScrollEnough)(void);
+
 @end
 
 
