@@ -38,7 +38,7 @@
         [imageView addGestureRecognizer:tap];
     }
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clean" style:UIBarButtonItemStylePlain target:self action:@selector(_clean)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear" style:UIBarButtonItemStylePlain target:self action:@selector(_clear)];
 }
 
 - (void)handleTapedImageView:(UITapGestureRecognizer *)sender {
@@ -54,9 +54,11 @@
 }
 
 
-- (void)_clean {
+- (void)_clear {
     [[SDImageCache sharedImageCache] clearMemory];
-    [[SDImageCache sharedImageCache] cleanDisk];
+    [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
+        NSLog(@"Cache clear complete.");
+    }];
 }
 
 - (NSArray *)frames {
@@ -85,19 +87,15 @@
 
 - (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(void (^)(NSInteger, NSInteger))progressHandler {
     NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/cuzv/PhotoBrowser/dev/Example/Assets/%@.jpg", @(index + 1)];
+    UIImage *placeholder = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[@(index + 1) stringValue] ofType:@"jpg"]];
     [imageView sd_setImageWithURL:[NSURL URLWithString:url]
-                 placeholderImage:nil
+                 placeholderImage:placeholder
                           options:0
                          progress:progressHandler
                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                             
                         }];
 }
-
-//- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index {
-//    NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/cuzv/PhotoBrowser/dev/Example/Assets/%@.jpg", @(index + 1)];
-//    [imageView sd_setImageWithURL:[NSURL URLWithString:url]];
-//}
 
 #pragma mark - PBViewControllerDelegate
 

@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
-        <!--Root View Controller-->
+        <!--PhotoBrowser Example-->
         <scene sceneID="ORb-KX-OC6">
             <objects>
                 <viewController id="j2X-ty-XLj" customClass="RootViewController" sceneMemberID="viewController">
@@ -44,7 +44,7 @@
                             <constraint firstItem="278-WB-2Bw" firstAttribute="centerX" secondItem="dAH-1v-C8c" secondAttribute="centerX" id="r3U-km-MwH"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="Ex9-Kl-8KY"/>
+                    <navigationItem key="navigationItem" title="PhotoBrowser Example" id="Ex9-Kl-8KY"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="b3j-qq-XGa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
