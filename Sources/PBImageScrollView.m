@@ -33,9 +33,7 @@
 @interface PBImageScrollView ()
 
 @property (nonatomic, strong, readwrite) UIImageView *imageView;
-@property (nonatomic, copy, readwrite) PBImageDownloadProgressHandler downloadProgressHandler;
 @property (nonatomic, weak) id <NSObject> notification;
-@property (nonatomic, strong, readwrite) CAShapeLayer *progressLayer;
 /// direction: > 0 up, < 0 dwon, == 0 others(no swipe, e.g. tap).
 @property (nonatomic, assign) CGFloat direction;
 @property (nonatomic, assign) BOOL dismissing;
@@ -70,21 +68,10 @@
     self.delegate = self;
     
     [self addSubview:self.imageView];
-    [self.layer addSublayer:self.progressLayer];
     [self _addObserver];
     [self _addNotificationIfNeeded];
-    [self _setupDownloadProgressHandler];
     
     return self;
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    CGPoint center = CGPointMake(CGRectGetWidth(self.bounds) / 2.0, CGRectGetHeight(self.bounds) / 2.0);
-    CGRect frame = self.progressLayer.frame;
-    frame.origin.x = center.x - CGRectGetWidth(frame) / 2.0f;
-    frame.origin.y = center.y - CGRectGetHeight(frame) / 2.0f;
-    self.progressLayer.frame = frame;
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
@@ -212,19 +199,6 @@
     }
 }
 
-- (void)_setupDownloadProgressHandler {
-    __weak typeof(self) weak_self = self;
-    self.downloadProgressHandler = ^(NSInteger receivedSize, NSInteger expectedSize) {
-        __strong typeof(weak_self) strong_self = weak_self;
-        CGFloat progress = (receivedSize * 1.0f) / (expectedSize * 1.0f);
-        strong_self.progressLayer.hidden = NO;
-        strong_self.progressLayer.strokeEnd = progress;
-        if (progress == 1.0f) {
-            strong_self.progressLayer.hidden = YES;
-        }
-    };
-}
-
 /// Only + percent.
 - (CGFloat)_contentOffSetVerticalPercent {
     return fabs([self _rawContentOffSetVerticalPercent]);
@@ -251,7 +225,6 @@
             }
         }
     }
-    NSLog(@"percent = %@", @(percent));
 
     return percent;
 }
@@ -319,25 +292,6 @@
         _imageView.clipsToBounds = YES;
     }
     return _imageView;
-}
-
-- (CAShapeLayer *)progressLayer {
-    if (!_progressLayer) {
-        _progressLayer = [CAShapeLayer layer];
-        _progressLayer.frame = CGRectMake(0, 0, 40, 40);
-        _progressLayer.cornerRadius = MIN(CGRectGetWidth(_progressLayer.bounds) / 2.0f, CGRectGetHeight(_progressLayer.bounds) / 2.0f);
-        _progressLayer.lineWidth = 4;
-        _progressLayer.backgroundColor = [UIColor clearColor].CGColor;
-        _progressLayer.fillColor = [UIColor clearColor].CGColor;
-        _progressLayer.strokeColor = [UIColor whiteColor].CGColor;
-        _progressLayer.lineCap = kCALineCapRound;
-        _progressLayer.strokeStart = 0;
-        _progressLayer.strokeEnd = 0;
-        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:_progressLayer.bounds cornerRadius:_progressLayer.cornerRadius];
-        _progressLayer.path = path.CGPath;
-        _progressLayer.hidden = YES;
-    }
-    return _progressLayer;
 }
 
 @end
