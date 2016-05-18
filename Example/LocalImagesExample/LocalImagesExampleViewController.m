@@ -11,7 +11,6 @@
 #import "PBImageScrollerViewController.h"
 #import "UIView+PBSnapshot.h"
 #import "PhotoBrowser.h"
-#import "PresentedViewController.h"
 
 @interface LocalImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;
@@ -57,8 +56,6 @@
     pbViewController.pb_delegate = self;
     pbViewController.pb_startPage = sender.tag;
     [self presentViewController:pbViewController animated:YES completion:nil];
-    
-//    [self presentViewController:[PresentedViewController new] animated:YES completion:nil];
 }
 
 - (void)_thumb:(UIBarButtonItem *)sender {

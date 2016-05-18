@@ -32,6 +32,7 @@
 @interface PBImageScrollView()
 
 - (void)_handleZoomForLocation:(CGPoint)location;
+- (void)_updateUserInterfaces;
 
 /// Scrolling content offset'y percent.
 @property (nonatomic, copy) void(^contentOffSetVerticalPercent)(CGFloat);

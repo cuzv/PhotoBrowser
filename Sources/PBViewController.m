@@ -121,11 +121,15 @@
     [self _setupTransitioningController];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     if ([self isBeingPresented]) {
         [self _hideStatusBarIfNeeded];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -180,20 +184,19 @@
 }
 
 - (void)_hideStatusBarIfNeeded {
-    self.blurBackgroundView.window.windowLevel = UIWindowLevelStatusBar;
-
-//    if ([UIApplication sharedApplication].statusBarHidden) {
-//        return;
-//    }
-//    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+//    self.blurBackgroundView.window.windowLevel = UIWindowLevelStatusBar;
+    if ([UIApplication sharedApplication].statusBarHidden) {
+        return;
+    }
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 }
 
 - (void)_showStatusBarIfNeeded {
-    self.blurBackgroundView.window.windowLevel = UIWindowLevelNormal;
-//    if (![UIApplication sharedApplication].statusBarHidden) {
-//        return;
-//    }
-//    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+//    self.blurBackgroundView.window.windowLevel = UIWindowLevelNormal;
+    if (![UIApplication sharedApplication].statusBarHidden) {
+        return;
+    }
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 }
 
 - (PBImageScrollerViewController *)_imageScrollerViewControllerForPage:(NSInteger)page {
@@ -386,6 +389,13 @@
 #pragma mark - UIPageViewControllerDelegate
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
+    // 如果取消切换，还原位置和大小。
+    if (!completed) {
+        for (PBImageScrollerViewController *previous in previousViewControllers) {
+            [previous.imageScrollView _updateUserInterfaces];
+        }
+        return;
+    }
     PBImageScrollerViewController *imageScrollerViewController = pageViewController.viewControllers.firstObject;
     self.currentPage = imageScrollerViewController.page;
     [self _updateIndicator];
