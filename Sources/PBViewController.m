@@ -54,8 +54,9 @@
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @property (nonatomic, strong) PBPresentAnimatedTransitioningController *transitioningController;
-//@property (nonatomic, assign) BOOL dismissing;
 @property (nonatomic, assign) CGFloat verticalVelocity;
+
+@property (nonatomic, strong) UIImageView *thumbDoppelgangerView;
 
 @end
 
@@ -231,6 +232,10 @@
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _duringPresenting];
     };
+    self.transitioningController.didPresentedActionHandler = ^(UIView *fromView, UIView *toView) {
+        __strong typeof(weak_self) strong_self = weak_self;
+        [strong_self _didPresented];
+    };
     self.transitioningController.prepareForDismissActionHandler = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _prepareForDismiss];
@@ -239,15 +244,49 @@
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _duringDismissing];
     };
+    self.transitioningController.didDismissedActionHandler = ^(UIView *fromView, UIView *toView) {
+    };
 }
 
 - (void)_prepareForPresent {
+    PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
+    currentScrollViewController.view.alpha = 0;
     self.blurBackgroundView.alpha = 0;
+    UIView *thumbView = self.currentThumbView;
+    if (!thumbView) {
+        return;
+    }
+    
+    CGRect newFrame = [thumbView.superview convertRect:thumbView.frame toView:self.view];
+    self.thumbDoppelgangerView.frame = newFrame;
+    self.thumbDoppelgangerView.image = ((UIImageView *)thumbView).image;
+    self.thumbDoppelgangerView.contentMode = thumbView.contentMode;
+    self.thumbDoppelgangerView.clipsToBounds = thumbView.clipsToBounds;
+    self.thumbDoppelgangerView.backgroundColor = thumbView.backgroundColor;
+    [self.view addSubview:self.thumbDoppelgangerView];
 }
 
 - (void)_duringPresenting {
+    PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
     self.blurBackgroundView.alpha = 1;
     [self _hideStatusBarIfNeeded];
+    
+    if (!self.currentThumbView) {
+        currentScrollViewController.view.alpha = 1;
+        return;
+    }
+
+    PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
+    UIImageView *imageView = imageScrollView.imageView;
+    CGRect newFrame = [imageView.superview convertRect:imageView.frame toView:self.view];
+    self.thumbDoppelgangerView.frame = newFrame;
+}
+
+- (void)_didPresented {
+    self.currentScrollViewController.view.alpha = 1;
+    [self.thumbDoppelgangerView removeFromSuperview];
+    self.thumbDoppelgangerView.image = nil;
+    self.thumbDoppelgangerView = nil;
 }
 
 - (void)_prepareForDismiss {
@@ -281,7 +320,8 @@
 }
 
 - (void)_duringDismissing {
-    PBImageScrollView *imageScrollView = self.currentScrollViewController.imageScrollView;
+    PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
+    PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     UIImageView *imageView = imageScrollView.imageView;
     UIImage *currentImage = imageView.image;
     /// 图片未加载，默认 CrossDissolve 动画。
@@ -299,7 +339,7 @@
         imageView.clipsToBounds = thumbView.clipsToBounds;
         imageView.contentMode = thumbView.contentMode;
         // 还原到起始位置然后 dismiss.
-        destFrame = [thumbView.superview convertRect:thumbView.frame toView:self.currentScrollViewController.view];
+        destFrame = [thumbView.superview convertRect:thumbView.frame toView:currentScrollViewController.view];
         // 把 contentInset 考虑进来。
         CGFloat verticalInset = imageScrollView.contentInset.top + imageScrollView.contentInset.bottom;
         destFrame = CGRectMake(CGRectGetMinX(destFrame), CGRectGetMinY(destFrame) - verticalInset, CGRectGetWidth(destFrame), CGRectGetHeight(destFrame));
@@ -504,6 +544,13 @@
         _transitioningController = [PBPresentAnimatedTransitioningController new];
     }
     return _transitioningController;
+}
+
+- (UIImageView *)thumbDoppelgangerView {
+    if (!_thumbDoppelgangerView) {
+        _thumbDoppelgangerView = [UIImageView new];
+    }
+    return _thumbDoppelgangerView;
 }
 
 @end
