@@ -3,7 +3,25 @@
 //  PhotoBrowser
 //
 //  Created by Moch Xiao on 5/12/16.
-//  Copyright © 2016 Moch Xiao. All rights reserved.
+//  Copyright © 2016 Moch Xiao (http://mochxiao.com).
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 #import "PBImageScrollView.h"
@@ -17,7 +35,9 @@
 @property (nonatomic, strong, readwrite) UIImageView *imageView;
 @property (nonatomic, copy, readwrite) PBImageDownloadProgressHandler downloadProgressHandler;
 @property (nonatomic, weak) id <NSObject> notification;
-@property (nonatomic, strong) CAShapeLayer *progressLayer;
+@property (nonatomic, strong, readwrite) CAShapeLayer *progressLayer;
+@property (nonatomic, assign) CGFloat verticalVelocity;
+@property (nonatomic, assign) BOOL dismissing;
 
 @end
 
@@ -129,7 +149,6 @@
     if (system_version >= 8.0) {
         return;
     }
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self.notification];
 }
 
@@ -219,6 +238,9 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (self.dismissing) {
+        return;
+    }
     if (!self.contentOffSetVerticalPercent) {
         return;
     }
@@ -226,15 +248,23 @@
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    if (!self.didEndDraggingWithScrollEnough) {
-        return;
-    }
     if (!decelerate) {
         return;
     }
-    if ([self _contentOffSetVerticalPercent] > 0.4) {
-        self.didEndDraggingWithScrollEnough();
+
+    if (self.didEndDraggingWithScrollEnough && [self _contentOffSetVerticalPercent] > 0.4) {
+        /// 取消回弹效果，所以计算 imageView 的 frame 的时候需要注意 contentInset.
+        scrollView.bounces = NO;
+        scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
+        
+        self.didEndDraggingWithScrollEnough(self.verticalVelocity);
+        self.dismissing = YES;
+        return;
     }
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    self.verticalVelocity = velocity.y;
 }
 
 #pragma mark - Accessor

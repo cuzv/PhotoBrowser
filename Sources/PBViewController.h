@@ -33,18 +33,20 @@
 @protocol PBViewControllerDataSource <NSObject>
 
 /// Return the pages count
-- (NSInteger)numberOfPagesInViewController:(PBViewController *)viewController;
+- (NSInteger)numberOfPagesInViewController:(nonnull PBViewController *)viewController;
 
 @optional
 
 /// Return the image, implement one of this or follow method
-- (UIImage *)viewController:(PBViewController *)viewController imageForPageAtIndex:(NSInteger)index;
+- (nonnull UIImage *)viewController:(nonnull PBViewController *)viewController imageForPageAtIndex:(NSInteger)index;
 
 /// Configure the imageView's image, implement one of this or upper method
-- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index __attribute__((deprecated("use `viewController:presentImageView:forPageAtIndex:progressHandler` instead.")));
+- (void)viewController:(nonnull PBViewController *)viewController presentImageView:(nonnull UIImageView *)imageView forPageAtIndex:(NSInteger)index __attribute__((deprecated("use `viewController:presentImageView:forPageAtIndex:progressHandler` instead.")));
 /// Configure the imageView's image, implement one of this or upper method
-- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(void(^)(NSInteger receivedSize, NSInteger expectedSize))progressHandler;
+- (void)viewController:(nonnull PBViewController *)viewController presentImageView:(nonnull UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(nullable void (^)(NSInteger receivedSize, NSInteger expectedSize))progressHandler;
 
+/// Use for dismiss animation, will be an UIImageView in general.
+- (nullable UIView *)thumbViewForPageAtIndex:(NSInteger)index;
 
 @end
 
@@ -54,8 +56,11 @@
 
 @optional
 
+/// Action call back for single tap, presentedImage will be nil untill loaded image
+- (void)viewController:(nonnull PBViewController *)viewController didSingleTapedPageAtIndex:(NSInteger)index presentedImage:(nullable UIImage *)presentedImage;
+
 /// Action call back for long press, presentedImage will be nil untill loaded image
-- (void)viewController:(PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage;
+- (void)viewController:(nonnull PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(nullable UIImage *)presentedImage;
 
 @end
 
@@ -64,8 +69,8 @@
 
 @interface PBViewController : UIPageViewController
 
-@property (nonatomic, weak) id<PBViewControllerDataSource> pb_dataSource;
-@property (nonatomic, weak) id<PBViewControllerDelegate> pb_delegate;
+@property (nonatomic, weak, nullable) id<PBViewControllerDataSource> pb_dataSource;
+@property (nonatomic, weak, nullable) id<PBViewControllerDelegate> pb_delegate;
 
 @property (nonatomic, assign) NSInteger pb_startPage;
 - (void)setInitializePageIndex:(NSInteger)pageIndex __attribute__((deprecated("use `pb_startPage` instead.")));

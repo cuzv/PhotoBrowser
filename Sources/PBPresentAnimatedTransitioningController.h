@@ -1,8 +1,8 @@
 //
-//  UIView+PBSnapshot.h
+//  PBPresentAnimatedTransitioningController.h
 //  PhotoBrowser
 //
-//  Created by Moch Xiao on 5/15/16.
+//  Created by Moch Xiao on 5/17/16.
 //  Copyright © 2016 Moch Xiao (http://mochxiao.com).
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,9 +24,22 @@
 //  THE SOFTWARE.
 //
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface UIView (PBSnapshot)
-- (UIImage *)pb_snapshot;
-- (UIImage *)pb_snapshotAfterScreenUpdates:(BOOL)afterUpdates;
+typedef void(^PBContextBlock)(UIView * __nonnull fromView, UIView * __nonnull toView);
+
+@interface PBPresentAnimatedTransitioningController : NSObject <UIViewControllerAnimatedTransitioning>
+
+@property (nonatomic, copy, nullable) PBContextBlock prepareForPresentActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock duringPresentingActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock prepareForDismissActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock duringDismissingActionHandler;
+
+/// Default cover is a dim view, you could override this property to your preferred style view.
+@property (nonatomic, strong, nonnull) UIView *coverView;
+
+- (nonnull PBPresentAnimatedTransitioningController *)pb_prepareForPresent;
+- (nonnull PBPresentAnimatedTransitioningController *)pb_prepareForDismiss;
+
 @end

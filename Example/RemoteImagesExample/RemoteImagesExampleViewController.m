@@ -99,6 +99,10 @@
 
 #pragma mark - PBViewControllerDelegate
 
+- (void)viewController:(PBViewController *)viewController didSingleTapedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)viewController:(PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
     NSLog(@"didLongPressedPageAtIndex: %@", @(index));
 }
