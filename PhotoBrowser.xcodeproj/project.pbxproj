@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		464FF3DD1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.h in Headers */ = {isa = PBXBuildFile; fileRef = 464FF3DB1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.h */; };
 		464FF3DE1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.m in Sources */ = {isa = PBXBuildFile; fileRef = 464FF3DC1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.m */; };
-		464FF3E21CEB67980060DD84 /* PresentedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 464FF3E11CEB67980060DD84 /* PresentedViewController.m */; };
 		4686F8401CEA2C7A00AFEA65 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4686F83F1CEA2C7A00AFEA65 /* Assets.xcassets */; };
 		4686F8551CEA2EC200AFEA65 /* PBImageScrollerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F84A1CEA2EC200AFEA65 /* PBImageScrollerViewController.h */; };
 		4686F8561CEA2EC200AFEA65 /* PBImageScrollerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4686F84B1CEA2EC200AFEA65 /* PBImageScrollerViewController.m */; };
@@ -71,8 +70,6 @@
 		0FDBFEF6AB6111BE128F7140 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		464FF3DB1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBPresentAnimatedTransitioningController.h; sourceTree = "<group>"; };
 		464FF3DC1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBPresentAnimatedTransitioningController.m; sourceTree = "<group>"; };
-		464FF3E01CEB67980060DD84 /* PresentedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentedViewController.h; sourceTree = "<group>"; };
-		464FF3E11CEB67980060DD84 /* PresentedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresentedViewController.m; sourceTree = "<group>"; };
 		4686F8191CEA2C4000AFEA65 /* PhotoBrowser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PhotoBrowser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4686F8311CEA2C7A00AFEA65 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4686F83F1CEA2C7A00AFEA65 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -216,8 +213,6 @@
 			children = (
 				4686F8781CEA30FA00AFEA65 /* LocalImagesExampleViewController.h */,
 				4686F8791CEA30FA00AFEA65 /* LocalImagesExampleViewController.m */,
-				464FF3E01CEB67980060DD84 /* PresentedViewController.h */,
-				464FF3E11CEB67980060DD84 /* PresentedViewController.m */,
 			);
 			path = LocalImagesExample;
 			sourceTree = "<group>";
@@ -450,7 +445,6 @@
 				4686F87D1CEA30FA00AFEA65 /* LocalImagesExampleViewController.m in Sources */,
 				4686F87E1CEA30FA00AFEA65 /* RemoteImagesExampleViewController.m in Sources */,
 				4686F8881CEA312B00AFEA65 /* main.m in Sources */,
-				464FF3E21CEB67980060DD84 /* PresentedViewController.m in Sources */,
 				4686F8861CEA312B00AFEA65 /* AppDelegate.m in Sources */,
 				4686F8891CEA312B00AFEA65 /* RootViewController.m in Sources */,
 			);

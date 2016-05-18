@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
-        <!--Root View Controller-->
+        <!--PhotoBrowser Example-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="RootViewController" sceneMemberID="viewController">
@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pxy-rZ-lyi">
-                                <rect key="frame" x="84" y="269" width="152" height="30"/>
+                                <rect key="frame" x="84" y="249" width="152" height="30"/>
                                 <state key="normal" title="Local Images Example">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -38,13 +38,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="pxy-rZ-lyi" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="74J-vi-ffh"/>
-                            <constraint firstItem="nmG-v5-ZGQ" firstAttribute="top" secondItem="pxy-rZ-lyi" secondAttribute="bottom" constant="20" id="8ez-dW-jQR"/>
+                            <constraint firstItem="pxy-rZ-lyi" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-20" id="74J-vi-ffh"/>
+                            <constraint firstItem="nmG-v5-ZGQ" firstAttribute="top" secondItem="pxy-rZ-lyi" secondAttribute="bottom" constant="40" id="8ez-dW-jQR"/>
                             <constraint firstItem="nmG-v5-ZGQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ctd-rs-kga"/>
                             <constraint firstItem="pxy-rZ-lyi" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Wp2-0g-7Sf"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="uDO-HD-xoC"/>
+                    <navigationItem key="navigationItem" title="PhotoBrowser Example" id="uDO-HD-xoC"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

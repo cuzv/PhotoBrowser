@@ -55,7 +55,7 @@
     [UIView animateWithDuration:0.25 delay:0 options:[self _animationOptions] animations:animations completion:completion];
 }
 
-- (void)_runPresentAnimationsWithcontainer:(UIView *)container from:(UIView *)fromView to:(UIView *)toView completion:(void (^)(BOOL flag))completion {
+- (void)_runPresentAnimationsWithContainer:(UIView *)container from:(UIView *)fromView to:(UIView *)toView completion:(void (^)(BOOL flag))completion {
     self.coverView.frame = container.frame;
     self.coverView.alpha = 0;
     [container addSubview:self.coverView];
@@ -75,7 +75,7 @@
     } completion:completion];
 }
 
-- (void)_runDismissAnimationsWithcontainer:(UIView *)container from:(UIView *)fromView to:(UIView *)toView completion:(void (^)(BOOL flag))completion {
+- (void)_runDismissAnimationsWithContainer:(UIView *)container from:(UIView *)fromView to:(UIView *)toView completion:(void (^)(BOOL flag))completion {
     [container addSubview:fromView];
     if (self.prepareForDismissActionHandler) {
         self.prepareForDismissActionHandler(fromView, toView);
@@ -111,11 +111,11 @@
     }
     
     if (self.isPresenting) {
-        [self _runPresentAnimationsWithcontainer:container from:fromController.view to:toController.view completion:^(BOOL flag) {
+        [self _runPresentAnimationsWithContainer:container from:fromController.view to:toController.view completion:^(BOOL flag) {
             [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
         }];
     } else {
-        [self _runDismissAnimationsWithcontainer:container from:fromController.view to:toController.view completion:^(BOOL flag) {
+        [self _runDismissAnimationsWithContainer:container from:fromController.view to:toController.view completion:^(BOOL flag) {
             [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
         }];
     }

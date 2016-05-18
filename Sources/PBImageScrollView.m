@@ -51,6 +51,8 @@
 #endif
 }
 
+#pragma mark - respondsToSelector
+
 - (instancetype)init {
     self = [super init];
     if (!self) {
@@ -77,7 +79,6 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
     CGPoint center = CGPointMake(CGRectGetWidth(self.bounds) / 2.0, CGRectGetHeight(self.bounds) / 2.0);
     CGRect frame = self.progressLayer.frame;
     frame.origin.x = center.x - CGRectGetWidth(frame) / 2.0f;
@@ -91,6 +92,13 @@
     [self _recenterImage];
 }
 
+- (void)didMoveToWindow {
+    [super didMoveToWindow];
+    if (!self.window) {
+        [self _updateUserInterfaces];
+    }
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     if (![keyPath isEqualToString:observe_keypath]) {
         return;
@@ -102,10 +110,7 @@
         return;
     }
 
-    [self _updateFrame];
-    [self _recenterImage];
-    [self _setMaximumZoomScale];
-    self.alwaysBounceVertical = YES;
+    [self _updateUserInterfaces];
 }
 
 #pragma mark - Internal Methods
@@ -150,6 +155,13 @@
         return;
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self.notification];
+}
+
+- (void)_updateUserInterfaces {
+    [self _updateFrame];
+    [self _recenterImage];
+    [self _setMaximumZoomScale];
+    self.alwaysBounceVertical = YES;
 }
 
 - (void)_updateFrame {
@@ -265,6 +277,15 @@
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     self.verticalVelocity = velocity.y;
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if (self.dismissing) {
+        return;
+    }
+    if (scrollView.zoomScale < 1) {
+        [scrollView setZoomScale:1.0f animated:YES];
+    }
 }
 
 #pragma mark - Accessor

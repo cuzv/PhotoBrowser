@@ -14,13 +14,15 @@
 
 @interface RemoteImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;
-
+@property (nonatomic, strong) NSMutableArray<UIImageView *> *imageViews;
 @end
 
 @implementation RemoteImagesExampleViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.imageViews = [@[] mutableCopy];
     
     for (NSInteger index = 0; index < self.frames.count; ++index) {
         UIImageView *imageView = [UIImageView new];
@@ -33,7 +35,9 @@
         NSString *imageName = [NSString stringWithFormat:@"%@", @(index + 1)];
         imageView.image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"]];
         [self.view addSubview:imageView];
-        
+
+        [self.imageViews addObject:imageView];
+
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapedImageView:)];
         [imageView addGestureRecognizer:tap];
     }
@@ -87,7 +91,7 @@
 
 - (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(void (^)(NSInteger, NSInteger))progressHandler {
     NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/cuzv/PhotoBrowser/dev/Example/Assets/%@.jpg", @(index + 1)];
-    UIImage *placeholder = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[@(index + 1) stringValue] ofType:@"jpg"]];
+    UIImage *placeholder = self.imageViews[index].image;
     [imageView sd_setImageWithURL:[NSURL URLWithString:url]
                  placeholderImage:placeholder
                           options:0
@@ -95,6 +99,10 @@
                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                             
                         }];
+}
+
+- (UIView *)thumbViewForPageAtIndex:(NSInteger)index {
+    return self.imageViews[index];
 }
 
 #pragma mark - PBViewControllerDelegate
