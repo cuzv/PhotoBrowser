@@ -32,8 +32,6 @@
 @interface PBImageScrollView()
 
 - (void)_handleZoomForLocation:(CGPoint)location;
-/// Cancel swipe to next page with current page scaled.
-- (void)_recoverLayout;
 
 /// Scrolling content offset'y percent.
 @property (nonatomic, copy) void(^contentOffSetVerticalPercentHandler)(CGFloat);

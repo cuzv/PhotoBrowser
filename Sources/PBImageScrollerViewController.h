@@ -42,7 +42,6 @@ typedef void(^PBImageDownloadProgressHandler)(NSInteger receivedSize, NSInteger 
 @property (nonatomic, copy) void (^configureImageViewWithDownloadProgressHandler)(UIImageView *imageView, PBImageDownloadProgressHandler handler);
 
 @property (nonatomic, strong, readonly) PBImageScrollView *imageScrollView;
-@property (nonatomic, strong, readonly) CAShapeLayer *progressLayer;
 
 
 @end

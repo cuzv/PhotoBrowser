@@ -115,11 +115,6 @@
     }
 }
 
-- (void)_recoverLayout {
-    [self _updateFrame];
-    [self _recenterImage];
-}
-
 #pragma mark - Private methods
 
 - (void)_addObserver {
@@ -151,6 +146,7 @@
 }
 
 - (void)_updateUserInterfaces {
+    [self setZoomScale:1.0f animated:YES];
     [self _updateFrame];
     [self _recenterImage];
     [self _setMaximumZoomScale];
@@ -188,7 +184,6 @@
 }
 
 - (void)_setMaximumZoomScale {
-    [self setZoomScale:1.0f animated:NO];
     CGSize imageSize = self.imageView.image.size;
     CGFloat selfWidth = CGRectGetWidth(self.bounds);
     CGFloat selfHeight = CGRectGetHeight(self.bounds);

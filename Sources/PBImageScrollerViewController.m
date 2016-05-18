@@ -32,6 +32,7 @@
 @property (nonatomic, strong, readwrite) PBImageScrollView *imageScrollView;
 @property (nonatomic, weak, readwrite) UIImageView *imageView;
 @property (nonatomic, strong, readwrite) CAShapeLayer *progressLayer;
+@property (nonatomic, assign) BOOL dismissing;
 @end
 
 @implementation PBImageScrollerViewController
@@ -69,7 +70,7 @@
         __weak typeof(self) weak_self = self;
         self.configureImageViewWithDownloadProgressHandler(self.imageView, ^(NSInteger receivedSize, NSInteger expectedSize) {
             __strong typeof(weak_self) strong_self = weak_self;
-            if (!strong_self.view.window) {
+            if (strong_self.dismissing || !strong_self.view.window) {
                 strong_self.progressLayer.hidden = YES;
                 return;
             }
@@ -79,11 +80,17 @@
             if (progress == 1.0f) {
                 strong_self.progressLayer.hidden = YES;
             }
-            NSLog(@"progress = %@", @(progress));
         });
     } else if (self.configureImageViewHandler) {
         self.configureImageViewHandler(self.imageView);
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    // 干掉加载动画。
+    self.progressLayer.hidden = YES;
+    self.dismissing = YES;
 }
 
 #pragma mark - Private methods
@@ -93,6 +100,7 @@
     self.progressLayer.hidden = YES;
     self.progressLayer.strokeStart = 0;
     self.progressLayer.strokeEnd = 0;
+    self.dismissing = NO;
 }
 
 #pragma mark - Accessor

@@ -292,8 +292,6 @@
 - (void)_prepareForDismiss {
     PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
-    // 干掉加载动画。
-    currentScrollViewController.progressLayer.hidden = YES;
     // 还原 zoom.
     if (imageScrollView.zoomScale != 1) {
         [imageScrollView setZoomScale:1 animated:YES];
@@ -419,22 +417,10 @@
 #pragma mark - UIPageViewControllerDelegate
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
-    // 如果取消切换，还原位置和大小。
-    if (!completed) {
-        for (PBImageScrollerViewController *previous in previousViewControllers) {
-            [previous.imageScrollView _recoverLayout];
-        }
-        return;
-    }
     PBImageScrollerViewController *imageScrollerViewController = pageViewController.viewControllers.firstObject;
     self.currentPage = imageScrollerViewController.page;
     [self _updateIndicator];
 }
-
-- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers {
-    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~%@", __FUNCTION__, pendingViewControllers);
-}
-
 
 #pragma mark - UIViewControllerTransitioningDelegate
 

@@ -8,7 +8,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 -   [x] Present & Dismissal animation
 
-- [ ] GIF support
+-   [ ] GIF support
 
 
 
@@ -16,7 +16,8 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 <p align="left">
 
-	<img src="./Preview/demo.gif" width=44%">
+	<img src="./Preview/1.gif" width=44%">
+	<img src="./Preview/2.gif" width=44%">
 
 </p>
 
@@ -30,20 +31,22 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 - Tell `PhotoBrowser` how many pages would you like to present by conforms protocol `PBViewControllerDataSource` and implement `numberOfPagesInViewController:` selector
 
 
-- Optional set the initialize page by invoke `setInitializePageIndex:` method
+- Optional set the initialize page by `pb_startPage` property
 
 
 - Use for static Image
 
-  	Conforms protocol `PBViewControllerDataSource` and implement `viewController:imageForPageAtIndex:` selector
+  Conforms protocol `PBViewControllerDataSource` and implement `viewController:imageForPageAtIndex:` selector
 
 - Use for web image
 
-   Conforms protocol `PBViewControllerDataSource` and implement `viewController:presentImageView:forPageAtIndex:` selector
+   Conforms protocol `PBViewControllerDataSource` and implement `viewController:presentImageView:forPageAtIndex:progressHandler` selector
 
-- Handle action
+-   Support animation
 
-   Conforms protocol `PBViewControllerDataSource` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
+       Conforms protocol `PBViewControllerDataSource` and implement `thumbViewForPageAtIndex:` tell the start and ended imageView position
+
+-  Conforms protocol `PBViewControllerDataSource` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
 
 
 
@@ -92,7 +95,7 @@ pbViewController.pb_delegate = self;
 }
 ```
 
-For more information checkout the Sample in project
+For more information checkout the Example in project.
 
 
 
