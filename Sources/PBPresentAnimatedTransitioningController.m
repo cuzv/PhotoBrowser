@@ -32,6 +32,11 @@
 
 @implementation PBPresentAnimatedTransitioningController
 
+#if DEBUG
+- (void)dealloc {
+    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
+}
+#endif
 
 #pragma mark - Public methods
 

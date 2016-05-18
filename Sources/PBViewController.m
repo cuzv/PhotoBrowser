@@ -54,7 +54,7 @@
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @property (nonatomic, strong) PBPresentAnimatedTransitioningController *transitioningController;
-@property (nonatomic, assign) CGFloat verticalVelocity;
+@property (nonatomic, assign) CGFloat direction;
 
 @property (nonatomic, strong) UIImageView *thumbDoppelgangerView;
 
@@ -310,7 +310,7 @@
             return;
         }
         // 无 thumbView, 并且内容长度超过屏幕，非滑动退出模式。替换图片。
-        if (0 == self.verticalVelocity && !self.currentThumbView) {
+        if (0 == self.direction && !self.currentThumbView) {
             UIImage *image = [self.view pb_snapshotAfterScreenUpdates:NO];
             imageScrollView.imageView.image = image;
         }
@@ -345,7 +345,7 @@
         destFrame = CGRectMake(CGRectGetMinX(destFrame), CGRectGetMinY(destFrame) - verticalInset, CGRectGetWidth(destFrame), CGRectGetHeight(destFrame));
     } else {
         // 移动到屏幕外然后 dismiss.
-        if (0 == self.verticalVelocity) {
+        if (0 == self.direction) {
             // 非滑动退出，中间
             destFrame = CGRectMake(CGRectGetWidth(imageScrollView.bounds) / 2, CGRectGetHeight(imageScrollView.bounds) / 2, 0, 0);
             // 图片渐变
@@ -353,7 +353,7 @@
         } else {
             CGFloat width = CGRectGetWidth(imageScrollView.imageView.bounds);
             CGFloat height = CGRectGetHeight(imageScrollView.imageView.bounds);
-            if (0 < self.verticalVelocity) {
+            if (0 < self.direction) {
                 // 向上
                 destFrame = CGRectMake(0, -height, width, height);
             } else {
@@ -422,7 +422,7 @@
     // 如果取消切换，还原位置和大小。
     if (!completed) {
         for (PBImageScrollerViewController *previous in previousViewControllers) {
-            [previous.imageScrollView _updateUserInterfaces];
+            [previous.imageScrollView _recoverLayout];
         }
         return;
     }
@@ -430,6 +430,11 @@
     self.currentPage = imageScrollerViewController.page;
     [self _updateIndicator];
 }
+
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers {
+    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~%@", __FUNCTION__, pendingViewControllers);
+}
+
 
 #pragma mark - UIViewControllerTransitioningDelegate
 
@@ -450,14 +455,13 @@
             PBImageScrollerViewController *imageScrollerViewController = [PBImageScrollerViewController new];
             imageScrollerViewController.page = index;
             __weak typeof(self) weak_self = self;
-            imageScrollerViewController.imageScrollView.contentOffSetVerticalPercent = ^(CGFloat percent) {
+            imageScrollerViewController.imageScrollView.contentOffSetVerticalPercentHandler = ^(CGFloat percent) {
                 __strong typeof(weak_self) strong_self = weak_self;
                 strong_self.blurBackgroundView.alpha = 1.0f - percent;
-                NSLog(@"percent: %@", @(percent));
             };
-            imageScrollerViewController.imageScrollView.didEndDraggingWithScrollEnough = ^(CGFloat verticalVelocity){
+            imageScrollerViewController.imageScrollView.didEndDraggingInProperpositionHandler = ^(CGFloat direction){
                 __strong typeof(weak_self) strong_self = weak_self;
-                strong_self.verticalVelocity = verticalVelocity;
+                strong_self.direction = direction;
                 [strong_self dismissViewControllerAnimated:YES completion:nil];
             };
             [controllers addObject:imageScrollerViewController];
