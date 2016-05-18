@@ -6,10 +6,10 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/cuzv/PhotoBrowser.git"
   s.license      = "MIT"
   s.author       = { "Moch Xiao" => "cuzval@gmail.com" }
-  s.platform     = :ios, "7.0"
+  s.platform     = :ios, "8.0"
   s.requires_arc = true
   s.source       = { :git => "https://github.com/cuzv/PhotoBrowser.git",
 :tag => s.version.to_s }
-  s.source_files = "PhotoBrowser/*.{h,m}"
+  s.source_files = "Sources/*.{h,m}"
   s.frameworks   = 'Foundation', 'UIKit'
 end
