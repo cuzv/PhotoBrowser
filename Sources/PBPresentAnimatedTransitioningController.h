@@ -33,8 +33,11 @@ typedef void(^PBContextBlock)(UIView * __nonnull fromView, UIView * __nonnull to
 
 @property (nonatomic, copy, nullable) PBContextBlock prepareForPresentActionHandler;
 @property (nonatomic, copy, nullable) PBContextBlock duringPresentingActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock didPresentedActionHandler;
 @property (nonatomic, copy, nullable) PBContextBlock prepareForDismissActionHandler;
 @property (nonatomic, copy, nullable) PBContextBlock duringDismissingActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock didDismissedActionHandler;
+
 
 /// Default cover is a dim view, you could override this property to your preferred style view.
 @property (nonatomic, strong, nonnull) UIView *coverView;

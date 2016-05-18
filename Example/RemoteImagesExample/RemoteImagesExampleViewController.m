@@ -15,6 +15,7 @@
 @interface RemoteImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;
 @property (nonatomic, strong) NSMutableArray<UIImageView *> *imageViews;
+@property (nonatomic, assign) BOOL thumb;
 @end
 
 @implementation RemoteImagesExampleViewController
@@ -22,6 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.thumb = YES;
     self.imageViews = [@[] mutableCopy];
     
     for (NSInteger index = 0; index < self.frames.count; ++index) {
@@ -42,7 +44,12 @@
         [imageView addGestureRecognizer:tap];
     }
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear" style:UIBarButtonItemStylePlain target:self action:@selector(_clear)];
+    UIBarButtonItem *clear = [[UIBarButtonItem alloc] initWithTitle:@"Clear" style:UIBarButtonItemStylePlain target:self action:@selector(_clear)];
+    UIBarButtonItem *thumb = [[UIBarButtonItem alloc] initWithTitle:@"Don't Use Thumb" style:UIBarButtonItemStylePlain target:self action:@selector(_thumb:)];
+    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    toolbar.frame = CGRectMake(0, CGRectGetHeight(self.view.bounds) - 44, CGRectGetWidth(self.view.bounds), 44);
+    [toolbar setItems:@[clear, thumb] animated:NO];
+    [self.view addSubview:toolbar];
 }
 
 - (void)handleTapedImageView:(UITapGestureRecognizer *)sender {
@@ -64,6 +71,12 @@
         NSLog(@"Cache clear complete.");
     }];
 }
+
+- (void)_thumb:(UIBarButtonItem *)sender {
+    self.thumb = !self.thumb;
+    sender.title = !self.thumb ? @"Use Thumb" : @"Don't Use Thumb";
+}
+
 
 - (NSArray *)frames {
     NSValue *frame1 = [NSValue valueWithCGRect:CGRectMake(20, 80, 80, 80)];
@@ -102,7 +115,11 @@
 }
 
 - (UIView *)thumbViewForPageAtIndex:(NSInteger)index {
-    return self.imageViews[index];
+    if (self.thumb) {
+        return self.imageViews[index];
+    }
+    
+    return nil;
 }
 
 #pragma mark - PBViewControllerDelegate

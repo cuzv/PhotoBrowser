@@ -72,7 +72,13 @@
         if (strong_self.duringPresentingActionHandler) {
             strong_self.duringPresentingActionHandler(fromView, toView);
         }
-    } completion:completion];
+    } completion:^(BOOL flag) {
+        completion(flag);
+        __strong typeof(weak_self) strong_self = weak_self;
+        if (strong_self.didPresentedActionHandler) {
+            strong_self.didPresentedActionHandler(fromView, toView);
+        }
+    }];
 }
 
 - (void)_runDismissAnimationsWithContainer:(UIView *)container from:(UIView *)fromView to:(UIView *)toView completion:(void (^)(BOOL flag))completion {
@@ -87,7 +93,13 @@
         if (strong_self.duringDismissingActionHandler) {
             strong_self.duringDismissingActionHandler(fromView, toView);
         }
-    } completion:completion];
+    } completion:^(BOOL flag) {
+        completion(flag);
+        __strong typeof(weak_self) strong_self = weak_self;
+        if (strong_self.didDismissedActionHandler) {
+            strong_self.didDismissedActionHandler(fromView, toView);
+        }
+    }];
 }
 
 #pragma mark - UIViewControllerAnimatedTransitioning
