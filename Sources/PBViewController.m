@@ -29,10 +29,12 @@
 #import "UIView+PBSnapshot.h"
 #import "PBImageScrollView.h"
 #import "PBImageScrollView+internal.h"
+#import "PBPresentAnimatedTransitioningController.h"
 
 @interface PBViewController () <
     UIPageViewControllerDataSource,
-    UIPageViewControllerDelegate
+    UIPageViewControllerDelegate,
+    UIViewControllerTransitioningDelegate
 >
 
 @property (nonatomic, strong) NSArray<PBImageScrollerViewController *> *reusableImageScrollerViewControllers;
@@ -50,6 +52,10 @@
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
+
+@property (nonatomic, strong) PBPresentAnimatedTransitioningController *transitioningController;
+//@property (nonatomic, assign) BOOL dismissing;
+@property (nonatomic, assign) CGFloat verticalVelocity;
 
 @end
 
@@ -77,6 +83,7 @@
     
     self.modalPresentationStyle = UIModalPresentationCustom;
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    self.transitioningDelegate = self;
     
     return self;
 }
@@ -110,6 +117,8 @@
     
     self.dataSource = self;
     self.delegate = self;
+    
+    [self _setupTransitioningController];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -228,18 +237,117 @@
     return imageScrollerViewController;
 }
 
+- (void)_setupTransitioningController {
+    __weak typeof(self) weak_self = self;
+    self.transitioningController.prepareForPresentActionHandler = ^(UIView *fromView, UIView *toView) {
+        __strong typeof(weak_self) strong_self = weak_self;
+        strong_self.blurBackgroundView.alpha = 0;
+    };
+    self.transitioningController.duringPresentingActionHandler = ^(UIView *fromView, UIView *toView) {
+        __strong typeof(weak_self) strong_self = weak_self;
+        strong_self.blurBackgroundView.alpha = 1;
+    };
+    self.transitioningController.prepareForDismissActionHandler = ^(UIView *fromView, UIView *toView) {
+        __strong typeof(weak_self) strong_self = weak_self;
+        [strong_self _prepareForDismiss];
+    };
+    self.transitioningController.duringDismissingActionHandler = ^(UIView *fromView, UIView *toView) {
+        __strong typeof(weak_self) strong_self = weak_self;
+        [strong_self _duringDismissing];
+    };
+}
+
+- (void)_prepareForDismiss {
+    PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
+    PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
+    // 干掉加载动画。
+    imageScrollView.progressLayer.hidden = YES;
+    // 还原 zoom.
+    if (imageScrollView.zoomScale != 1) {
+        [imageScrollView setZoomScale:1 animated:YES];
+    }
+    // 如果内容很长的话（长微博），并且当前处于图片中间某个位置，没有超出顶部或者底部，需要特殊处理。
+    CGFloat contentHeight = imageScrollView.contentSize.height;
+    CGFloat scrollViewHeight = CGRectGetHeight(imageScrollView.bounds);
+    if (contentHeight > scrollViewHeight) {
+        CGFloat offsetY = imageScrollView.contentOffset.y;
+        if (offsetY < 0) {
+            return;
+        }
+        if (offsetY + scrollViewHeight > contentHeight) {
+            return;
+        }
+        // 无 thumbView, 并且内容长度超过屏幕，非滑动退出模式。替换图片。
+        if (0 == self.verticalVelocity && !self.currentThumbView) {
+            UIImage *image = [self.view pb_snapshotAfterScreenUpdates:NO];
+            imageScrollView.imageView.image = image;
+        }
+        // 还原到页面顶部
+        [imageScrollView setContentOffset:CGPointZero animated:NO];
+    }
+}
+
+- (void)_duringDismissing {
+    PBImageScrollView *imageScrollView = self.currentScrollViewController.imageScrollView;
+    UIImageView *imageView = imageScrollView.imageView;
+    UIImage *currentImage = imageView.image;
+    /// 图片未加载，默认 CrossDissolve 动画。
+    if (!currentImage) {
+        return;
+    }
+    
+    [self _showStatusBarIfNeeded];
+    self.blurBackgroundView.alpha = 0;
+
+    /// present 之前显示的图片视图。
+    UIView *thumbView = self.currentThumbView;
+    CGRect destFrame;    
+    if (thumbView) {
+        imageView.clipsToBounds = thumbView.clipsToBounds;
+        imageView.contentMode = thumbView.contentMode;
+        // 还原到起始位置然后 dismiss.
+        destFrame = [thumbView.superview convertRect:thumbView.frame toView:self.currentScrollViewController.view];
+        // 把 contentInset 考虑进来。
+        CGFloat verticalInset = imageScrollView.contentInset.top + imageScrollView.contentInset.bottom;
+        destFrame = CGRectMake(CGRectGetMinX(destFrame), CGRectGetMinY(destFrame) - verticalInset, CGRectGetWidth(destFrame), CGRectGetHeight(destFrame));
+    } else {
+        // 移动到屏幕外然后 dismiss.
+        if (0 == self.verticalVelocity) {
+            // 非滑动退出，中间
+            destFrame = CGRectMake(CGRectGetWidth(imageScrollView.bounds) / 2, CGRectGetHeight(imageScrollView.bounds) / 2, 0, 0);
+            // 图片渐变
+            imageScrollView.alpha = 0;
+        } else {
+            CGFloat width = CGRectGetWidth(imageScrollView.imageView.bounds);
+            CGFloat height = CGRectGetHeight(imageScrollView.imageView.bounds);
+            if (0 < self.verticalVelocity) {
+                // 向上
+                destFrame = CGRectMake(0, -height, width, height);
+            } else {
+                // 向下
+                destFrame = CGRectMake(0, CGRectGetHeight(imageScrollView.bounds), width, height);
+            }
+        }
+    }
+    
+    imageView.frame = destFrame;
+}
+
+
 #pragma mark - Actions
 
 - (void)_handleSingleTapAction:(UITapGestureRecognizer *)sender {
     if (sender.state != UIGestureRecognizerStateEnded) {
         return;
     }
-    [self _dismiss];
-}
-
-- (void)_dismiss {
-    [self _showStatusBarIfNeeded];
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    if (!self.pb_delegate) {
+        return;
+    }
+    if ([self.pb_delegate conformsToProtocol:@protocol(PBViewControllerDelegate)]) {
+        if ([self.pb_delegate respondsToSelector:@selector(viewController:didSingleTapedPageAtIndex:presentedImage:)]) {
+            [self.pb_delegate viewController:self didSingleTapedPageAtIndex:self.currentPage presentedImage:self.currentScrollViewController.imageScrollView.imageView.image];
+        }
+    }
 }
 
 - (void)_handleDoubleTapAction:(UITapGestureRecognizer *)sender {
@@ -247,20 +355,20 @@
         return;
     }
     CGPoint location = [sender locationInView:self.view];
-    PBImageScrollView *imageScrollView =  self.reusableImageScrollerViewControllers[self.currentPage % 3].imageScrollView;
+    PBImageScrollView *imageScrollView = self.currentScrollViewController.imageScrollView;
     [imageScrollView _handleZoomForLocation:location];
 }
 
 - (void)_handleLongPressAction:(UILongPressGestureRecognizer *)sender {
-    if (!self.pb_delegate) {
+    if (sender.state != UIGestureRecognizerStateEnded) {
         return;
     }
-    if (sender.state != UIGestureRecognizerStateEnded) {
+    if (!self.pb_delegate) {
         return;
     }
     if ([self.pb_delegate conformsToProtocol:@protocol(PBViewControllerDelegate)]) {
         if ([self.pb_delegate respondsToSelector:@selector(viewController:didLongPressedPageAtIndex:presentedImage:)]) {
-            [self.pb_delegate viewController:self didLongPressedPageAtIndex:self.currentPage presentedImage:self.reusableImageScrollerViewControllers[self.currentPage % 3].imageScrollView.imageView.image];
+            [self.pb_delegate viewController:self didLongPressedPageAtIndex:self.currentPage presentedImage:self.currentScrollViewController.imageScrollView.imageView.image];
         }
     }
 }
@@ -283,6 +391,16 @@
     [self _updateIndicator];
 }
 
+#pragma mark - UIViewControllerTransitioningDelegate
+
+- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented  presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
+    return [self.transitioningController pb_prepareForPresent];
+}
+
+- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+    return [self.transitioningController pb_prepareForDismiss];
+}
+
 #pragma mark - Accessor
 
 - (NSArray<PBImageScrollerViewController *> *)reusableImageScrollerViewControllers {
@@ -295,11 +413,12 @@
             imageScrollerViewController.imageScrollView.contentOffSetVerticalPercent = ^(CGFloat percent) {
                 __strong typeof(weak_self) strong_self = weak_self;
                 strong_self.blurBackgroundView.alpha = 1.0f - percent;
-                NSLog(@"%@", @(percent));
+                NSLog(@"percent: %@", @(percent));
             };
-            imageScrollerViewController.imageScrollView.didEndDraggingWithScrollEnough = ^{
+            imageScrollerViewController.imageScrollView.didEndDraggingWithScrollEnough = ^(CGFloat verticalVelocity){
                 __strong typeof(weak_self) strong_self = weak_self;
-                [strong_self _dismiss];
+                strong_self.verticalVelocity = verticalVelocity;
+                [strong_self dismissViewControllerAnimated:YES completion:nil];
             };
             [controllers addObject:imageScrollerViewController];
         }
@@ -361,6 +480,30 @@
         _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_handleLongPressAction:)];
     }
     return _longPressGestureRecognizer;
+}
+
+- (PBImageScrollerViewController *)currentScrollViewController {
+    return self.reusableImageScrollerViewControllers[self.currentPage % 3];
+}
+
+- (UIView *)currentThumbView {
+    if (!self.pb_dataSource) {
+        return nil;
+    }
+    if (![self.pb_dataSource conformsToProtocol:@protocol(PBViewControllerDataSource)]) {
+        return nil;
+    }
+    if (![self.pb_dataSource respondsToSelector:@selector(thumbViewForPageAtIndex:)]) {
+        return  nil;
+    }
+    return [self.pb_dataSource thumbViewForPageAtIndex:self.currentPage];
+}
+
+- (PBPresentAnimatedTransitioningController *)transitioningController {
+    if (!_transitioningController) {
+        _transitioningController = [PBPresentAnimatedTransitioningController new];
+    }
+    return _transitioningController;
 }
 
 @end

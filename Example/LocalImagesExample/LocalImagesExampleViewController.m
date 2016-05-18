@@ -11,10 +11,12 @@
 #import "PBImageScrollerViewController.h"
 #import "UIView+PBSnapshot.h"
 #import "PhotoBrowser.h"
+#import "PresentedViewController.h"
 
 @interface LocalImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;
-@property (nonatomic, strong) NSArray *imageViews;
+@property (nonatomic, strong) NSMutableArray<UIImageView *> *imageViews;
+@property (nonatomic, assign) BOOL thumb;
 @end
 
 @implementation LocalImagesExampleViewController
@@ -22,6 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.imageViews = [@[] mutableCopy];
     for (NSInteger index = 0; index < self.frames.count; ++index) {
         UIImageView *imageView = [UIImageView new];
         imageView.clipsToBounds = YES;
@@ -33,10 +36,15 @@
         NSString *imageName = [NSString stringWithFormat:@"%@", @(index + 1)];
         imageView.image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"]];
         [self.view addSubview:imageView];
+        [self.imageViews addObject:imageView];
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapedImageView:)];
         [imageView addGestureRecognizer:tap];
     }
+    
+    self.thumb = YES;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Don't Use Thumb" style:UIBarButtonItemStylePlain target:self action:@selector(_thumb:)];
+
 }
 
 - (void)handleTapedImageView:(UITapGestureRecognizer *)sender {
@@ -49,6 +57,13 @@
     pbViewController.pb_delegate = self;
     pbViewController.pb_startPage = sender.tag;
     [self presentViewController:pbViewController animated:YES completion:nil];
+    
+//    [self presentViewController:[PresentedViewController new] animated:YES completion:nil];
+}
+
+- (void)_thumb:(UIBarButtonItem *)sender {
+    self.thumb = !self.thumb;
+    sender.title = !self.thumb ? @"Use Thumb" : @"Don't Use Thumb";
 }
 
 - (NSArray *)frames {
@@ -79,7 +94,19 @@
     return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[@(index + 1) stringValue] ofType:@"jpg"]];
 }
 
+- (UIView *)thumbViewForPageAtIndex:(NSInteger)index {
+    if (self.thumb) {
+        return self.imageViews[index];
+    }
+    
+    return nil;
+}
+
 #pragma mark - PBViewControllerDelegate
+
+- (void)viewController:(PBViewController *)viewController didSingleTapedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 - (void)viewController:(PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
     NSLog(@"didLongPressedPageAtIndex: %@", @(index));

@@ -4,6 +4,14 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 
 
+### TODO
+
+-   [x] Present & Dismissal animation
+
+- [ ] GIF support
+
+
+
 ## How does it look like?
 
 <p align="left">
@@ -26,16 +34,16 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 
 - Use for static Image
-  
+
   	Conforms protocol `PBViewControllerDataSource` and implement `viewController:imageForPageAtIndex:` selector
-  
+
 - Use for web image
 
-	 Conforms protocol `PBViewControllerDataSource` and implement `viewController:presentImageView:forPageAtIndex:` selector
+   Conforms protocol `PBViewControllerDataSource` and implement `viewController:presentImageView:forPageAtIndex:` selector
 
 - Handle action
 
-	 Conforms protocol `PBViewControllerDataSource` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
+   Conforms protocol `PBViewControllerDataSource` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
 
 
 
