@@ -121,17 +121,6 @@
     [self _setupTransitioningController];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    if ([self isBeingPresented]) {
-        [self _hideStatusBarIfNeeded];
-    }
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     [self _updateIndicator];
@@ -184,19 +173,11 @@
 }
 
 - (void)_hideStatusBarIfNeeded {
-//    self.blurBackgroundView.window.windowLevel = UIWindowLevelStatusBar;
-    if ([UIApplication sharedApplication].statusBarHidden) {
-        return;
-    }
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    self.presentingViewController.view.window.windowLevel = UIWindowLevelStatusBar;
 }
 
 - (void)_showStatusBarIfNeeded {
-//    self.blurBackgroundView.window.windowLevel = UIWindowLevelNormal;
-    if (![UIApplication sharedApplication].statusBarHidden) {
-        return;
-    }
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    self.presentingViewController.view.window.windowLevel = UIWindowLevelNormal;
 }
 
 - (PBImageScrollerViewController *)_imageScrollerViewControllerForPage:(NSInteger)page {
@@ -244,11 +225,11 @@
     __weak typeof(self) weak_self = self;
     self.transitioningController.prepareForPresentActionHandler = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
-        strong_self.blurBackgroundView.alpha = 0;
+        [strong_self _prepareForPresent];
     };
     self.transitioningController.duringPresentingActionHandler = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
-        strong_self.blurBackgroundView.alpha = 1;
+        [strong_self _duringPresenting];
     };
     self.transitioningController.prepareForDismissActionHandler = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
@@ -258,6 +239,15 @@
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _duringDismissing];
     };
+}
+
+- (void)_prepareForPresent {
+    self.blurBackgroundView.alpha = 0;
+}
+
+- (void)_duringPresenting {
+    self.blurBackgroundView.alpha = 1;
+    [self _hideStatusBarIfNeeded];
 }
 
 - (void)_prepareForDismiss {
