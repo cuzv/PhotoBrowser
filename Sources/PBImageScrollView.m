@@ -36,7 +36,8 @@
 @property (nonatomic, copy, readwrite) PBImageDownloadProgressHandler downloadProgressHandler;
 @property (nonatomic, weak) id <NSObject> notification;
 @property (nonatomic, strong, readwrite) CAShapeLayer *progressLayer;
-@property (nonatomic, assign) CGFloat verticalVelocity;
+/// direction: > 0 up, < 0 dwon, == 0 others(no swipe, e.g. tap).
+@property (nonatomic, assign) CGFloat direction;
 @property (nonatomic, assign) BOOL dismissing;
 
 @end
@@ -127,6 +128,11 @@
     }
 }
 
+- (void)_recoverLayout {
+    [self _updateFrame];
+    [self _recenterImage];
+}
+
 #pragma mark - Private methods
 
 - (void)_addObserver {
@@ -190,7 +196,7 @@
     CGFloat contentHeight = self.contentSize.height;
     CGFloat verticalDiff = CGRectGetHeight(self.bounds) - contentHeight;
     CGFloat verticalAdditon = verticalDiff > 0 ? verticalDiff : 0.f;
-    
+
     self.imageView.center = CGPointMake((contentWidth + horizontalAddition) / 2.0f, (contentHeight + verticalAdditon) / 2.0f);
 }
 
@@ -219,22 +225,33 @@
     };
 }
 
+/// Only + percent.
 - (CGFloat)_contentOffSetVerticalPercent {
+    return fabs([self _rawContentOffSetVerticalPercent]);
+}
+
+/// +/- percent.
+- (CGFloat)_rawContentOffSetVerticalPercent {
     CGFloat percent = 0;
     
     CGFloat contentHeight = self.contentSize.height;
     CGFloat scrollViewHeight = CGRectGetHeight(self.bounds);
     CGFloat offsetY = self.contentOffset.y;
-    
-    if (offsetY < 0 || contentHeight < scrollViewHeight) {
-        percent = MIN(fabs(offsetY / (scrollViewHeight / 3.0f)), 1.0f);
+
+    if (offsetY < 0) {
+        percent = MAX(offsetY / (scrollViewHeight / 3.0), -1.0f);
     } else {
-        offsetY += scrollViewHeight;
-        CGFloat contentHeight = self.contentSize.height;
-        if (offsetY > contentHeight) {
-            percent = MIN((offsetY - contentHeight) / (scrollViewHeight / 3.0f), 1.0f);
+        if (contentHeight < scrollViewHeight) {
+            percent = MIN(offsetY / (scrollViewHeight / 3.0), 1.0f);
+        } else {
+            offsetY += scrollViewHeight;
+            CGFloat contentHeight = self.contentSize.height;
+            if (offsetY > contentHeight) {
+                percent = MIN((offsetY - contentHeight) / (scrollViewHeight / 3.0f), 1.0f);
+            }
         }
     }
+    NSLog(@"percent = %@", @(percent));
 
     return percent;
 }
@@ -253,10 +270,10 @@
     if (self.dismissing) {
         return;
     }
-    if (!self.contentOffSetVerticalPercent) {
+    if (!self.contentOffSetVerticalPercentHandler) {
         return;
     }
-    self.contentOffSetVerticalPercent([self _contentOffSetVerticalPercent]);
+    self.contentOffSetVerticalPercentHandler([self _contentOffSetVerticalPercent]);
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -264,19 +281,24 @@
         return;
     }
 
-    if (self.didEndDraggingWithScrollEnough && [self _contentOffSetVerticalPercent] > 0.4) {
-        /// 取消回弹效果，所以计算 imageView 的 frame 的时候需要注意 contentInset.
+    // 停止时有相反方向滑动操作时取消退出操作
+    CGFloat rawPercent = [self _rawContentOffSetVerticalPercent];
+    if (rawPercent * self.direction < 0) {
+        return;
+    }
+    
+    if (self.didEndDraggingInProperpositionHandler && fabs(rawPercent) > 0.3f) {
+        // 取消回弹效果，所以计算 imageView 的 frame 的时候需要注意 contentInset.
         scrollView.bounces = NO;
         scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
-        
-        self.didEndDraggingWithScrollEnough(self.verticalVelocity);
+        self.didEndDraggingInProperpositionHandler(self.direction);
         self.dismissing = YES;
         return;
     }
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    self.verticalVelocity = velocity.y;
+    self.direction = velocity.y;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {

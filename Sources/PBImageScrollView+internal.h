@@ -32,12 +32,15 @@
 @interface PBImageScrollView()
 
 - (void)_handleZoomForLocation:(CGPoint)location;
-- (void)_updateUserInterfaces;
+/// Cancel swipe to next page with current page scaled.
+- (void)_recoverLayout;
 
 /// Scrolling content offset'y percent.
-@property (nonatomic, copy) void(^contentOffSetVerticalPercent)(CGFloat);
+@property (nonatomic, copy) void(^contentOffSetVerticalPercentHandler)(CGFloat);
+
 /// loosen hand with decelerate
-@property (nonatomic, copy) void(^didEndDraggingWithScrollEnough)(CGFloat);
+/// direction: > 0 up, < 0 dwon, == 0 others(no swipe, e.g. tap).
+@property (nonatomic, copy) void(^didEndDraggingInProperpositionHandler)(CGFloat direction);
 
 @end
 
