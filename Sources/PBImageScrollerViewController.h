@@ -25,7 +25,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PBImageScrollView.h"
+
+@class PBImageScrollView;
+typedef void(^PBImageDownloadProgressHandler)(NSInteger receivedSize, NSInteger expectedSize);
 
 @interface PBImageScrollerViewController : UIViewController
 
@@ -40,6 +42,7 @@
 @property (nonatomic, copy) void (^configureImageViewWithDownloadProgressHandler)(UIImageView *imageView, PBImageDownloadProgressHandler handler);
 
 @property (nonatomic, strong, readonly) PBImageScrollView *imageScrollView;
+@property (nonatomic, strong, readonly) CAShapeLayer *progressLayer;
 
 
 @end

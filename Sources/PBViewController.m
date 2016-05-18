@@ -293,7 +293,7 @@
     PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     // 干掉加载动画。
-    imageScrollView.progressLayer.hidden = YES;
+    currentScrollViewController.progressLayer.hidden = YES;
     // 还原 zoom.
     if (imageScrollView.zoomScale != 1) {
         [imageScrollView setZoomScale:1 animated:YES];
