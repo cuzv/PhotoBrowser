@@ -111,7 +111,6 @@
                           options:0
                          progress:progressHandler
                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                            
                         }];
 }
 
@@ -119,7 +118,6 @@
     if (self.thumb) {
         return self.imageViews[index];
     }
-    
     return nil;
 }
 
