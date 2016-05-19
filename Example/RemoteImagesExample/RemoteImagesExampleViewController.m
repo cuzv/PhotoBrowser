@@ -53,10 +53,10 @@
 }
 
 - (void)handleTapedImageView:(UITapGestureRecognizer *)sender {
-    [self _showPhotoBrowser:(UIImageView *)sender.view];
+    [self _showPhotoBrowser:sender.view];
 }
 
-- (void)_showPhotoBrowser:(UIImageView *)sender {
+- (void)_showPhotoBrowser:(UIView *)sender {
     PBViewController *pbViewController = [PBViewController new];
     pbViewController.pb_dataSource = self;
     pbViewController.pb_delegate = self;

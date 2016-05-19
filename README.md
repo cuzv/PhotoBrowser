@@ -16,8 +16,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 <p align="left">
 
-	<img src="./Preview/1.gif" width=44%">
-	<img src="./Preview/2.gif" width=44%">
+	<img src="http://ww3.sinaimg.cn/mw690/a0f0598cgw1f4105ulkifg20a60ibkjp.gif" width=44%">
 
 </p>
 
@@ -44,9 +43,9 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 -   Support animation
 
-       Conforms protocol `PBViewControllerDataSource` and implement `thumbViewForPageAtIndex:` tell the start and ended imageView position
+         Conforms protocol `PBViewControllerDataSource` and implement `thumbViewForPageAtIndex:` tell the start and ended imageView position
 
--  Conforms protocol `PBViewControllerDataSource` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
+-   Conforms protocol `PBViewControllerDataSource` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
 
 
 

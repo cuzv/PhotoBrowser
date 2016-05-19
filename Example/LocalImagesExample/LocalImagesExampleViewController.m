@@ -14,7 +14,7 @@
 
 @interface LocalImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;
-@property (nonatomic, strong) NSMutableArray<UIImageView *> *imageViews;
+@property (nonatomic, strong) NSMutableArray<UIView *> *imageViews;
 @property (nonatomic, assign) BOOL thumb;
 @end
 
@@ -25,7 +25,7 @@
     
     self.imageViews = [@[] mutableCopy];
     for (NSInteger index = 0; index < self.frames.count; ++index) {
-        UIImageView *imageView = [UIImageView new];
+        UIView *imageView = [UIView new];
         imageView.clipsToBounds = YES;
         imageView.contentMode = UIViewContentModeScaleAspectFill;
         imageView.backgroundColor = [UIColor blackColor];
@@ -33,7 +33,8 @@
         imageView.tag = index;
         imageView.userInteractionEnabled = YES;
         NSString *imageName = [NSString stringWithFormat:@"%@", @(index + 1)];
-        imageView.image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"]];
+        UIImage *image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"]];
+        imageView.layer.contents = (__bridge id _Nullable)image.CGImage;
         [self.view addSubview:imageView];
         [self.imageViews addObject:imageView];
         
@@ -47,10 +48,10 @@
 }
 
 - (void)handleTapedImageView:(UITapGestureRecognizer *)sender {
-    [self _showPhotoBrowser:(UIImageView *)sender.view];
+    [self _showPhotoBrowser:sender.view];
 }
 
-- (void)_showPhotoBrowser:(UIImageView *)sender {
+- (void)_showPhotoBrowser:(UIView *)sender {
     PBViewController *pbViewController = [PBViewController new];
     pbViewController.pb_dataSource = self;
     pbViewController.pb_delegate = self;
