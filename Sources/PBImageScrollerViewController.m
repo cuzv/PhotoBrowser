@@ -75,11 +75,13 @@
                 return;
             }
             CGFloat progress = (receivedSize * 1.0f) / (expectedSize * 1.0f);
+            if (0.0f >= progress || progress >= 1.0f) {
+                strong_self.progressLayer.hidden = YES;
+                return;
+            }
             strong_self.progressLayer.hidden = NO;
             strong_self.progressLayer.strokeEnd = progress;
-            if (progress == 1.0f) {
-                strong_self.progressLayer.hidden = YES;
-            }
+            
         });
     } else if (self.configureImageViewHandler) {
         self.configureImageViewHandler(self.imageView);

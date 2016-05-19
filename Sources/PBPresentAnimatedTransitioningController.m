@@ -78,11 +78,11 @@
             strong_self.duringPresentingActionHandler(fromView, toView);
         }
     } completion:^(BOOL flag) {
-        completion(flag);
         __strong typeof(weak_self) strong_self = weak_self;
         if (strong_self.didPresentedActionHandler) {
             strong_self.didPresentedActionHandler(fromView, toView);
         }
+        completion(flag);
     }];
 }
 
@@ -99,11 +99,11 @@
             strong_self.duringDismissingActionHandler(fromView, toView);
         }
     } completion:^(BOOL flag) {
-        completion(flag);
         __strong typeof(weak_self) strong_self = weak_self;
         if (strong_self.didDismissedActionHandler) {
             strong_self.didDismissedActionHandler(fromView, toView);
         }
+        completion(flag);
     }];
 }
 

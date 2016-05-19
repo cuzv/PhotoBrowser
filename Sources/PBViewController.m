@@ -31,6 +31,8 @@
 #import "PBImageScrollView+internal.h"
 #import "PBPresentAnimatedTransitioningController.h"
 
+static const NSUInteger reusable_page_count = 3;
+
 @interface PBViewController () <
     UIPageViewControllerDataSource,
     UIPageViewControllerDelegate,
@@ -134,14 +136,6 @@
     [self _updateBlurBackgroundView];
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
-}
-
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
-}
-
 #pragma mark - Public method
 
 - (void)setInitializePageIndex:(NSInteger)pageIndex {
@@ -210,7 +204,7 @@
     }
     
     // Get the reusable `PBImageScrollerViewController`
-    PBImageScrollerViewController *imageScrollerViewController = self.reusableImageScrollerViewControllers[page % 3];
+    PBImageScrollerViewController *imageScrollerViewController = self.reusableImageScrollerViewControllers[page % reusable_page_count];
 
     // Set new data
     if (!self.pb_dataSource) {
@@ -282,7 +276,7 @@
     
     CGRect newFrame = [thumbView.superview convertRect:thumbView.frame toView:self.view];
     self.thumbDoppelgangerView.frame = newFrame;
-    self.thumbDoppelgangerView.image = ((UIImageView *)thumbView).image;
+    self.thumbDoppelgangerView.image = self.currentThumbImage;
     self.thumbDoppelgangerView.contentMode = thumbView.contentMode;
     self.thumbDoppelgangerView.clipsToBounds = thumbView.clipsToBounds;
     self.thumbDoppelgangerView.backgroundColor = thumbView.backgroundColor;
@@ -484,8 +478,8 @@
 
 - (NSArray<PBImageScrollerViewController *> *)reusableImageScrollerViewControllers {
     if (!_reusableImageScrollerViewControllers) {
-        NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:3];
-        for (NSInteger index = 0; index < 3; index++) {
+        NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:reusable_page_count];
+        for (NSInteger index = 0; index < reusable_page_count; index++) {
             PBImageScrollerViewController *imageScrollerViewController = [PBImageScrollerViewController new];
             imageScrollerViewController.page = index;
             __weak typeof(self) weak_self = self;
@@ -561,7 +555,7 @@
 }
 
 - (PBImageScrollerViewController *)currentScrollViewController {
-    return self.reusableImageScrollerViewControllers[self.currentPage % 3];
+    return self.reusableImageScrollerViewControllers[self.currentPage % reusable_page_count];
 }
 
 - (UIView *)currentThumbView {
@@ -575,6 +569,20 @@
         return  nil;
     }
     return [self.pb_dataSource thumbViewForPageAtIndex:self.currentPage];
+}
+
+- (UIImage *)currentThumbImage {
+    UIView *currentThumbView = self.currentThumbView;
+    if (!currentThumbView) {
+        return nil;
+    }
+    if ([currentThumbView isKindOfClass:[UIImageView class]]) {
+        return ((UIImageView *)self.currentThumbView).image;
+    }
+    if (currentThumbView.layer.contents) {
+        return [[UIImage alloc] initWithCGImage:(__bridge CGImageRef _Nonnull)(currentThumbView.layer.contents)];
+    }
+    return nil;
 }
 
 - (PBPresentAnimatedTransitioningController *)transitioningController {
