@@ -16,11 +16,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 <p align="left">
 
-	<img src="http://ww3.sinaimg.cn/mw690/a0f0598cgw1f4105ulkifg20a60ibkjp.gif" width=44%">
-
-</p>
-
-
+​	<img src="http://ww3.sinaimg.cn/mw690/a0f0598cgw1f4105ulkifg20a60ibkjp.gif" width=44%"></p>
 
 ## How to use
 
@@ -43,7 +39,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 -   Support animation
 
-         Conforms protocol `PBViewControllerDataSource` and implement `thumbViewForPageAtIndex:` tell the start and ended imageView position
+     Conforms protocol `PBViewControllerDataSource` and implement `thumbViewForPageAtIndex:` tell the start and ended imageView position
 
 -   Conforms protocol `PBViewControllerDataSource` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
 
@@ -51,14 +47,12 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 ## Demo
 
-
-
 ``` objective-c
 ...
 PBViewController *pbViewController = [PBViewController new];
 pbViewController.pb_dataSource = self;
 pbViewController.pb_delegate = self;
-[pbViewController setInitializePageIndex:2];
+pbViewController.pb_startPage = sender.tag;
 [self presentViewController:pbViewController animated:YES completion:nil];
 ...
 
@@ -66,43 +60,34 @@ pbViewController.pb_delegate = self;
 #pragma mark - PBViewControllerDataSource
 
 - (NSInteger)numberOfPagesInViewController:(PBViewController *)viewController {
-    return self.urls.count;
+    return self.frames.count;
 }
 
-- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *path = self.urls[index];
-        NSData *data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:path] options:0 error:nil];
-        UIImage *image = [[UIImage alloc] initWithData:data];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            imageView.image = image;
-        });
-    });
+- (UIImage *)viewController:(PBViewController *)viewController imageForPageAtIndex:(NSInteger)index {
+    return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[@(index + 1) stringValue] ofType:@"jpg"]];
 }
-...
 
-...
+- (UIView *)thumbViewForPageAtIndex:(NSInteger)index {
+    if (self.thumb) {
+        return self.imageViews[index];
+    }
+    
+    return nil;
+}
+
 #pragma mark - PBViewControllerDelegate
 
 - (void)viewController:(PBViewController *)viewController didSingleTapedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
-    NSLog(@"didSingleTapedPageAtIndex: %@", @(index));
-    [viewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)viewController:(PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
-    NSLog(@"didLongPressedPageAtIndex: %@", @(index));
-}
 ```
 
 For more information checkout the Example in project.
 
-
-
 ## License
 
 `PhotoBrowser` is available under the MIT license. See the LICENSE file for more info.
-
-
 
 ## Contact
 
