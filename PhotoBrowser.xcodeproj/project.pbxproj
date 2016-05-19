@@ -18,7 +18,7 @@
 		4686F8571CEA2EC200AFEA65 /* PBImageScrollView+internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F84C1CEA2EC200AFEA65 /* PBImageScrollView+internal.h */; };
 		4686F8581CEA2EC200AFEA65 /* PBImageScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F84D1CEA2EC200AFEA65 /* PBImageScrollView.h */; };
 		4686F8591CEA2EC200AFEA65 /* PBImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4686F84E1CEA2EC200AFEA65 /* PBImageScrollView.m */; };
-		4686F85A1CEA2EC200AFEA65 /* PBViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F84F1CEA2EC200AFEA65 /* PBViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4686F85A1CEA2EC200AFEA65 /* PBViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F84F1CEA2EC200AFEA65 /* PBViewController.h */; };
 		4686F85B1CEA2EC200AFEA65 /* PBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4686F8501CEA2EC200AFEA65 /* PBViewController.m */; };
 		4686F85C1CEA2EC200AFEA65 /* PhotoBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F8511CEA2EC200AFEA65 /* PhotoBrowser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4686F85D1CEA2EC200AFEA65 /* UIView+PBSnapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F8521CEA2EC200AFEA65 /* UIView+PBSnapshot.h */; };
