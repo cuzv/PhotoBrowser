@@ -27,7 +27,7 @@
 #ifndef PBImageScrollView_internal_h
 #define PBImageScrollView_internal_h
 
-#import <UIKit/UIKit.h>
+#import "PBImageScrollView.h"
 
 @interface PBImageScrollView()
 
