@@ -45,6 +45,8 @@
 @property (nonatomic, strong) UILabel *indicatorLabel;
 /// Images count <=9, use this for indicate
 @property (nonatomic, strong) UIPageControl *indicatorPageControl;
+/// Hold the indicator control
+@property (nonatomic, weak) UIView *indicator;
 /// Blur background view
 @property (nonatomic, strong) UIView *blurBackgroundView;
 
@@ -122,10 +124,22 @@
     [self _setupTransitioningController];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+}
+
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     [self _updateIndicator];
     [self _updateBlurBackgroundView];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
 }
 
 #pragma mark - Public method
@@ -142,14 +156,23 @@
 #pragma mark - Private methods
 
 - (void)_addIndicator {
+    if (self.numberOfPages == 1) {
+        return;
+    }
     if (self.numberOfPages <= 9) {
         [self.view addSubview:self.indicatorPageControl];
+        self.indicator = self.indicatorPageControl;
     } else {
         [self.view addSubview:self.indicatorLabel];
+        self.indicator = self.indicatorLabel;
     }
+    self.indicator.layer.zPosition = 1024;
 }
 
 - (void)_updateIndicator {
+    if (!self.indicator) {
+        return;
+    }
     if (self.numberOfPages <= 9) {
         self.indicatorPageControl.currentPage = self.currentPage;
         [self.indicatorPageControl sizeToFit];
@@ -287,6 +310,7 @@
     [self.thumbDoppelgangerView removeFromSuperview];
     self.thumbDoppelgangerView.image = nil;
     self.thumbDoppelgangerView = nil;
+    [self _hideIndicator];
 }
 
 - (void)_prepareForDismiss {
@@ -364,6 +388,25 @@
     imageView.frame = destFrame;
 }
 
+- (void)_hideIndicator {
+    if (!self.indicator || 0 == self.indicator.alpha) {
+        return;
+    }
+    [UIView animateWithDuration:0.25 delay:0.5 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut animations:^{
+        self.indicator.alpha = 0;
+    } completion:^(BOOL finished) {
+    }];
+}
+
+- (void)_showIndicator {
+    if (!self.indicator || 1 == self.indicator.alpha) {
+        return;
+    }
+    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut animations:^{
+        self.indicator.alpha = 1;
+    } completion:^(BOOL finished) {
+    }];
+}
 
 #pragma mark - Actions
 
@@ -416,10 +459,15 @@
 
 #pragma mark - UIPageViewControllerDelegate
 
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers {
+    [self _showIndicator];
+}
+
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
     PBImageScrollerViewController *imageScrollerViewController = pageViewController.viewControllers.firstObject;
     self.currentPage = imageScrollerViewController.page;
     [self _updateIndicator];
+    [self _hideIndicator];
 }
 
 #pragma mark - UIViewControllerTransitioningDelegate

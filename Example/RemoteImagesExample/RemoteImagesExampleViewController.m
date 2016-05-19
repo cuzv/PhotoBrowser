@@ -91,9 +91,10 @@
     NSValue *frame8 = [NSValue valueWithCGRect:CGRectMake(120, 290, 120, 150)];
     NSValue *frame9 = [NSValue valueWithCGRect:CGRectMake(250, 305, 100, 100)];
     
-    NSValue *frame10 = [NSValue valueWithCGRect:CGRectMake(120, 470, 120, 100)];
+//    NSValue *frame10 = [NSValue valueWithCGRect:CGRectMake(120, 470, 120, 100)];
+//    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10];
     
-    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10];
+    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9];
 }
 
 #pragma mark - PBViewControllerDataSource
