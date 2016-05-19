@@ -318,7 +318,7 @@
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     // 还原 zoom.
     if (imageScrollView.zoomScale != 1) {
-        [imageScrollView setZoomScale:1 animated:YES];
+        [imageScrollView setZoomScale:1 animated:NO];
     }
     // 如果内容很长的话（长微博），并且当前处于图片中间某个位置，没有超出顶部或者底部，需要特殊处理。
     CGFloat contentHeight = imageScrollView.contentSize.height;
