@@ -1,3 +1,9 @@
+[![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/cuzv/PhotoBrowser/blob/master/LICENSE)
+[![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-v0.3.0-green.svg)](https://github.com/CocoaPods/CocoaPods)
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Weibo](https://img.shields.io/badge/Weibo-cuzval-yellowgreen.svg)](http://weibo.com/cuzval/)
+[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](http://twitter.com/mochxiao)
+
 # PhotoBrowser
 
 PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewer.
@@ -13,9 +19,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 ## How does it look like?
 
 <p align="left">
-
-​	<img src="http://ww3.sinaimg.cn/mw690/a0f0598cgw1f4105ulkifg20a60ibkjp.gif" width=44% height=50%">
-
+<img src="http://ww3.sinaimg.cn/mw690/a0f0598cgw1f4105ulkifg20a60ibkjp.gif" width=280px">
 </p>
 
 ## Usage
@@ -39,7 +43,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 -   Support animation
 
-    Conforms protocol `PBViewControllerDataSource` and implement `thumbViewForPageAtIndex:` tell the start and ended imageView position
+      Conforms protocol `PBViewControllerDataSource` and implement `thumbViewForPageAtIndex:` tell the start and ended imageView position
 
 -   Action callbacks
 
