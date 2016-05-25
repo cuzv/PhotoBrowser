@@ -8,9 +8,6 @@
 
 #import "LocalImagesExampleViewController.h"
 #import "PBViewController.h"
-#import "PBImageScrollerViewController.h"
-#import "UIView+PBSnapshot.h"
-#import "PhotoBrowser.h"
 
 @interface LocalImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;
@@ -89,6 +86,9 @@
 }
 
 - (UIImage *)viewController:(PBViewController *)viewController imageForPageAtIndex:(NSInteger)index {
+    if (3 == index) {
+        return nil;
+    }
     return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[@(index + 1) stringValue] ofType:@"jpg"]];
 }
 

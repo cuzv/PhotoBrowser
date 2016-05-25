@@ -8,8 +8,6 @@
 
 #import "RemoteImagesExampleViewController.h"
 #import "PBViewController.h"
-#import "PBImageScrollerViewController.h"
-#import "UIView+PBSnapshot.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
 @interface RemoteImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
