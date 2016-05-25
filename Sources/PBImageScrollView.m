@@ -28,7 +28,7 @@
 #import "PBImageScrollView+internal.h"
 
 #define system_version ([UIDevice currentDevice].systemVersion.doubleValue)
-#define observe_keypath @"image"
+#define observe_keypath_image @"image"
 
 @interface PBImageScrollView ()
 
@@ -88,7 +88,7 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    if (![keyPath isEqualToString:observe_keypath]) {
+    if (![keyPath isEqualToString:observe_keypath_image]) {
         return;
     }
     if (![object isEqual:self.imageView]) {
@@ -118,11 +118,11 @@
 #pragma mark - Private methods
 
 - (void)_addObserver {
-    [self.imageView addObserver:self forKeyPath:observe_keypath options:NSKeyValueObservingOptionNew context:nil];
+    [self.imageView addObserver:self forKeyPath:observe_keypath_image options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)_removeObserver {
-    [self.imageView removeObserver:self forKeyPath:observe_keypath];
+    [self.imageView removeObserver:self forKeyPath:observe_keypath_image];
 }
 
 - (void)_addNotificationIfNeeded {
@@ -226,14 +226,6 @@
 
 #pragma mark - UIScrollViewDelegate
 
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
-    return self.imageView;
-}
-
-- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
-    [self _recenterImage];
-}
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.dismissing) {
         return;
@@ -244,11 +236,15 @@
     self.contentOffSetVerticalPercentHandler([self _contentOffSetVerticalPercent]);
 }
 
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    [self _recenterImage];
+}
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         return;
     }
-
+    
     // 停止时有相反方向滑动操作时取消退出操作
     CGFloat rawPercent = [self _rawContentOffSetVerticalPercent];
     if (rawPercent * self.direction < 0) {
@@ -276,6 +272,10 @@
     if (scrollView.zoomScale < 1) {
         [scrollView setZoomScale:1.0f animated:YES];
     }
+}
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return self.imageView;
 }
 
 #pragma mark - Accessor

@@ -290,12 +290,20 @@ static const NSUInteger reusable_page_count = 3;
     
     if (!self.currentThumbView) {
         currentScrollViewController.view.alpha = 1;
+        self.thumbDoppelgangerView.alpha = 0;
         return;
     }
 
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     UIImageView *imageView = imageScrollView.imageView;
     CGRect newFrame = [imageView.superview convertRect:imageView.frame toView:self.view];
+    
+    if (CGRectEqualToRect(newFrame, CGRectZero)) {
+        currentScrollViewController.view.alpha = 1;
+        self.thumbDoppelgangerView.alpha = 0;
+        return;
+    }
+    
     self.thumbDoppelgangerView.frame = newFrame;
 }
 
@@ -336,19 +344,19 @@ static const NSUInteger reusable_page_count = 3;
 }
 
 - (void)_duringDismissing {
+    [self _showStatusBarIfNeeded];
+    self.blurBackgroundView.alpha = 0;
+
     PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     UIImageView *imageView = imageScrollView.imageView;
     UIImage *currentImage = imageView.image;
-    /// 图片未加载，默认 CrossDissolve 动画。
+    // 图片未加载，默认 CrossDissolve 动画。
     if (!currentImage) {
         return;
     }
     
-    [self _showStatusBarIfNeeded];
-    self.blurBackgroundView.alpha = 0;
-
-    /// present 之前显示的图片视图。
+    // present 之前显示的图片视图。
     UIView *thumbView = self.currentThumbView;
     CGRect destFrame;    
     if (thumbView) {
