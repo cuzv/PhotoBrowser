@@ -86,9 +86,6 @@
 }
 
 - (UIImage *)viewController:(PBViewController *)viewController imageForPageAtIndex:(NSInteger)index {
-    if (3 == index) {
-        return nil;
-    }
     return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[@(index + 1) stringValue] ofType:@"jpg"]];
 }
 
