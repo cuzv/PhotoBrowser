@@ -19,7 +19,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 ## How does it look like?
 
 <p align="left">
-<img src="http://ww3.sinaimg.cn/mw690/a0f0598cgw1f4105ulkifg20a60ibkjp.gif" width=280px">
+<img src="./Preview/preview.gif" width=280px">
 </p>
 
 ## Usage
