@@ -40,8 +40,8 @@ static const NSUInteger reusable_page_count = 3;
 >
 
 @property (nonatomic, strong) NSArray<PBImageScrollerViewController *> *reusableImageScrollerViewControllers;
-@property (nonatomic, assign) NSInteger numberOfPages;
-@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, assign, readwrite) NSInteger numberOfPages;
+@property (nonatomic, assign, readwrite) NSInteger currentPage;
 
 /// Images count >9, use this for indicate
 @property (nonatomic, strong) UILabel *indicatorLabel;
@@ -97,16 +97,9 @@ static const NSUInteger reusable_page_count = 3;
     [super viewDidLoad];
 
     // Set numberOfPages
-    if ([self.pb_dataSource conformsToProtocol:@protocol(PBViewControllerDataSource)] &&
-        [self.pb_dataSource respondsToSelector:@selector(numberOfPagesInViewController:)]) {
-        self.numberOfPages = [self.pb_dataSource numberOfPagesInViewController:self];
-    }
-    
+    [self _setNumberOfPages];
     // Set visible view controllers
-    self.currentPage = 0 < self.currentPage && self.currentPage < self.numberOfPages ? self.currentPage : 0;
-    PBImageScrollerViewController *firstImageScrollerViewController = [self _imageScrollerViewControllerForPage:self.currentPage];
-    [self setViewControllers:@[firstImageScrollerViewController] direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
-    
+    [self _setCurrentPresentPageAnimated: NO];
     // Set indicatorLabel
     [self _addIndicator];
     // Blur background
@@ -143,11 +136,43 @@ static const NSUInteger reusable_page_count = 3;
 }
 
 - (void)setPb_startPage:(NSInteger)pb_startPage {
+    _startPage = pb_startPage;
     _pb_startPage = pb_startPage;
     _currentPage = pb_startPage;
 }
 
+- (void)setStartPage:(NSInteger)startPage {
+    self.pb_startPage = startPage;
+}
+
+- (void)reload {
+    [self reloadWithCurrentPage:0];
+}
+
+- (void)reloadWithCurrentPage:(NSInteger)index {
+    self.pb_startPage = index;
+    [self _setNumberOfPages];
+    NSAssert(index < _numberOfPages, @"index(%@) beyond boundary.", @(index));
+    [self _setCurrentPresentPageAnimated: YES];
+    [self _updateIndicator];
+    [self _updateBlurBackgroundView];
+}
+
 #pragma mark - Private methods
+
+- (void)_setNumberOfPages {
+    if ([self.pb_dataSource conformsToProtocol:@protocol(PBViewControllerDataSource)] &&
+        [self.pb_dataSource respondsToSelector:@selector(numberOfPagesInViewController:)]) {
+        self.numberOfPages = [self.pb_dataSource numberOfPagesInViewController:self];
+    }
+}
+
+- (void)_setCurrentPresentPageAnimated:(BOOL)animated {
+    self.currentPage = 0 < self.currentPage && self.currentPage < self.numberOfPages ? self.currentPage : 0;
+    PBImageScrollerViewController *firstImageScrollerViewController = [self _imageScrollerViewControllerForPage:self.currentPage];
+    [self setViewControllers:@[firstImageScrollerViewController] direction:UIPageViewControllerNavigationDirectionForward animated:animated completion:nil];
+    [firstImageScrollerViewController reloadData];
+}
 
 - (void)_addIndicator {
     if (self.numberOfPages == 1) {
@@ -168,6 +193,7 @@ static const NSUInteger reusable_page_count = 3;
         return;
     }
     if (self.numberOfPages <= 9) {
+        self.indicatorPageControl.numberOfPages = self.numberOfPages;
         self.indicatorPageControl.currentPage = self.currentPage;
         [self.indicatorPageControl sizeToFit];
         self.indicatorPageControl.center = CGPointMake(CGRectGetWidth(self.view.bounds) / 2.0f,
@@ -218,19 +244,26 @@ static const NSUInteger reusable_page_count = 3;
         if ([self.pb_dataSource respondsToSelector:@selector(viewController:imageForPageAtIndex:)]) {
             imageScrollerViewController.fetchImageHandler = ^UIImage *(void) {
                 __strong typeof(weak_self) strong_self = weak_self;
-                return [strong_self.pb_dataSource viewController:strong_self imageForPageAtIndex:page];
+                if (page < strong_self.numberOfPages) {
+                    return [strong_self.pb_dataSource viewController:strong_self imageForPageAtIndex:page];
+                }
+                return nil;
             };
         } else if ([self.pb_dataSource respondsToSelector:@selector(viewController:presentImageView:forPageAtIndex:progressHandler:)]) {
             imageScrollerViewController.configureImageViewWithDownloadProgressHandler = ^(UIImageView *imageView, PBImageDownloadProgressHandler handler) {
                 __strong typeof(weak_self) strong_self = weak_self;
-                [strong_self.pb_dataSource viewController:strong_self presentImageView:imageView forPageAtIndex:page progressHandler:handler];
+                if (page < strong_self.numberOfPages) {
+                    [strong_self.pb_dataSource viewController:strong_self presentImageView:imageView forPageAtIndex:page progressHandler:handler];
+                }
             };
         } else if ([self.pb_dataSource respondsToSelector:@selector(viewController:presentImageView:forPageAtIndex:)]) {
             imageScrollerViewController.configureImageViewHandler = ^(UIImageView *imageView) {
                 __strong typeof(weak_self) strong_self = weak_self;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                [strong_self.pb_dataSource viewController:strong_self presentImageView:imageView forPageAtIndex:page];
+                if (page < strong_self.numberOfPages) {
+                    [strong_self.pb_dataSource viewController:strong_self presentImageView:imageView forPageAtIndex:page];
+                }
 #pragma clang diagnostic pop
             };
         }

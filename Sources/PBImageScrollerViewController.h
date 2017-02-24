@@ -43,5 +43,6 @@ typedef void(^PBImageDownloadProgressHandler)(NSInteger receivedSize, NSInteger 
 
 @property (nonatomic, strong, readonly) PBImageScrollView *imageScrollView;
 
+- (void)reloadData;
 
 @end
