@@ -61,9 +61,32 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+    [self reloadData];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    // 干掉加载动画。
+    self.progressLayer.hidden = YES;
+    self.dismissing = YES;
+}
+
+- (void)reloadData {
     [self _prepareForReuse];
-    
+    [self _loadData];
+}
+
+#pragma mark - Private methods
+
+- (void)_prepareForReuse {
+    self.imageView.image = nil;
+    self.progressLayer.hidden = YES;
+    self.progressLayer.strokeStart = 0;
+    self.progressLayer.strokeEnd = 0;
+    self.dismissing = NO;
+}
+
+- (void)_loadData {
     if (self.fetchImageHandler) {
         self.imageView.image = self.fetchImageHandler();
     } else if (self.configureImageViewWithDownloadProgressHandler) {
@@ -86,23 +109,6 @@
     } else if (self.configureImageViewHandler) {
         self.configureImageViewHandler(self.imageView);
     }
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    // 干掉加载动画。
-    self.progressLayer.hidden = YES;
-    self.dismissing = YES;
-}
-
-#pragma mark - Private methods
-
-- (void)_prepareForReuse {
-    self.imageView.image = nil;
-    self.progressLayer.hidden = YES;
-    self.progressLayer.strokeStart = 0;
-    self.progressLayer.strokeEnd = 0;
-    self.dismissing = NO;
 }
 
 #pragma mark - Accessor

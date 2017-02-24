@@ -72,7 +72,15 @@
 @property (nonatomic, weak, nullable) id<PBViewControllerDataSource> pb_dataSource;
 @property (nonatomic, weak, nullable) id<PBViewControllerDelegate> pb_delegate;
 
+@property (nonatomic, assign) NSInteger startPage;
 @property (nonatomic, assign) NSInteger pb_startPage;
 - (void)setInitializePageIndex:(NSInteger)pageIndex __attribute__((deprecated("use `pb_startPage` instead.")));
+
+@property (nonatomic, assign, readonly) NSInteger numberOfPages;
+@property (nonatomic, assign, readonly) NSInteger currentPage;
+/// Will show first page.
+- (void)reload;
+/// Will show the specified page.
+- (void)reloadWithCurrentPage:(NSInteger)index;
 
 @end

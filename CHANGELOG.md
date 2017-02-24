@@ -16,3 +16,12 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 -   修复 thumb 图片为加载的情况下动画问题。
 -   修复状态栏显示可能不复原的问题。
+
+
+
+### 0.4
+
+添加`reload`, `reloadWithCurrentPage:`方法，`numberOfPages`, `currentPage` 属性。
+
+
+
