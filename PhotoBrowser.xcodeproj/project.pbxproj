@@ -39,6 +39,7 @@
 		4686F88D1CEA315200AFEA65 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4686F88B1CEA315200AFEA65 /* Main.storyboard */; };
 		4686F88E1CEA329D00AFEA65 /* PhotoBrowser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4686F8191CEA2C4000AFEA65 /* PhotoBrowser.framework */; };
 		4686F88F1CEA329D00AFEA65 /* PhotoBrowser.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4686F8191CEA2C4000AFEA65 /* PhotoBrowser.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		46FE95A01E67090D00D36D6E /* UIView+LayerImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 46FE959F1E67090D00D36D6E /* UIView+LayerImage.m */; };
 		688D8F2E0D2DF290D2734E5B /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FDBFEF6AB6111BE128F7140 /* Pods_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +107,8 @@
 		4686F8851CEA312B00AFEA65 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		4686F88A1CEA315200AFEA65 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4686F88B1CEA315200AFEA65 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		46FE959E1E67090D00D36D6E /* UIView+LayerImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+LayerImage.h"; sourceTree = "<group>"; };
+		46FE959F1E67090D00D36D6E /* UIView+LayerImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+LayerImage.m"; sourceTree = "<group>"; };
 		50F46F9330F91C01C080BDC8 /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		69D32124846D71E6131AAB59 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -237,6 +240,8 @@
 				4686F8831CEA312B00AFEA65 /* main.m */,
 				4686F8841CEA312B00AFEA65 /* RootViewController.h */,
 				4686F8851CEA312B00AFEA65 /* RootViewController.m */,
+				46FE959E1E67090D00D36D6E /* UIView+LayerImage.h */,
+				46FE959F1E67090D00D36D6E /* UIView+LayerImage.m */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -444,6 +449,7 @@
 			files = (
 				4686F87D1CEA30FA00AFEA65 /* LocalImagesExampleViewController.m in Sources */,
 				4686F87E1CEA30FA00AFEA65 /* RemoteImagesExampleViewController.m in Sources */,
+				46FE95A01E67090D00D36D6E /* UIView+LayerImage.m in Sources */,
 				4686F8881CEA312B00AFEA65 /* main.m in Sources */,
 				4686F8861CEA312B00AFEA65 /* AppDelegate.m in Sources */,
 				4686F8891CEA312B00AFEA65 /* RootViewController.m in Sources */,
