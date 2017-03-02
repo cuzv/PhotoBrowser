@@ -374,27 +374,32 @@ UIViewControllerTransitioningDelegate
             return;
         }
         CGFloat factorY = (CGRectGetHeight(self.currentThumbView.bounds) * image.size.width) / (CGRectGetWidth(self.currentThumbView.bounds) * image.size.height);
-        // 如果是点击退出,并且图片长度超过屏幕(长微博形式)，截取头部合适区域并替换图片
+        // 1.1. 如果是点击退出, 并且图片长度超过屏幕(长微博形式)
         if (0 == self.direction && imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
-            // 还图片原到顶部
+            // 1.2. 还图片原到顶部
             imageScrollView.contentOffset = CGPointZero;
-            // 改变位置
-            imageScrollView.imageView.frame = CGRectMake(
-                0,
-                0,
-                CGRectGetWidth(self.view.bounds),
-                CGRectGetHeight(self.currentThumbView.bounds) / CGRectGetWidth(self.currentThumbView.bounds) * CGRectGetWidth(self.view.bounds)
-            );
-            // 改变图片
-            CGFloat scale = [UIScreen mainScreen].scale;
-            CGRect snapRect = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds) * scale, factorY * image.size.height);
-            CGImageRef newImageRef = CGImageCreateWithImageInRect(image.CGImage, snapRect);
-            imageScrollView.imageView.image = [UIImage imageWithCGImage:newImageRef];
-        } else {
-            // 如果是滑动退出
-            // 记录 contentsRect
-            self.contentsRect = CGRectMake(0, 0, 1, factorY);
+            
+            // 1.2. 并且回到的显示模型属于竖立的矩形，截取头部合适区域并替换图片
+            if (CGRectGetHeight(self.currentThumbView.bounds) > CGRectGetWidth(self.currentThumbView.bounds)) {
+                // 1.3 改变位置
+                imageScrollView.imageView.frame = CGRectMake(
+                                                             0,
+                                                             0,
+                                                             CGRectGetWidth(self.view.bounds),
+                                                             CGRectGetHeight(self.currentThumbView.bounds) / CGRectGetWidth(self.currentThumbView.bounds) * CGRectGetWidth(self.view.bounds)
+                                                             );
+                // 1.4 改变图片
+                CGFloat scale = [UIScreen mainScreen].scale;
+                CGRect snapRect = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds) * scale, factorY * image.size.height);
+                CGImageRef newImageRef = CGImageCreateWithImageInRect(image.CGImage, snapRect);
+                imageScrollView.imageView.image = [UIImage imageWithCGImage:newImageRef];
+                // 其他所有情况到 ·2·
+                return;
+            }
         }
+        // 2. 如果是滑动退出和点击退出的其他情况
+        // 记录 contentsRect
+        self.contentsRect = CGRectMake(0, 0, 1, factorY);
     }
 }
 
