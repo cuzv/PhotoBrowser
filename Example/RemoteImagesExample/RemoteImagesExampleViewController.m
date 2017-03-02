@@ -77,20 +77,17 @@
 
 
 - (NSArray *)frames {
-    NSValue *frame1 = [NSValue valueWithCGRect:CGRectMake(20, 80, 80, 80)];
-    NSValue *frame2 = [NSValue valueWithCGRect:CGRectMake(110, 80, 120, 90)];
-    NSValue *frame3 = [NSValue valueWithCGRect:CGRectMake(240, 90, 100, 85)];
+    NSValue *frame1 = [NSValue valueWithCGRect:CGRectMake(20, 80, 80, 80)]; // 正方形
+    NSValue *frame2 = [NSValue valueWithCGRect:CGRectMake(110, 80, 120, 80)]; // 长方形 (w>h)
+    NSValue *frame3 = [NSValue valueWithCGRect:CGRectMake(240, 80, 80, 120)]; // 长方形 (h>w)
     
-    NSValue *frame4 = [NSValue valueWithCGRect:CGRectMake(20, 180, 75, 110)];
-    NSValue *frame5 = [NSValue valueWithCGRect:CGRectMake(110, 185, 150, 90)];
-    NSValue *frame6 = [NSValue valueWithCGRect:CGRectMake(270, 190, 100, 100)];
+    NSValue *frame4 = [NSValue valueWithCGRect:CGRectMake(20, 220, 80, 80)]; // 正方形
+    NSValue *frame5 = [NSValue valueWithCGRect:CGRectMake(110, 220, 120, 80)]; // 长方形 (w>h)
+    NSValue *frame6 = [NSValue valueWithCGRect:CGRectMake(240, 220, 80, 120)];
     
-    NSValue *frame7 = [NSValue valueWithCGRect:CGRectMake(20, 300, 90, 90)];
-    NSValue *frame8 = [NSValue valueWithCGRect:CGRectMake(120, 290, 120, 150)];
-    NSValue *frame9 = [NSValue valueWithCGRect:CGRectMake(250, 305, 100, 100)];
-    
-//    NSValue *frame10 = [NSValue valueWithCGRect:CGRectMake(120, 470, 120, 100)];
-//    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10];
+    NSValue *frame7 = [NSValue valueWithCGRect:CGRectMake(20, 360, 80, 80)]; // 正方形
+    NSValue *frame8 = [NSValue valueWithCGRect:CGRectMake(110, 360, 120, 80)]; // 长方形 (w>h)
+    NSValue *frame9 = [NSValue valueWithCGRect:CGRectMake(240, 360, 130, 270)]; // 长方形 (h>w)
     
     return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9];
 }
@@ -102,7 +99,8 @@
 }
 
 - (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(void (^)(NSInteger, NSInteger))progressHandler {
-    NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/cuzv/PhotoBrowser/dev/Example/Assets/%@.jpg", @(index + 1)];
+    
+    NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/cuzv/PhotoBrowser/master/Example/Assets/%@.jpg", @(index + 1)];
     UIImage *placeholder = self.imageViews[index].image;
     [imageView sd_setImageWithURL:[NSURL URLWithString:url]
                  placeholderImage:placeholder

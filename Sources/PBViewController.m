@@ -34,9 +34,9 @@
 static const NSUInteger reusable_page_count = 3;
 
 @interface PBViewController () <
-    UIPageViewControllerDataSource,
-    UIPageViewControllerDelegate,
-    UIViewControllerTransitioningDelegate
+UIPageViewControllerDataSource,
+UIPageViewControllerDelegate,
+UIViewControllerTransitioningDelegate
 >
 
 @property (nonatomic, strong) NSArray<PBImageScrollerViewController *> *reusableImageScrollerViewControllers;
@@ -61,6 +61,8 @@ static const NSUInteger reusable_page_count = 3;
 @property (nonatomic, assign) CGFloat direction;
 
 @property (nonatomic, strong) UIImageView *thumbDoppelgangerView;
+
+@property (nonatomic, assign) CGRect contentsRect;
 
 @end
 
@@ -89,13 +91,14 @@ static const NSUInteger reusable_page_count = 3;
     self.modalPresentationStyle = UIModalPresentationCustom;
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     self.transitioningDelegate = self;
+    self.contentsRect = CGRectMake(0, 0, 1, 1);
     
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     // Set numberOfPages
     [self _setNumberOfPages];
     // Set visible view controllers
@@ -106,7 +109,7 @@ static const NSUInteger reusable_page_count = 3;
     [self _addBlurBackgroundView];
     
     self.view.layer.contents = (id)[self.presentingViewController.view pb_snapshotAfterScreenUpdates:NO].CGImage;
-
+    
     [self.view addGestureRecognizer:self.longPressGestureRecognizer];
     [self.view addGestureRecognizer:self.doubleTapGestureRecognizer];
     [self.view addGestureRecognizer:self.singleTapGestureRecognizer];
@@ -231,7 +234,7 @@ static const NSUInteger reusable_page_count = 3;
     
     // Get the reusable `PBImageScrollerViewController`
     PBImageScrollerViewController *imageScrollerViewController = self.reusableImageScrollerViewControllers[page % reusable_page_count];
-
+    
     // Set new data
     if (!self.pb_dataSource) {
         [NSException raise:@"Must implement `PBViewControllerDataSource` protocol." format:@""];
@@ -326,7 +329,7 @@ static const NSUInteger reusable_page_count = 3;
         self.thumbDoppelgangerView.alpha = 0;
         return;
     }
-
+    
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     UIImageView *imageView = imageScrollView.imageView;
     CGRect newFrame = [imageView.superview convertRect:imageView.frame toView:self.view];
@@ -355,31 +358,45 @@ static const NSUInteger reusable_page_count = 3;
     if (imageScrollView.zoomScale != 1) {
         [imageScrollView setZoomScale:1 animated:NO];
     }
-    // 如果内容很长的话（长微博），并且当前处于图片中间某个位置，没有超出顶部或者底部，需要特殊处理。
-    CGFloat contentHeight = imageScrollView.contentSize.height;
-    CGFloat scrollViewHeight = CGRectGetHeight(imageScrollView.bounds);
-    if (contentHeight > scrollViewHeight) {
-        CGFloat offsetY = imageScrollView.contentOffset.y;
-        if (offsetY < 0) {
-            return;
-        }
-        if (offsetY + scrollViewHeight > contentHeight) {
-            return;
-        }
-        // 无 thumbView, 并且内容长度超过屏幕，非滑动退出模式。替换图片。
-        if (0 == self.direction && !self.currentThumbView) {
+    
+    // 长图并且 currentThumbView 存在
+    UIImage *image = imageScrollView.imageView.image;
+    if (image.size.height > image.size.width) {
+        // 无 thumbView，点击退出模式，截取当前屏幕并替换图片
+        if (!self.currentThumbView && 0 == self.direction) {
             UIImage *image = [self.view pb_snapshotAfterScreenUpdates:NO];
             imageScrollView.imageView.image = image;
+            return;
         }
-        // 还原到页面顶部
-        [imageScrollView setContentOffset:CGPointZero animated:NO];
+        
+        // 有 thumbView，并且长图显示的是头部，计算图片高度缩放比例
+        if (!self.thumbClippedToTop) {
+            return;
+        }
+        CGFloat factorY = (CGRectGetHeight(self.currentThumbView.bounds) * image.size.width) / (CGRectGetWidth(self.currentThumbView.bounds) * image.size.height);
+        // 如果是点击退出，截取头部合适区域并替换图片
+        if (0 == self.direction) {
+            CGFloat scale = [UIScreen mainScreen].scale;
+            CGRect snapRect = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds) * scale, factorY * image.size.height);
+            // 改变位置
+            imageScrollView.imageView.frame = CGRectMake(0,
+                                                         -imageScrollView.contentOffset.y,
+                                                         CGRectGetWidth(self.view.bounds),
+                                                         CGRectGetHeight(self.currentThumbView.bounds) / CGRectGetWidth(self.currentThumbView.bounds) * CGRectGetWidth(self.view.bounds));
+            CGImageRef newImageRef = CGImageCreateWithImageInRect(image.CGImage, snapRect);
+            imageScrollView.imageView.image = [UIImage imageWithCGImage:newImageRef];
+        } else {
+            // 如果是滑动退出
+            // 记录 contentsRect
+            self.contentsRect = CGRectMake(0, 0, 1, factorY);
+        }
     }
 }
 
 - (void)_duringDismissing {
     [self _showStatusBarIfNeeded];
     self.blurBackgroundView.alpha = 0;
-
+    
     PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     UIImageView *imageView = imageScrollView.imageView;
@@ -391,7 +408,7 @@ static const NSUInteger reusable_page_count = 3;
     
     // present 之前显示的图片视图。
     UIView *thumbView = self.currentThumbView;
-    CGRect destFrame;    
+    CGRect destFrame = CGRectZero;
     if (thumbView) {
         imageView.clipsToBounds = thumbView.clipsToBounds;
         imageView.contentMode = thumbView.contentMode;
@@ -400,14 +417,18 @@ static const NSUInteger reusable_page_count = 3;
         // 把 contentInset 考虑进来。
         CGFloat verticalInset = imageScrollView.contentInset.top + imageScrollView.contentInset.bottom;
         destFrame = CGRectMake(CGRectGetMinX(destFrame), CGRectGetMinY(destFrame) - verticalInset, CGRectGetWidth(destFrame), CGRectGetHeight(destFrame));
+        // 如果是滑动退出，同步裁剪图片位置
+        if (0 != self.direction) {
+            imageView.layer.contentsRect = self.contentsRect;
+        }
     } else {
-        // 移动到屏幕外然后 dismiss.
         if (0 == self.direction) {
-            // 非滑动退出，中间
+            // 非滑动退出，点击中间
             destFrame = CGRectMake(CGRectGetWidth(imageScrollView.bounds) / 2, CGRectGetHeight(imageScrollView.bounds) / 2, 0, 0);
             // 图片渐变
             imageScrollView.alpha = 0;
         } else {
+            // 移动到屏幕外然后 dismiss.
             CGFloat width = CGRectGetWidth(imageScrollView.imageView.bounds);
             CGFloat height = CGRectGetHeight(imageScrollView.imageView.bounds);
             if (0 < self.direction) {
@@ -624,6 +645,14 @@ static const NSUInteger reusable_page_count = 3;
         return [[UIImage alloc] initWithCGImage:(__bridge CGImageRef _Nonnull)(currentThumbView.layer.contents)];
     }
     return nil;
+}
+
+- (BOOL)thumbClippedToTop {
+    UIView *currentThumbView = self.currentThumbView;
+    if (!currentThumbView) {
+        return NO;
+    }
+    return currentThumbView.layer.contentsRect.size.height < 1;
 }
 
 - (PBPresentAnimatedTransitioningController *)transitioningController {

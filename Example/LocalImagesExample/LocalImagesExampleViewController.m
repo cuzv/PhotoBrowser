@@ -8,6 +8,7 @@
 
 #import "LocalImagesExampleViewController.h"
 #import "PBViewController.h"
+#import "UIView+LayerImage.h"
 
 @interface LocalImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;
@@ -25,13 +26,16 @@
         UIView *imageView = [UIView new];
         imageView.clipsToBounds = YES;
         imageView.contentMode = UIViewContentModeScaleAspectFill;
-        imageView.backgroundColor = [UIColor blackColor];
+        imageView.backgroundColor = [UIColor orangeColor];
         imageView.frame = [self.frames[index] CGRectValue];
         imageView.tag = index;
         imageView.userInteractionEnabled = YES;
+        imageView.layer.borderColor = [UIColor redColor].CGColor;
+        imageView.layer.borderWidth = 1;
         NSString *imageName = [NSString stringWithFormat:@"%@", @(index + 1)];
         UIImage *image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"]];
-        imageView.layer.contents = (__bridge id _Nullable)image.CGImage;
+//        imageView.layer.contents = (__bridge id _Nullable)(image.CGImage);
+        imageView.layerImage = image;
         [self.view addSubview:imageView];
         [self.imageViews addObject:imageView];
         
@@ -62,19 +66,19 @@
 }
 
 - (NSArray *)frames {
-    NSValue *frame1 = [NSValue valueWithCGRect:CGRectMake(20, 80, 80, 80)];
-    NSValue *frame2 = [NSValue valueWithCGRect:CGRectMake(110, 80, 120, 90)];
-    NSValue *frame3 = [NSValue valueWithCGRect:CGRectMake(240, 90, 100, 85)];
+    NSValue *frame1 = [NSValue valueWithCGRect:CGRectMake(20, 80, 80, 80)]; // 正方形
+    NSValue *frame2 = [NSValue valueWithCGRect:CGRectMake(110, 80, 120, 80)]; // 长方形 (w>h)
+    NSValue *frame3 = [NSValue valueWithCGRect:CGRectMake(240, 80, 80, 120)]; // 长方形 (h>w)
     
-    NSValue *frame4 = [NSValue valueWithCGRect:CGRectMake(20, 180, 75, 110)];
-    NSValue *frame5 = [NSValue valueWithCGRect:CGRectMake(110, 185, 150, 90)];
-    NSValue *frame6 = [NSValue valueWithCGRect:CGRectMake(270, 190, 100, 100)];
+    NSValue *frame4 = [NSValue valueWithCGRect:CGRectMake(20, 220, 80, 80)]; // 正方形
+    NSValue *frame5 = [NSValue valueWithCGRect:CGRectMake(110, 220, 120, 80)]; // 长方形 (w>h)
+    NSValue *frame6 = [NSValue valueWithCGRect:CGRectMake(240, 220, 80, 120)];
     
-    NSValue *frame7 = [NSValue valueWithCGRect:CGRectMake(20, 300, 90, 90)];
-    NSValue *frame8 = [NSValue valueWithCGRect:CGRectMake(120, 290, 120, 150)];
-    NSValue *frame9 = [NSValue valueWithCGRect:CGRectMake(250, 305, 100, 100)];
+    NSValue *frame7 = [NSValue valueWithCGRect:CGRectMake(20, 360, 80, 80)]; // 正方形
+    NSValue *frame8 = [NSValue valueWithCGRect:CGRectMake(110, 360, 120, 80)]; // 长方形 (w>h)
+    NSValue *frame9 = [NSValue valueWithCGRect:CGRectMake(240, 360, 130, 270)]; // 长方形 (h>w)
     
-    NSValue *frame10 = [NSValue valueWithCGRect:CGRectMake(120, 470, 120, 100)];
+    NSValue *frame10 = [NSValue valueWithCGRect:CGRectMake(120, 490, 100, 160)]; // 等比例
     
     return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10];
 }
