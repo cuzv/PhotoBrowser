@@ -374,15 +374,20 @@ UIViewControllerTransitioningDelegate
             return;
         }
         CGFloat factorY = (CGRectGetHeight(self.currentThumbView.bounds) * image.size.width) / (CGRectGetWidth(self.currentThumbView.bounds) * image.size.height);
-        // 如果是点击退出，截取头部合适区域并替换图片
-        if (0 == self.direction) {
+        // 如果是点击退出,并且图片长度超过屏幕(长微博形式)，截取头部合适区域并替换图片
+        if (0 == self.direction && imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
+            // 还图片原到顶部
+            imageScrollView.contentOffset = CGPointZero;
+            // 改变位置
+            imageScrollView.imageView.frame = CGRectMake(
+                0,
+                0,
+                CGRectGetWidth(self.view.bounds),
+                CGRectGetHeight(self.currentThumbView.bounds) / CGRectGetWidth(self.currentThumbView.bounds) * CGRectGetWidth(self.view.bounds)
+            );
+            // 改变图片
             CGFloat scale = [UIScreen mainScreen].scale;
             CGRect snapRect = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds) * scale, factorY * image.size.height);
-            // 改变位置
-            imageScrollView.imageView.frame = CGRectMake(0,
-                                                         -imageScrollView.contentOffset.y,
-                                                         CGRectGetWidth(self.view.bounds),
-                                                         CGRectGetHeight(self.currentThumbView.bounds) / CGRectGetWidth(self.currentThumbView.bounds) * CGRectGetWidth(self.view.bounds));
             CGImageRef newImageRef = CGImageCreateWithImageInRect(image.CGImage, snapRect);
             imageScrollView.imageView.image = [UIImage imageWithCGImage:newImageRef];
         } else {
@@ -417,10 +422,9 @@ UIViewControllerTransitioningDelegate
         // 把 contentInset 考虑进来。
         CGFloat verticalInset = imageScrollView.contentInset.top + imageScrollView.contentInset.bottom;
         destFrame = CGRectMake(CGRectGetMinX(destFrame), CGRectGetMinY(destFrame) - verticalInset, CGRectGetWidth(destFrame), CGRectGetHeight(destFrame));
-        // 如果是滑动退出，同步裁剪图片位置
-        if (0 != self.direction) {
-            imageView.layer.contentsRect = self.contentsRect;
-        }
+        
+        // 同步裁剪图片位置
+        imageView.layer.contentsRect = self.contentsRect;
     } else {
         if (0 == self.direction) {
             // 非滑动退出，点击中间
