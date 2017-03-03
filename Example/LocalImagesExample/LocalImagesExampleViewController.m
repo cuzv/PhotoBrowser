@@ -57,7 +57,8 @@
     pbViewController.pb_dataSource = self;
     pbViewController.pb_delegate = self;
     pbViewController.pb_startPage = sender.tag;
-    [self presentViewController:pbViewController animated:YES completion:nil];
+    [self presentViewController:pbViewController animated:YES completion:^{
+    }];
 }
 
 - (void)_thumb:(UIBarButtonItem *)sender {
