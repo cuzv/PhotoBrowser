@@ -31,18 +31,18 @@ typedef void(^PBContextBlock)(UIView * __nonnull fromView, UIView * __nonnull to
 
 @interface PBPresentAnimatedTransitioningController : NSObject <UIViewControllerAnimatedTransitioning>
 
-@property (nonatomic, copy, nullable) PBContextBlock prepareForPresentActionHandler;
-@property (nonatomic, copy, nullable) PBContextBlock duringPresentingActionHandler;
-@property (nonatomic, copy, nullable) PBContextBlock didPresentedActionHandler;
-@property (nonatomic, copy, nullable) PBContextBlock prepareForDismissActionHandler;
-@property (nonatomic, copy, nullable) PBContextBlock duringDismissingActionHandler;
-@property (nonatomic, copy, nullable) PBContextBlock didDismissedActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock willPresentActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock onPresentActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock didPresentActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock willDismissActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock onDismissActionHandler;
+@property (nonatomic, copy, nullable) PBContextBlock didDismissActionHandler;
 
 
 /// Default cover is a dim view, you could override this property to your preferred style view.
 @property (nonatomic, strong, nonnull) UIView *coverView;
 
-- (nonnull PBPresentAnimatedTransitioningController *)pb_prepareForPresent;
-- (nonnull PBPresentAnimatedTransitioningController *)pb_prepareForDismiss;
+- (nonnull PBPresentAnimatedTransitioningController *)prepareForPresent;
+- (nonnull PBPresentAnimatedTransitioningController *)prepareForDismiss;
 
 @end

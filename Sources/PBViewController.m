@@ -63,6 +63,7 @@ UIViewControllerTransitioningDelegate
 @property (nonatomic, strong) UIImageView *thumbDoppelgangerView;
 
 @property (nonatomic, assign) CGRect contentsRect;
+@property (nonatomic, assign) CGRect originFrame;
 
 @end
 
@@ -277,33 +278,33 @@ UIViewControllerTransitioningDelegate
 
 - (void)_setupTransitioningController {
     __weak typeof(self) weak_self = self;
-    self.transitioningController.prepareForPresentActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.willPresentActionHandler = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
-        [strong_self _prepareForPresent];
+        [strong_self _willPresent];
     };
-    self.transitioningController.duringPresentingActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.onPresentActionHandler = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
-        [strong_self _duringPresenting];
+        [strong_self _onPresent];
     };
-    self.transitioningController.didPresentedActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.didPresentActionHandler = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _didPresented];
     };
-    self.transitioningController.prepareForDismissActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.willDismissActionHandler = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
-        [strong_self _prepareForDismiss];
+        [strong_self _willDismiss];
     };
-    self.transitioningController.duringDismissingActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.onDismissActionHandler = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
-        [strong_self _duringDismissing];
+        [strong_self _onDismiss];
     };
-    self.transitioningController.didDismissedActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.didDismissActionHandler = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _didDismiss];
     };
 }
 
-- (void)_prepareForPresent {
+- (void)_willPresent {
     PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
     currentScrollViewController.view.alpha = 0;
     self.blurBackgroundView.alpha = 0;
@@ -312,16 +313,47 @@ UIViewControllerTransitioningDelegate
         return;
     }
     
-    CGRect newFrame = [thumbView.superview convertRect:thumbView.frame toView:self.view];
-    self.thumbDoppelgangerView.frame = newFrame;
+    CGRect frame = [thumbView.superview convertRect:thumbView.frame toView:self.view];
+    self.thumbDoppelgangerView.frame = frame;
     self.thumbDoppelgangerView.image = self.currentThumbImage;
     self.thumbDoppelgangerView.contentMode = thumbView.contentMode;
     self.thumbDoppelgangerView.clipsToBounds = thumbView.clipsToBounds;
     self.thumbDoppelgangerView.backgroundColor = thumbView.backgroundColor;
     [self.view addSubview:self.thumbDoppelgangerView];
+    
+    if (!self.thumbClippedToTop) {
+        return;
+    }
+    PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
+    if (imageScrollView.contentSize.height <= CGRectGetHeight(imageScrollView.bounds)) {
+        return;
+    }
+    
+    currentScrollViewController.view.alpha = 1;
+    self.thumbDoppelgangerView.hidden = YES;
+
+    UIImageView *imageView = imageScrollView.imageView;
+    imageView.image = self.currentThumbImage;
+    
+    CGRect fromFrame = thumbView.frame;
+    CGRect originFrame = imageScrollView.frame;
+    CGFloat scale = CGRectGetWidth(fromFrame) / CGRectGetWidth(imageScrollView.bounds);
+    
+    // centerX
+    imageScrollView.center = CGPointMake(CGRectGetMidX(fromFrame), CGRectGetMidY(imageScrollView.frame));
+    // height
+    CGRect newFrame = imageScrollView.frame;
+    newFrame.size.height = CGRectGetHeight(fromFrame) / scale;
+    imageScrollView.frame = newFrame;
+    // layer animation
+    [imageScrollView.layer setValue:@(scale) forKeyPath:@"transform.scale"];
+    // centerY
+    imageScrollView.center = CGPointMake(CGRectGetMidX(imageScrollView.frame), CGRectGetMidY(fromFrame));
+    // record
+    self.originFrame = originFrame;
 }
 
-- (void)_duringPresenting {
+- (void)_onPresent {
     PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
     self.blurBackgroundView.alpha = 1;
     [self _hideStatusBarIfNeeded];
@@ -334,15 +366,21 @@ UIViewControllerTransitioningDelegate
     
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     UIImageView *imageView = imageScrollView.imageView;
-    CGRect newFrame = [imageView.superview convertRect:imageView.frame toView:self.view];
+    CGRect originFrame = [imageView.superview convertRect:imageView.frame toView:self.view];
     
-    if (CGRectEqualToRect(newFrame, CGRectZero)) {
+    if (CGRectEqualToRect(originFrame, CGRectZero)) {
         currentScrollViewController.view.alpha = 1;
         self.thumbDoppelgangerView.alpha = 0;
         return;
     }
-    
-    self.thumbDoppelgangerView.frame = newFrame;
+
+    if (self.thumbClippedToTop &&
+        imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
+        imageScrollView.frame = self.originFrame;
+        [imageScrollView.layer setValue:@(1) forKeyPath:@"transform.scale"];
+    } else {
+        self.thumbDoppelgangerView.frame = originFrame;
+    }
 }
 
 - (void)_didPresented {
@@ -353,10 +391,10 @@ UIViewControllerTransitioningDelegate
     [self _hideIndicator];
 }
 
-/// 图片：         正方形 | 长方形(w>h) | 长方形(h>w)
-/// thubmView：   正方形 | 长方形(w>h) | 长方形(h>w)
+/// pic  :    正方形 | 长方形(w>h) | 长方形(h>w)
+/// view :    正方形 | 长方形(w>h) | 长方形(h>w)
 /// 3 * 3 = 9 种情况
-- (void)_prepareForDismiss {
+- (void)_willDismiss {
     PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     // 还原 zoom.
@@ -408,7 +446,7 @@ UIViewControllerTransitioningDelegate
     }
 }
 
-- (void)_duringDismissing {
+- (void)_onDismiss {
     [self _showStatusBarIfNeeded];
     self.blurBackgroundView.alpha = 0;
     
@@ -481,7 +519,6 @@ UIViewControllerTransitioningDelegate
 
 - (void)_didDismiss {
     self.currentScrollViewController.imageScrollView.imageView.layer.anchorPoint = CGPointMake(0.5, 0);
-
 }
 
 - (void)_hideIndicator {
@@ -569,11 +606,11 @@ UIViewControllerTransitioningDelegate
 #pragma mark - UIViewControllerTransitioningDelegate
 
 - (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented  presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
-    return [self.transitioningController pb_prepareForPresent];
+    return [self.transitioningController prepareForPresent];
 }
 
 - (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
-    return [self.transitioningController pb_prepareForDismiss];
+    return [self.transitioningController prepareForDismiss];
 }
 
 #pragma mark - Accessor

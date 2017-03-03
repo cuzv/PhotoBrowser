@@ -40,12 +40,12 @@
 
 #pragma mark - Public methods
 
-- (nonnull PBPresentAnimatedTransitioningController *)pb_prepareForPresent {
+- (nonnull PBPresentAnimatedTransitioningController *)prepareForPresent {
     self.isPresenting = YES;
     return self;
 }
 
-- (nonnull PBPresentAnimatedTransitioningController *)pb_prepareForDismiss {
+- (nonnull PBPresentAnimatedTransitioningController *)prepareForDismiss {
     self.isPresenting = NO;
     return self;
 }
@@ -67,20 +67,20 @@
     toView.frame = container.bounds;
     [container addSubview:toView];
     
-    if (self.prepareForPresentActionHandler) {
-        self.prepareForPresentActionHandler(fromView, toView);
+    if (self.willPresentActionHandler) {
+        self.willPresentActionHandler(fromView, toView);
     }
     __weak typeof(self) weak_self = self;
     [self _runAnimations:^{
         __strong typeof(weak_self) strong_self = weak_self;
         strong_self.coverView.alpha = 1;
-        if (strong_self.duringPresentingActionHandler) {
-            strong_self.duringPresentingActionHandler(fromView, toView);
+        if (strong_self.onPresentActionHandler) {
+            strong_self.onPresentActionHandler(fromView, toView);
         }
     } completion:^(BOOL flag) {
         __strong typeof(weak_self) strong_self = weak_self;
-        if (strong_self.didPresentedActionHandler) {
-            strong_self.didPresentedActionHandler(fromView, toView);
+        if (strong_self.didPresentActionHandler) {
+            strong_self.didPresentActionHandler(fromView, toView);
         }
         completion(flag);
     }];
@@ -88,20 +88,20 @@
 
 - (void)_runDismissAnimationsWithContainer:(UIView *)container from:(UIView *)fromView to:(UIView *)toView completion:(void (^)(BOOL flag))completion {
     [container addSubview:fromView];
-    if (self.prepareForDismissActionHandler) {
-        self.prepareForDismissActionHandler(fromView, toView);
+    if (self.willDismissActionHandler) {
+        self.willDismissActionHandler(fromView, toView);
     }
     __weak typeof(self) weak_self = self;
     [self _runAnimations:^{
         __strong typeof(weak_self) strong_self = weak_self;
         strong_self.coverView.alpha = 0;
-        if (strong_self.duringDismissingActionHandler) {
-            strong_self.duringDismissingActionHandler(fromView, toView);
+        if (strong_self.onDismissActionHandler) {
+            strong_self.onDismissActionHandler(fromView, toView);
         }
     } completion:^(BOOL flag) {
         __strong typeof(weak_self) strong_self = weak_self;
-        if (strong_self.didDismissedActionHandler) {
-            strong_self.didDismissedActionHandler(fromView, toView);
+        if (strong_self.didDismissActionHandler) {
+            strong_self.didDismissActionHandler(fromView, toView);
         }
         completion(flag);
     }];
