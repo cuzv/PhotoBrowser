@@ -77,10 +77,11 @@
     NSValue *frame7 = [NSValue valueWithCGRect:CGRectMake(20, 360, 80, 80)]; // 正方形
     NSValue *frame8 = [NSValue valueWithCGRect:CGRectMake(110, 360, 120, 80)]; // 长方形 (w>h)
     NSValue *frame9 = [NSValue valueWithCGRect:CGRectMake(240, 360, 130, 270)]; // 长方形 (h>w)
-    
     NSValue *frame10 = [NSValue valueWithCGRect:CGRectMake(120, 490, 100, 160)]; // 等比例
     
-    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10];
+    NSValue *frame11 = [NSValue valueWithCGRect:CGRectMake(20, 490, 80, 80)]; // 正方形
+    
+    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10, frame11];
 }
 
 #pragma mark - PBViewControllerDataSource
