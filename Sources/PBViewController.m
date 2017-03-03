@@ -298,6 +298,8 @@ UIViewControllerTransitioningDelegate
         [strong_self _duringDismissing];
     };
     self.transitioningController.didDismissedActionHandler = ^(UIView *fromView, UIView *toView) {
+        __strong typeof(weak_self) strong_self = weak_self;
+        [strong_self _didDismiss];
     };
 }
 
@@ -375,43 +377,34 @@ UIViewControllerTransitioningDelegate
             return;
         }
         
-        // 有 thumbView，未截取图片
+        // 有 thumbView
+        // 未截取图片
         if (!self.thumbClippedToTop) {
             // 点击推出，需要先回到顶部
             if (self.dismissByClick) {
-                imageScrollView.contentOffset = CGPointZero;
+                [imageScrollView _scrollToTopAnimated:NO];
             }
             return;
         }
         
-        // 有 thumbView，并且长图显示的是头部，计算图片高度缩放比例
-        CGFloat factorY = (CGRectGetHeight(self.currentThumbView.bounds) * image.size.width) / (CGRectGetWidth(self.currentThumbView.bounds) * image.size.height);
-        // 1.1. 如果是点击退出, 并且图片长度超过屏幕(长微博形式)
-        if (self.dismissByClick && imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
-            // 1.2. 还图片原到顶部
-            imageScrollView.contentOffset = CGPointZero;
-            
-            // 1.2. 并且回到的显示模型属于竖立的矩形，截取头部合适区域并替换图片
-            if (CGRectGetHeight(self.currentThumbView.bounds) > CGRectGetWidth(self.currentThumbView.bounds)) {
-                // 1.3 改变位置
-                imageScrollView.imageView.frame = CGRectMake(
-                                                             0,
-                                                             0,
-                                                             CGRectGetWidth(self.view.bounds),
-                                                             CGRectGetHeight(self.currentThumbView.bounds) / CGRectGetWidth(self.currentThumbView.bounds) * CGRectGetWidth(self.view.bounds)
-                                                             );
-                // 1.4 改变图片
-                CGFloat scale = [UIScreen mainScreen].scale;
-                CGRect snapRect = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds) * scale, factorY * image.size.height);
-                CGImageRef newImageRef = CGImageCreateWithImageInRect(image.CGImage, snapRect);
-                imageScrollView.imageView.image = [UIImage imageWithCGImage:newImageRef];
-                // 其他所有情况到 ·2·
-                return;
-            }
-        }
-        // 2. 如果是滑动退出和点击退出的其他情况
+        // 截取了图片
         // 记录 contentsRect
+        CGFloat factorY = (CGRectGetHeight(self.currentThumbView.bounds) * image.size.width) / (CGRectGetWidth(self.currentThumbView.bounds) * image.size.height);
         self.contentsRect = CGRectMake(0, 0, 1, factorY);
+        
+        // 图片长度超过屏幕(长微博形式)，为裁剪动画做准备
+        if (imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
+            [CATransaction begin];
+            [CATransaction setDisableActions:YES];
+            CGRect frame = imageScrollView.imageView.frame;
+            imageScrollView.imageView.layer.anchorPoint = CGPointMake(0.5, self.isPullup ? 1 : 0);
+            imageScrollView.imageView.frame = frame;
+            [CATransaction commit];
+        }
+        // 还图片原到顶部
+        if (self.dismissByClick) {
+            [imageScrollView _scrollToTopAnimated:NO];
+        }
     }
 }
 
@@ -432,16 +425,38 @@ UIViewControllerTransitioningDelegate
     UIView *thumbView = self.currentThumbView;
     CGRect destFrame = CGRectZero;
     if (thumbView) {
-//        imageView.clipsToBounds = thumbView.clipsToBounds;
-//        imageView.contentMode = thumbView.contentMode;
         // 还原到起始位置然后 dismiss.
         destFrame = [thumbView.superview convertRect:thumbView.frame toView:currentScrollViewController.view];
         // 把 contentInset 考虑进来。
         CGFloat verticalInset = imageScrollView.contentInset.top + imageScrollView.contentInset.bottom;
-        destFrame = CGRectMake(CGRectGetMinX(destFrame), CGRectGetMinY(destFrame) - verticalInset, CGRectGetWidth(destFrame), CGRectGetHeight(destFrame));
+        destFrame = CGRectMake(
+           CGRectGetMinX(destFrame),
+           CGRectGetMinY(destFrame) - verticalInset,
+           CGRectGetWidth(destFrame),
+           CGRectGetHeight(destFrame)
+       );
         
         // 同步裁剪图片位置
         imageView.layer.contentsRect = self.contentsRect;
+        
+        // 裁剪过图片的长微博
+        if (self.thumbClippedToTop && imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
+            CGFloat height = CGRectGetHeight(thumbView.bounds) / CGRectGetWidth(thumbView.bounds) * CGRectGetWidth(imageView.bounds);
+            if (isnan(height)) {
+                height = CGRectGetWidth(imageView.bounds);
+            }
+            
+            CGRect newFrame = imageView.frame;
+            newFrame.size.height = height;
+            imageView.frame = newFrame;
+            imageView.center = CGPointMake(CGRectGetMidX(destFrame), CGRectGetMinY(destFrame) + (self.isPullup ? CGRectGetHeight(thumbView.bounds) : 0));
+
+            CGFloat scale = CGRectGetWidth(thumbView.bounds) / CGRectGetWidth(imageView.bounds) * imageScrollView.zoomScale;
+            [imageView.layer setValue:@(scale) forKeyPath:@"transform.scale"];
+            return;
+        } else {
+            imageView.frame = destFrame;
+        }
     } else {
         if (self.dismissByClick) {
             // 非滑动退出，点击中间
@@ -452,7 +467,7 @@ UIViewControllerTransitioningDelegate
             // 移动到屏幕外然后 dismiss.
             CGFloat width = CGRectGetWidth(imageScrollView.imageView.bounds);
             CGFloat height = CGRectGetHeight(imageScrollView.imageView.bounds);
-            if (0 < self.direction) {
+            if (self.isPullup) {
                 // 向上
                 destFrame = CGRectMake(0, -height, width, height);
             } else {
@@ -460,9 +475,13 @@ UIViewControllerTransitioningDelegate
                 destFrame = CGRectMake(0, CGRectGetHeight(imageScrollView.bounds), width, height);
             }
         }
+        imageView.frame = destFrame;
     }
-    
-    imageView.frame = destFrame;
+}
+
+- (void)_didDismiss {
+    self.currentScrollViewController.imageScrollView.imageView.layer.anchorPoint = CGPointMake(0.5, 0);
+
 }
 
 - (void)_hideIndicator {
@@ -689,6 +708,10 @@ UIViewControllerTransitioningDelegate
     }
     
     return YES;
+}
+
+- (BOOL)isPullup {
+    return 0 < self.direction;
 }
 
 - (PBPresentAnimatedTransitioningController *)transitioningController {

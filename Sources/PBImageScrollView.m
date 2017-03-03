@@ -115,6 +115,12 @@
     }
 }
 
+- (void)_scrollToTopAnimated:(BOOL)animated {
+    CGPoint offset = self.contentOffset;
+    offset.y = -self.contentInset.top;
+    [self setContentOffset:offset animated:animated];
+}
+
 #pragma mark - Private methods
 
 - (void)_addObserver {
