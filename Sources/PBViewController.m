@@ -351,6 +351,9 @@ UIViewControllerTransitioningDelegate
     [self _hideIndicator];
 }
 
+/// 图片：         正方形 | 长方形(w>h) | 长方形(h>w)
+/// thubmView：   正方形 | 长方形(w>h) | 长方形(h>w)
+/// 3 * 3 = 9 种情况
 - (void)_prepareForDismiss {
     PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
@@ -365,7 +368,7 @@ UIViewControllerTransitioningDelegate
         // 无 thumbView
         if (!self.currentThumbView) {
             // 点击退出模式，截取当前屏幕并替换图片
-            if (0 == self.direction) {
+            if (self.dismissByClick) {
                 UIImage *image = [self.view pb_snapshotAfterScreenUpdates:NO];
                 imageScrollView.imageView.image = image;
             }
@@ -374,16 +377,17 @@ UIViewControllerTransitioningDelegate
         
         // 有 thumbView，未截取图片
         if (!self.thumbClippedToTop) {
-            // 如果图片长度超过屏幕(长微博形式)，需要先回到顶部
-            if (imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
+            // 点击推出，需要先回到顶部
+            if (self.dismissByClick) {
                 imageScrollView.contentOffset = CGPointZero;
             }
             return;
         }
+        
         // 有 thumbView，并且长图显示的是头部，计算图片高度缩放比例
         CGFloat factorY = (CGRectGetHeight(self.currentThumbView.bounds) * image.size.width) / (CGRectGetWidth(self.currentThumbView.bounds) * image.size.height);
         // 1.1. 如果是点击退出, 并且图片长度超过屏幕(长微博形式)
-        if (0 == self.direction && imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
+        if (self.dismissByClick && imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
             // 1.2. 还图片原到顶部
             imageScrollView.contentOffset = CGPointZero;
             
@@ -428,8 +432,8 @@ UIViewControllerTransitioningDelegate
     UIView *thumbView = self.currentThumbView;
     CGRect destFrame = CGRectZero;
     if (thumbView) {
-        imageView.clipsToBounds = thumbView.clipsToBounds;
-        imageView.contentMode = thumbView.contentMode;
+//        imageView.clipsToBounds = thumbView.clipsToBounds;
+//        imageView.contentMode = thumbView.contentMode;
         // 还原到起始位置然后 dismiss.
         destFrame = [thumbView.superview convertRect:thumbView.frame toView:currentScrollViewController.view];
         // 把 contentInset 考虑进来。
@@ -439,7 +443,7 @@ UIViewControllerTransitioningDelegate
         // 同步裁剪图片位置
         imageView.layer.contentsRect = self.contentsRect;
     } else {
-        if (0 == self.direction) {
+        if (self.dismissByClick) {
             // 非滑动退出，点击中间
             destFrame = CGRectMake(CGRectGetWidth(imageScrollView.bounds) / 2, CGRectGetHeight(imageScrollView.bounds) / 2, 0, 0);
             // 图片渐变
@@ -670,6 +674,21 @@ UIViewControllerTransitioningDelegate
         return NO;
     }
     return currentThumbView.layer.contentsRect.size.height < 1;
+}
+
+- (BOOL)dismissByClick {
+    if (0 != self.direction) {
+        return NO;
+    }
+    PBImageScrollView *imageScrollView = self.currentScrollViewController.imageScrollView;
+    if (imageScrollView.contentOffset.y < 0) {
+        return NO;
+    }
+    if (imageScrollView.contentInset.top < 0) {
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (PBPresentAnimatedTransitioningController *)transitioningController {
