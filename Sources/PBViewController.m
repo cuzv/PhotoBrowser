@@ -359,20 +359,28 @@ UIViewControllerTransitioningDelegate
         [imageScrollView setZoomScale:1 animated:NO];
     }
     
-    // 长图并且 currentThumbView 存在
+    // 长图
     UIImage *image = imageScrollView.imageView.image;
     if (image.size.height > image.size.width) {
-        // 无 thumbView，点击退出模式，截取当前屏幕并替换图片
-        if (!self.currentThumbView && 0 == self.direction) {
-            UIImage *image = [self.view pb_snapshotAfterScreenUpdates:NO];
-            imageScrollView.imageView.image = image;
+        // 无 thumbView
+        if (!self.currentThumbView) {
+            // 点击退出模式，截取当前屏幕并替换图片
+            if (0 == self.direction) {
+                UIImage *image = [self.view pb_snapshotAfterScreenUpdates:NO];
+                imageScrollView.imageView.image = image;
+            }
             return;
         }
         
-        // 有 thumbView，并且长图显示的是头部，计算图片高度缩放比例
+        // 有 thumbView，未截取图片
         if (!self.thumbClippedToTop) {
+            // 如果图片长度超过屏幕(长微博形式)，需要先回到顶部
+            if (imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
+                imageScrollView.contentOffset = CGPointZero;
+            }
             return;
         }
+        // 有 thumbView，并且长图显示的是头部，计算图片高度缩放比例
         CGFloat factorY = (CGRectGetHeight(self.currentThumbView.bounds) * image.size.width) / (CGRectGetWidth(self.currentThumbView.bounds) * image.size.height);
         // 1.1. 如果是点击退出, 并且图片长度超过屏幕(长微博形式)
         if (0 == self.direction && imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
