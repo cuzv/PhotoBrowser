@@ -34,8 +34,8 @@
 
 @property (nonatomic, strong, readwrite) UIImageView *imageView;
 @property (nonatomic, weak) id <NSObject> notification;
-/// direction: > 0 up, < 0 dwon, == 0 others(no swipe, e.g. tap).
-@property (nonatomic, assign) CGFloat direction;
+/// velocity: > 0 up, < 0 dwon, == 0 others(no swipe, e.g. tap).
+@property (nonatomic, assign) CGFloat velocity;
 @property (nonatomic, assign) BOOL dismissing;
 
 @end
@@ -45,9 +45,7 @@
 - (void)dealloc {
     [self _removeObserver];
     [self _removeNotificationIfNeeded];
-#if DEBUG
     NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
-#endif
 }
 
 #pragma mark - respondsToSelector
@@ -255,26 +253,25 @@
     // 停止时有加速度不够取消操作
     // 如果距离够，不取消
     CGFloat rawPercent = [self _rawContentOffSetVerticalPercent];
-    CGFloat direction = self.direction;
+    CGFloat velocity = self.velocity;
     if (fabs(rawPercent) <= 0) {
         return;
     }
     NSLog(@"rawPercent: %@", @(rawPercent));
-    NSLog(@"direction: %@", @(direction));
-    if (fabs(rawPercent) < 0.15f && fabs(direction) < 1) {
+    NSLog(@"velocity: %@", @(velocity));
+    if (fabs(rawPercent) < 0.15f && fabs(velocity) < 1) {
         return;
     }
     // 停止时有相反方向滑动操作时取消退出操作
-    if (rawPercent * direction < 0) {
+    if (rawPercent * velocity < 0) {
         return;
     }
     // 如果是长图，并且是向上滑动，需要滑到底部以下才能结束
-    NSLog(@"is long pic: %@", self.contentSize.height > CGRectGetHeight(self.bounds) ? @"YES" : @"NO");
     if (self.contentSize.height > CGRectGetHeight(self.bounds)) {
-        if (direction > 0) {
+        if (velocity > 0) {
             // 向上滑动
-            // 速度过快，防止误操作，取消
-            if (direction > 2.8) {
+            // 速度过快且滑过区域较小，防止误操作，取消
+            if (velocity > 2.8 && rawPercent < 0.1) {
                 return;
             }
             if (self.contentOffset.y + CGRectGetHeight(self.bounds) <= self.contentSize.height) {
@@ -283,7 +280,7 @@
         } else {
             // 向下滑动
             // 速度过快，防止误操作，取消
-            if (fabs(direction) > 2.8) {
+            if (fabs(velocity) > 2.8) {
                 return;
             }
             if (self.contentOffset.y > 0) {
@@ -295,13 +292,13 @@
         // 取消回弹效果，所以计算 imageView 的 frame 的时候需要注意 contentInset.
         scrollView.bounces = NO;
         scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
-        self.didEndDraggingInProperpositionHandler(self.direction);
+        self.didEndDraggingInProperpositionHandler(self.velocity);
         self.dismissing = YES;
     }
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    self.direction = velocity.y;
+    self.velocity = velocity.y;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
