@@ -323,11 +323,8 @@ static const NSUInteger reusable_page_count = 3;
     if (!self.thumbClippedToTop) {
         return;
     }
+
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
-    if (imageScrollView.contentSize.height <= CGRectGetHeight(imageScrollView.bounds)) {
-        return;
-    }
-    
     currentScrollViewController.view.alpha = 1;
     self.thumbDoppelgangerView.hidden = YES;
 
