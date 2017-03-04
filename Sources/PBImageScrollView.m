@@ -252,19 +252,18 @@
         return;
     }
     
-    // 停止时有相反方向滑动操作时取消退出操作
+    // 停止时有加速度不够取消操作
+    // 如果距离够，不取消
     CGFloat rawPercent = [self _rawContentOffSetVerticalPercent];
-    if (rawPercent * self.direction < 0) {
+    if (fabs(self.direction) < 1 && fabs(rawPercent) < 0.16f) {
         return;
     }
-    
-    if (self.didEndDraggingInProperpositionHandler && fabs(rawPercent) > 0.3f) {
+    if (self.didEndDraggingInProperpositionHandler) {
         // 取消回弹效果，所以计算 imageView 的 frame 的时候需要注意 contentInset.
         scrollView.bounces = NO;
         scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
         self.didEndDraggingInProperpositionHandler(self.direction);
         self.dismissing = YES;
-        return;
     }
 }
 
