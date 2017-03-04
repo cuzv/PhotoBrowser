@@ -145,6 +145,9 @@
         _coverView = [UIView new];
         _coverView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
         _coverView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _coverView.clipsToBounds = YES;
+        _coverView.multipleTouchEnabled = NO;
+        _coverView.userInteractionEnabled = NO;
     }
     return _coverView;
 }

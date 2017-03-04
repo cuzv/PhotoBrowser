@@ -82,5 +82,7 @@
 - (void)reload;
 /// Will show the specified page.
 - (void)reloadWithCurrentPage:(NSInteger)index;
+/// Default value is `YES`
+@property (nonatomic, assign) BOOL blurBackground;
 
 @end
