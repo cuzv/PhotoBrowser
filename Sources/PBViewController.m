@@ -659,14 +659,11 @@ UIViewControllerTransitioningDelegate
 
 - (UIView *)blurBackgroundView {
     if (!_blurBackgroundView) {
-        UIToolbar *view = [[UIToolbar alloc] initWithFrame:self.view.bounds];
-        view.barStyle = UIBarStyleBlack;
-        view.translucent = YES;
-        view.clipsToBounds = YES;
-        view.multipleTouchEnabled = NO;
-        view.userInteractionEnabled = NO;
-        _blurBackgroundView = view;
-        
+        _blurBackgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
+        _blurBackgroundView.backgroundColor = [UIColor blackColor];
+        _blurBackgroundView.clipsToBounds = YES;
+        _blurBackgroundView.multipleTouchEnabled = NO;
+        _blurBackgroundView.userInteractionEnabled = NO;
     }
     return _blurBackgroundView;
 }
