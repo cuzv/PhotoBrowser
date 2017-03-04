@@ -212,17 +212,18 @@
     CGFloat contentHeight = self.contentSize.height;
     CGFloat scrollViewHeight = CGRectGetHeight(self.bounds);
     CGFloat offsetY = self.contentOffset.y;
+    CGFloat factor = 1.3;
 
     if (offsetY < 0) {
-        percent = MAX(offsetY / (scrollViewHeight / 3.0), -1.0f);
+        percent = MIN(offsetY / (scrollViewHeight * factor), 1.0f);
     } else {
         if (contentHeight < scrollViewHeight) {
-            percent = MIN(offsetY / (scrollViewHeight / 3.0), 1.0f);
+            percent = MIN(offsetY / (scrollViewHeight * factor), 1.0f);
         } else {
             offsetY += scrollViewHeight;
             CGFloat contentHeight = self.contentSize.height;
             if (offsetY > contentHeight) {
-                percent = MIN((offsetY - contentHeight) / (scrollViewHeight / 3.0f), 1.0f);
+                percent = MIN((offsetY - contentHeight) / (scrollViewHeight * factor), 1.0f);
             }
         }
     }
