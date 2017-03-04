@@ -255,8 +255,41 @@
     // 停止时有加速度不够取消操作
     // 如果距离够，不取消
     CGFloat rawPercent = [self _rawContentOffSetVerticalPercent];
-    if (fabs(self.direction) < 1 && fabs(rawPercent) < 0.16f) {
+    CGFloat direction = self.direction;
+    if (fabs(rawPercent) <= 0) {
         return;
+    }
+    NSLog(@"rawPercent: %@", @(rawPercent));
+    NSLog(@"direction: %@", @(direction));
+    if (fabs(rawPercent) < 0.15f && fabs(direction) < 1) {
+        return;
+    }
+    // 停止时有相反方向滑动操作时取消退出操作
+    if (rawPercent * direction < 0) {
+        return;
+    }
+    // 如果是长图，并且是向上滑动，需要滑到底部以下才能结束
+    NSLog(@"is long pic: %@", self.contentSize.height > CGRectGetHeight(self.bounds) ? @"YES" : @"NO");
+    if (self.contentSize.height > CGRectGetHeight(self.bounds)) {
+        if (direction > 0) {
+            // 向上滑动
+            // 速度过快，防止误操作，取消
+            if (direction > 2.8) {
+                return;
+            }
+            if (self.contentOffset.y + CGRectGetHeight(self.bounds) <= self.contentSize.height) {
+                return;
+            }
+        } else {
+            // 向下滑动
+            // 速度过快，防止误操作，取消
+            if (fabs(direction) > 2.8) {
+                return;
+            }
+            if (self.contentOffset.y > 0) {
+                return;
+            }
+        }
     }
     if (self.didEndDraggingInProperpositionHandler) {
         // 取消回弹效果，所以计算 imageView 的 frame 的时候需要注意 contentInset.
