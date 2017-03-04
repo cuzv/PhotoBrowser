@@ -34,9 +34,9 @@
 static const NSUInteger reusable_page_count = 3;
 
 @interface PBViewController () <
-UIPageViewControllerDataSource,
-UIPageViewControllerDelegate,
-UIViewControllerTransitioningDelegate
+    UIPageViewControllerDataSource,
+    UIPageViewControllerDelegate,
+    UIViewControllerTransitioningDelegate
 >
 
 @property (nonatomic, strong) NSArray<PBImageScrollerViewController *> *reusableImageScrollerViewControllers;
@@ -92,7 +92,8 @@ UIViewControllerTransitioningDelegate
     self.modalPresentationStyle = UIModalPresentationCustom;
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     self.transitioningDelegate = self;
-    self.contentsRect = CGRectMake(0, 0, 1, 1);
+    _contentsRect = CGRectMake(0, 0, 1, 1);
+    _blurBackground = YES;
     
     return self;
 }
@@ -624,6 +625,7 @@ UIViewControllerTransitioningDelegate
             __weak typeof(self) weak_self = self;
             imageScrollerViewController.imageScrollView.contentOffSetVerticalPercentHandler = ^(CGFloat percent) {
                 __strong typeof(weak_self) strong_self = weak_self;
+                NSLog(@"percent: %@", @(percent));
                 strong_self.blurBackgroundView.alpha = 1.0f - percent;
             };
             imageScrollerViewController.imageScrollView.didEndDraggingInProperpositionHandler = ^(CGFloat direction){
@@ -658,12 +660,23 @@ UIViewControllerTransitioningDelegate
 }
 
 - (UIView *)blurBackgroundView {
-    if (!_blurBackgroundView) {
-        _blurBackgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
-        _blurBackgroundView.backgroundColor = [UIColor blackColor];
-        _blurBackgroundView.clipsToBounds = YES;
-        _blurBackgroundView.multipleTouchEnabled = NO;
-        _blurBackgroundView.userInteractionEnabled = NO;
+    if (self.blurBackground) {
+        if (!_blurBackgroundView) {
+            _blurBackgroundView = [[UIToolbar alloc] initWithFrame:self.view.bounds];
+            ((UIToolbar *)_blurBackgroundView).barStyle = UIBarStyleBlack;
+            ((UIToolbar *)_blurBackgroundView).translucent = YES;
+            _blurBackgroundView.clipsToBounds = YES;
+            _blurBackgroundView.multipleTouchEnabled = NO;
+            _blurBackgroundView.userInteractionEnabled = NO;
+        }
+    } else {
+        if (!_blurBackgroundView) {
+            _blurBackgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
+            _blurBackgroundView.backgroundColor = [UIColor blackColor];
+            _blurBackgroundView.clipsToBounds = YES;
+            _blurBackgroundView.multipleTouchEnabled = NO;
+            _blurBackgroundView.userInteractionEnabled = NO;
+        }
     }
     return _blurBackgroundView;
 }
