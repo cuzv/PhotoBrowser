@@ -27,6 +27,23 @@
 #ifndef PBImageScrollView_internal_h
 #define PBImageScrollView_internal_h
 
+#ifndef NSLog
+    #if DEBUG
+        #define NSLog(FORMAT, ...)    \
+        do {    \
+            fprintf(stderr,"<%s> %s %s [%d] %s\n",    \
+            (NSThread.isMainThread ? "UI" : "BG"),    \
+            (sel_getName(_cmd)),\
+            [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String],    \
+            __LINE__,    \
+            [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);    \
+            } while(0)
+    #else
+        #define NSLog(FORMAT, ...)
+    #endif
+#endif
+
+
 #import "PBImageScrollView.h"
 
 @interface PBImageScrollView()
@@ -38,8 +55,8 @@
 @property (nonatomic, copy) void(^contentOffSetVerticalPercentHandler)(CGFloat);
 
 /// loosen hand with decelerate
-/// direction: > 0 up, < 0 dwon, == 0 others(no swipe, e.g. tap).
-@property (nonatomic, copy) void(^didEndDraggingInProperpositionHandler)(CGFloat direction);
+/// velocity: > 0 up, < 0 dwon, == 0 others(no swipe, e.g. tap).
+@property (nonatomic, copy) void(^didEndDraggingInProperpositionHandler)(CGFloat velocity);
 
 @end
 

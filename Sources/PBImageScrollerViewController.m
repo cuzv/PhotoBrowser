@@ -37,11 +37,9 @@
 
 @implementation PBImageScrollerViewController
 
-#if DEBUG
 - (void)dealloc {
     NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
 }
-#endif
 
 - (void)viewDidLoad {
     [super viewDidLoad];

@@ -58,7 +58,7 @@ static const NSUInteger reusable_page_count = 3;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @property (nonatomic, strong) PBPresentAnimatedTransitioningController *transitioningController;
-@property (nonatomic, assign) CGFloat direction;
+@property (nonatomic, assign) CGFloat velocity;
 
 @property (nonatomic, strong) UIImageView *thumbDoppelgangerView;
 
@@ -69,13 +69,11 @@ static const NSUInteger reusable_page_count = 3;
 
 @implementation PBViewController
 
-#pragma mark - respondsToSelector
-
-#if DEBUG
 - (void)dealloc {
     NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
 }
-#endif
+
+#pragma mark - respondsToSelector
 
 - (instancetype)initWithTransitionStyle:(UIPageViewControllerTransitionStyle)style
                   navigationOrientation:(UIPageViewControllerNavigationOrientation)navigationOrientation
@@ -627,9 +625,9 @@ static const NSUInteger reusable_page_count = 3;
                 __strong typeof(weak_self) strong_self = weak_self;
                 strong_self.blurBackgroundView.alpha = 1.0f - percent;
             };
-            imageScrollerViewController.imageScrollView.didEndDraggingInProperpositionHandler = ^(CGFloat direction){
+            imageScrollerViewController.imageScrollView.didEndDraggingInProperpositionHandler = ^(CGFloat velocity){
                 __strong typeof(weak_self) strong_self = weak_self;
-                strong_self.direction = direction;
+                strong_self.velocity = velocity;
                 [strong_self dismissViewControllerAnimated:YES completion:nil];
             };
             [controllers addObject:imageScrollerViewController];
@@ -742,7 +740,7 @@ static const NSUInteger reusable_page_count = 3;
 }
 
 - (BOOL)dismissByClick {
-    if (0 != self.direction) {
+    if (0 != self.velocity) {
         return NO;
     }
     PBImageScrollView *imageScrollView = self.currentScrollViewController.imageScrollView;
@@ -757,7 +755,7 @@ static const NSUInteger reusable_page_count = 3;
 }
 
 - (BOOL)isPullup {
-    return 0 < self.direction;
+    return 0 < self.velocity;
 }
 
 - (PBPresentAnimatedTransitioningController *)transitioningController {
