@@ -60,8 +60,6 @@ static const NSUInteger reusable_page_count = 3;
 @property (nonatomic, strong) PBPresentAnimatedTransitioningController *transitioningController;
 @property (nonatomic, assign) CGFloat velocity;
 
-@property (nonatomic, strong) UIImageView *thumbDoppelgangerView;
-
 @property (nonatomic, assign) CGRect contentsRect;
 @property (nonatomic, assign) CGRect originFrame;
 @property (nonatomic, weak) UIView *lastThumbView;
@@ -309,54 +307,53 @@ static const NSUInteger reusable_page_count = 3;
     }
     [self _hideThumbView];
 
-    CGRect frame = [thumbView.superview convertRect:thumbView.frame toView:self.view];
-    self.thumbDoppelgangerView.frame = frame;
-    self.thumbDoppelgangerView.image = self.currentThumbImage;
-    self.thumbDoppelgangerView.contentMode = thumbView.contentMode;
-    self.thumbDoppelgangerView.clipsToBounds = thumbView.clipsToBounds;
-    self.thumbDoppelgangerView.backgroundColor = thumbView.backgroundColor;
-    [self.view addSubview:self.thumbDoppelgangerView];
-    
-    if (!self.thumbClippedToTop) {
-        return;
-    }
-    
-    PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     currentScrollViewController.view.alpha = 1;
-    self.thumbDoppelgangerView.hidden = YES;
-
+    PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     UIImageView *imageView = imageScrollView.imageView;
     imageView.image = self.currentThumbImage;
     UIImage *image = imageView.image;
-    
-    CGRect fromFrame = [thumbView.superview convertRect:thumbView.frame toView:self.view];
-    CGRect originFrame = [imageView.superview convertRect:imageView.frame toView:self.view];
-    // 长微博长图只取屏幕高度
-    if (CGRectGetHeight(originFrame) > CGRectGetHeight(imageScrollView.bounds)) {
-        originFrame.size.height = CGRectGetHeight(imageScrollView.bounds);
+
+    // 长图
+    if (self.thumbClippedToTop) {
+        CGRect fromFrame = [thumbView.superview convertRect:thumbView.frame toView:self.view];
+        CGRect originFrame = [imageView.superview convertRect:imageView.frame toView:self.view];
+        // 长微博长图只取屏幕高度
+        if (CGRectGetHeight(originFrame) > CGRectGetHeight(imageScrollView.bounds)) {
+            originFrame.size.height = CGRectGetHeight(imageScrollView.bounds);
+            
+            CGFloat scale = CGRectGetWidth(fromFrame) / CGRectGetWidth(imageScrollView.bounds);
+            // centerX
+            imageScrollView.center = CGPointMake(CGRectGetMidX(fromFrame), CGRectGetMidY(imageScrollView.frame));
+            // height
+            CGRect newFrame = imageScrollView.frame;
+            newFrame.size.height = CGRectGetHeight(fromFrame) / scale;
+            imageScrollView.frame = newFrame;
+            // layer animation
+            [imageScrollView.layer setValue:@(scale) forKeyPath:@"transform.scale"];
+            // centerY
+            imageScrollView.center = CGPointMake(CGRectGetMidX(imageScrollView.frame), CGRectGetMidY(fromFrame));
+        }
+        // 长图但是长度不超过屏幕
+        else {
+            imageView.frame = fromFrame;
+            CGFloat heightRatio = (image.size.width / image.size.height) * (CGRectGetHeight(imageView.bounds) / CGRectGetWidth(imageView.bounds));
+            imageView.layer.contentsRect = CGRectMake(0, 0, 1, heightRatio);
+            imageView = UIViewContentModeScaleToFill;
+        }
         
-        CGFloat scale = CGRectGetWidth(fromFrame) / CGRectGetWidth(imageScrollView.bounds);
-        // centerX
-        imageScrollView.center = CGPointMake(CGRectGetMidX(fromFrame), CGRectGetMidY(imageScrollView.frame));
-        // height
-        CGRect newFrame = imageScrollView.frame;
-        newFrame.size.height = CGRectGetHeight(fromFrame) / scale;
-        imageScrollView.frame = newFrame;
-        // layer animation
-        [imageScrollView.layer setValue:@(scale) forKeyPath:@"transform.scale"];
-        // centerY
-        imageScrollView.center = CGPointMake(CGRectGetMidX(imageScrollView.frame), CGRectGetMidY(fromFrame));
+        // record
+        self.originFrame = originFrame;
     }
-    // 长图但是长度不超过屏幕
+    // 宽图 or 等比例
     else {
-        imageView.frame = fromFrame;
-        CGFloat heightRatio = (image.size.width / image.size.height) * (CGRectGetHeight(imageView.bounds) / CGRectGetWidth(imageView.bounds));
-        imageView.layer.contentsRect = CGRectMake(0, 0, 1, heightRatio);
-        imageView = UIViewContentModeScaleToFill;
+        // record
+        self.originFrame = imageView.frame;
+        CGRect frame = [thumbView.superview convertRect:thumbView.frame toView:self.view];
+        imageView.frame = frame;
+        imageView.contentMode = thumbView.contentMode;
+        imageView.clipsToBounds = thumbView.clipsToBounds;
+        imageView.backgroundColor = thumbView.backgroundColor;
     }
-    
-    // record
-    self.originFrame = originFrame;
 }
 
 - (void)_onPresent {
@@ -366,7 +363,6 @@ static const NSUInteger reusable_page_count = 3;
     
     if (!self.currentThumbView) {
         currentScrollViewController.view.alpha = 1;
-        self.thumbDoppelgangerView.alpha = 0;
         return;
     }
     
@@ -376,10 +372,10 @@ static const NSUInteger reusable_page_count = 3;
     
     if (CGRectEqualToRect(originFrame, CGRectZero)) {
         currentScrollViewController.view.alpha = 1;
-        self.thumbDoppelgangerView.alpha = 0;
         return;
     }
 
+    // 长图
     if (self.thumbClippedToTop) {
         // 长微博长图
         if (CGRectGetHeight(self.originFrame) > CGRectGetHeight(imageScrollView.bounds)) {
@@ -391,8 +387,10 @@ static const NSUInteger reusable_page_count = 3;
             imageView.frame = self.originFrame;
             imageView.layer.contentsRect = CGRectMake(0, 0, 1, 1);
         }
-    } else {
-        self.thumbDoppelgangerView.frame = originFrame;
+    }
+    // 宽图 or 等比例
+    else {
+        imageView.frame = self.originFrame;
     }
 }
 
@@ -400,9 +398,6 @@ static const NSUInteger reusable_page_count = 3;
     self.currentScrollViewController.view.alpha = 1;
     self.currentScrollViewController.imageScrollView.imageView.contentMode = UIViewContentModeScaleAspectFill;
     [self.currentScrollViewController reloadData];
-    [self.thumbDoppelgangerView removeFromSuperview];
-    self.thumbDoppelgangerView.image = nil;
-    self.thumbDoppelgangerView = nil;
     [self _hideIndicator];
 }
 
@@ -778,13 +773,6 @@ static const NSUInteger reusable_page_count = 3;
         _transitioningController = [PBPresentAnimatedTransitioningController new];
     }
     return _transitioningController;
-}
-
-- (UIImageView *)thumbDoppelgangerView {
-    if (!_thumbDoppelgangerView) {
-        _thumbDoppelgangerView = [UIImageView new];
-    }
-    return _thumbDoppelgangerView;
 }
 
 @end
