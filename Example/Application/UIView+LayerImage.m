@@ -15,16 +15,15 @@
 }
 
 - (void)setLayerImage:(UIImage *)layerImage {
-    CGFloat pw = layerImage.size.width;
-    CGFloat ph = layerImage.size.height;
-    CGFloat scale = ph / pw;
+    CGFloat iw = layerImage.size.width;
+    CGFloat ih = layerImage.size.height;
+    CGFloat vw = CGRectGetWidth(self.bounds);
+    CGFloat vh = CGRectGetHeight(self.bounds);
+    CGFloat scale = (ih / iw) / (vh / vw);
     if (!isnan(scale) && scale > 1) {
         // 高图只保留顶部
         self.contentMode = UIViewContentModeScaleToFill;
-        CGFloat vw = CGRectGetWidth(self.bounds);
-        CGFloat vh = CGRectGetHeight(self.bounds);
-        CGFloat scaleh = vh != vw ? (vh / vw) * (pw / ph) : pw / ph;
-        self.layer.contentsRect = CGRectMake(0, 0, 1, scaleh);
+        self.layer.contentsRect = CGRectMake(0, 0, 1, (iw / ih) * (vh / vw));
     } else {
         // 宽图把左右两边裁掉
         self.contentMode = UIViewContentModeScaleAspectFill;

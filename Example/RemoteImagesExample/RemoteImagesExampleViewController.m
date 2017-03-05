@@ -32,7 +32,9 @@
         imageView.frame = [self.frames[index] CGRectValue];
         imageView.tag = index;
         imageView.userInteractionEnabled = YES;
-        NSString *imageName = [NSString stringWithFormat:@"%@", @(index + 1)];
+        imageView.layer.borderColor = [UIColor redColor].CGColor;
+        imageView.layer.borderWidth = 1;
+        NSString *imageName = [NSString stringWithFormat:@"little_%@", @(index + 1)];
         imageView.image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"]];
         [self.view addSubview:imageView];
 
@@ -77,22 +79,27 @@
 
 
 - (NSArray *)frames {
-    NSValue *frame1 = [NSValue valueWithCGRect:CGRectMake(20, 80, 80, 80)]; // 正方形
-    NSValue *frame2 = [NSValue valueWithCGRect:CGRectMake(110, 80, 120, 80)]; // 长方形 (w>h)
-    NSValue *frame3 = [NSValue valueWithCGRect:CGRectMake(240, 80, 80, 120)]; // 长方形 (h>w)
+    NSValue *frame1 = [NSValue valueWithCGRect:CGRectMake(20, 70, 80, 80)]; // 正方形
+    NSValue *frame2 = [NSValue valueWithCGRect:CGRectMake(110, 70, 120, 80)]; // 长方形 (w>h)
+    NSValue *frame3 = [NSValue valueWithCGRect:CGRectMake(240, 70, 80, 100)]; // 长方形 (h>w)
     
-    NSValue *frame4 = [NSValue valueWithCGRect:CGRectMake(20, 220, 80, 80)]; // 正方形
-    NSValue *frame5 = [NSValue valueWithCGRect:CGRectMake(110, 220, 120, 80)]; // 长方形 (w>h)
-    NSValue *frame6 = [NSValue valueWithCGRect:CGRectMake(240, 220, 80, 120)];
+    NSValue *frame4 = [NSValue valueWithCGRect:CGRectMake(20, 180, 80, 80)]; // 正方形
+    NSValue *frame5 = [NSValue valueWithCGRect:CGRectMake(110, 180, 120, 80)]; // 长方形 (w>h)
+    NSValue *frame6 = [NSValue valueWithCGRect:CGRectMake(240, 180, 80, 100)]; // 长方形 (h>w)
     
-    NSValue *frame7 = [NSValue valueWithCGRect:CGRectMake(20, 360, 80, 80)]; // 正方形
-    NSValue *frame8 = [NSValue valueWithCGRect:CGRectMake(110, 360, 120, 80)]; // 长方形 (w>h)
-    NSValue *frame9 = [NSValue valueWithCGRect:CGRectMake(240, 360, 130, 270)]; // 长方形 (h>w)
-    NSValue *frame10 = [NSValue valueWithCGRect:CGRectMake(120, 490, 100, 160)]; // 等比例
+    NSValue *frame7 = [NSValue valueWithCGRect:CGRectMake(20, 290, 80, 80)]; // 正方形
+    NSValue *frame8 = [NSValue valueWithCGRect:CGRectMake(110, 290, 120, 80)]; // 长方形 (w>h)
+    NSValue *frame9 = [NSValue valueWithCGRect:CGRectMake(240, 290, 80, 100)]; // 长方形 (h>w)
     
-    NSValue *frame11 = [NSValue valueWithCGRect:CGRectMake(20, 490, 80, 80)]; // 正方形
+    NSValue *frame10 = [NSValue valueWithCGRect:CGRectMake(20, 400, 80, 80)]; // 正方形
+    NSValue *frame11 = [NSValue valueWithCGRect:CGRectMake(110, 400, 120, 80)]; // 长方形 (w>h)
+    NSValue *frame12 = [NSValue valueWithCGRect:CGRectMake(270, 400, 80, 120)]; // 长方形 (h>w)
     
-    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10, frame11];
+    NSValue *frame13 = [NSValue valueWithCGRect:CGRectMake(20, 490, 120, 120)]; // 正方形
+    
+    NSValue *frame14 = [NSValue valueWithCGRect:CGRectMake(150, 490, 100, 160)]; // 等比例
+    
+    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10, frame11, frame12, frame13, frame14];
 }
 
 #pragma mark - PBViewControllerDataSource
