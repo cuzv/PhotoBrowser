@@ -82,7 +82,7 @@
     
     NSValue *frame10 = [NSValue valueWithCGRect:CGRectMake(20, 400, 80, 80)]; // 正方形
     NSValue *frame11 = [NSValue valueWithCGRect:CGRectMake(110, 400, 120, 80)]; // 长方形 (w>h)
-    NSValue *frame12 = [NSValue valueWithCGRect:CGRectMake(270, 400, 80, 120)]; // 长方形 (h>w)
+    NSValue *frame12 = [NSValue valueWithCGRect:CGRectMake(270, 400, 80, 130)]; // 长方形 (h>w)
     
     NSValue *frame13 = [NSValue valueWithCGRect:CGRectMake(20, 490, 120, 120)]; // 正方形
 
