@@ -64,6 +64,7 @@ static const NSUInteger reusable_page_count = 3;
 
 @property (nonatomic, assign) CGRect contentsRect;
 @property (nonatomic, assign) CGRect originFrame;
+@property (nonatomic, weak) UIView *lastThumbView;
 
 @end
 
@@ -108,8 +109,6 @@ static const NSUInteger reusable_page_count = 3;
     // Blur background
     [self _addBlurBackgroundView];
     
-    self.view.layer.contents = (id)[self.presentingViewController.view pb_snapshotAfterScreenUpdates:NO].CGImage;
-    
     [self.view addGestureRecognizer:self.longPressGestureRecognizer];
     [self.view addGestureRecognizer:self.doubleTapGestureRecognizer];
     [self.view addGestureRecognizer:self.singleTapGestureRecognizer];
@@ -120,10 +119,6 @@ static const NSUInteger reusable_page_count = 3;
     self.delegate = self;
     
     [self _setupTransitioningController];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -159,6 +154,7 @@ static const NSUInteger reusable_page_count = 3;
     [self _setCurrentPresentPageAnimated: YES];
     [self _updateIndicator];
     [self _updateBlurBackgroundView];
+    [self _hideThumbView];
 }
 
 #pragma mark - Private methods
@@ -311,7 +307,8 @@ static const NSUInteger reusable_page_count = 3;
     if (!thumbView) {
         return;
     }
-    
+    [self _hideThumbView];
+
     CGRect frame = [thumbView.superview convertRect:thumbView.frame toView:self.view];
     self.thumbDoppelgangerView.frame = frame;
     self.thumbDoppelgangerView.image = self.currentThumbImage;
@@ -323,7 +320,7 @@ static const NSUInteger reusable_page_count = 3;
     if (!self.thumbClippedToTop) {
         return;
     }
-
+    
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     currentScrollViewController.view.alpha = 1;
     self.thumbDoppelgangerView.hidden = YES;
@@ -406,7 +403,6 @@ static const NSUInteger reusable_page_count = 3;
     [self.thumbDoppelgangerView removeFromSuperview];
     self.thumbDoppelgangerView.image = nil;
     self.thumbDoppelgangerView = nil;
-    
     [self _hideIndicator];
 }
 
@@ -527,6 +523,7 @@ static const NSUInteger reusable_page_count = 3;
 
 - (void)_didDismiss {
     self.currentScrollViewController.imageScrollView.imageView.layer.anchorPoint = CGPointMake(0.5, 0);
+    self.currentThumbView.hidden = NO;
 }
 
 - (void)_hideIndicator {
@@ -547,6 +544,14 @@ static const NSUInteger reusable_page_count = 3;
         self.indicator.alpha = 1;
     } completion:^(BOOL finished) {
     }];
+}
+
+- (void)_hideThumbView {
+    NSLog(@"_hideThumbView");
+    self.lastThumbView.hidden = NO;
+    UIView *currentThumbView = self.currentThumbView;
+    currentThumbView.hidden = YES;
+    self.lastThumbView = currentThumbView;
 }
 
 #pragma mark - Actions
@@ -609,6 +614,7 @@ static const NSUInteger reusable_page_count = 3;
     self.currentPage = imageScrollerViewController.page;
     [self _updateIndicator];
     [self _hideIndicator];
+    [self _hideThumbView];
 }
 
 #pragma mark - UIViewControllerTransitioningDelegate
