@@ -25,7 +25,9 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 ### 0.5
 
-增加图片显示模式兼容，长图显示头部的时候 dismiss 动画图片会还原到 thumb 显示的位置
+- 增加图片显示模式兼容，长图显示头部的时候 dismiss 动画图片会还原到 thumb 显示的位置。
+- 修复 present 的时候画面拉升。
+- 切换图片的时候隐藏对应的 thumb view。
 
 
 
