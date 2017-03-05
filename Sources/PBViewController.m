@@ -330,21 +330,34 @@ static const NSUInteger reusable_page_count = 3;
 
     UIImageView *imageView = imageScrollView.imageView;
     imageView.image = self.currentThumbImage;
+    UIImage *image = imageView.image;
     
-    CGRect fromFrame = thumbView.frame;
-    CGRect originFrame = imageScrollView.frame;
-    CGFloat scale = CGRectGetWidth(fromFrame) / CGRectGetWidth(imageScrollView.bounds);
+    CGRect fromFrame = [thumbView.superview convertRect:thumbView.frame toView:self.view];
+    CGRect originFrame = [imageView.superview convertRect:imageView.frame toView:self.view];
+    // 长微博长图只取屏幕高度
+    if (CGRectGetHeight(originFrame) > CGRectGetHeight(imageScrollView.bounds)) {
+        originFrame.size.height = CGRectGetHeight(imageScrollView.bounds);
+        
+        CGFloat scale = CGRectGetWidth(fromFrame) / CGRectGetWidth(imageScrollView.bounds);
+        // centerX
+        imageScrollView.center = CGPointMake(CGRectGetMidX(fromFrame), CGRectGetMidY(imageScrollView.frame));
+        // height
+        CGRect newFrame = imageScrollView.frame;
+        newFrame.size.height = CGRectGetHeight(fromFrame) / scale;
+        imageScrollView.frame = newFrame;
+        // layer animation
+        [imageScrollView.layer setValue:@(scale) forKeyPath:@"transform.scale"];
+        // centerY
+        imageScrollView.center = CGPointMake(CGRectGetMidX(imageScrollView.frame), CGRectGetMidY(fromFrame));
+    }
+    // 长图但是长度不超过屏幕
+    else {
+        imageView.frame = fromFrame;
+        CGFloat heightRatio = (image.size.width / image.size.height) * (CGRectGetHeight(imageView.bounds) / CGRectGetWidth(imageView.bounds));
+        imageView.layer.contentsRect = CGRectMake(0, 0, 1, heightRatio);
+        imageView = UIViewContentModeScaleToFill;
+    }
     
-    // centerX
-    imageScrollView.center = CGPointMake(CGRectGetMidX(fromFrame), CGRectGetMidY(imageScrollView.frame));
-    // height
-    CGRect newFrame = imageScrollView.frame;
-    newFrame.size.height = CGRectGetHeight(fromFrame) / scale;
-    imageScrollView.frame = newFrame;
-    // layer animation
-    [imageScrollView.layer setValue:@(scale) forKeyPath:@"transform.scale"];
-    // centerY
-    imageScrollView.center = CGPointMake(CGRectGetMidX(imageScrollView.frame), CGRectGetMidY(fromFrame));
     // record
     self.originFrame = originFrame;
 }
@@ -370,10 +383,17 @@ static const NSUInteger reusable_page_count = 3;
         return;
     }
 
-    if (self.thumbClippedToTop &&
-        imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
-        imageScrollView.frame = self.originFrame;
-        [imageScrollView.layer setValue:@(1) forKeyPath:@"transform.scale"];
+    if (self.thumbClippedToTop) {
+        // 长微博长图
+        if (CGRectGetHeight(self.originFrame) > CGRectGetHeight(imageScrollView.bounds)) {
+            imageScrollView.frame = self.originFrame;
+            [imageScrollView.layer setValue:@(1) forKeyPath:@"transform.scale"];
+        }
+        // 长图但是长度不超过屏幕
+        else {
+            imageView.frame = self.originFrame;
+            imageView.layer.contentsRect = CGRectMake(0, 0, 1, 1);
+        }
     } else {
         self.thumbDoppelgangerView.frame = originFrame;
     }
@@ -381,9 +401,12 @@ static const NSUInteger reusable_page_count = 3;
 
 - (void)_didPresented {
     self.currentScrollViewController.view.alpha = 1;
+    self.currentScrollViewController.imageScrollView.imageView.contentMode = UIViewContentModeScaleAspectFill;
+    [self.currentScrollViewController reloadData];
     [self.thumbDoppelgangerView removeFromSuperview];
     self.thumbDoppelgangerView.image = nil;
     self.thumbDoppelgangerView = nil;
+    
     [self _hideIndicator];
 }
 
@@ -398,46 +421,36 @@ static const NSUInteger reusable_page_count = 3;
         [imageScrollView setZoomScale:1 animated:NO];
     }
     
-    // 长图
-    UIImage *image = imageScrollView.imageView.image;
-    if (image.size.height > image.size.width) {
-        // 无 thumbView
-        if (!self.currentThumbView) {
-            // 点击退出模式，截取当前屏幕并替换图片
-            if (self.dismissByClick) {
-                UIImage *image = [self.view pb_snapshotAfterScreenUpdates:NO];
-                imageScrollView.imageView.image = image;
+    // 有 thumbView
+    if (self.currentThumbView) {
+        // 裁剪过图片
+        if (self.thumbClippedToTop) {
+            // 记录 contentsRect
+            UIImage *image = imageScrollView.imageView.image;
+            CGFloat heightRatio = (image.size.width / image.size.height) * (CGRectGetHeight(self.currentThumbView.bounds) / CGRectGetWidth(self.currentThumbView.bounds));
+            self.contentsRect = CGRectMake(0, 0, 1, heightRatio);
+            
+            // 图片长度超过屏幕(长微博形式)，为裁剪动画做准备
+            if (imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
+                [CATransaction begin];
+                [CATransaction setDisableActions:YES];
+                CGRect frame = imageScrollView.imageView.frame;
+                imageScrollView.imageView.layer.anchorPoint = CGPointMake(0.5, self.isPullup ? 1 : 0);
+                imageScrollView.imageView.frame = frame;
+                [CATransaction commit];
             }
-            return;
         }
-        
-        // 有 thumbView
-        // 未截取图片
-        if (!self.thumbClippedToTop) {
-            // 点击推出，需要先回到顶部
-            if (self.dismissByClick) {
-                [imageScrollView _scrollToTopAnimated:NO];
-            }
-            return;
-        }
-        
-        // 截取了图片
-        // 记录 contentsRect
-        CGFloat factorY = (CGRectGetHeight(self.currentThumbView.bounds) * image.size.width) / (CGRectGetWidth(self.currentThumbView.bounds) * image.size.height);
-        self.contentsRect = CGRectMake(0, 0, 1, factorY);
-        
-        // 图片长度超过屏幕(长微博形式)，为裁剪动画做准备
-        if (imageScrollView.contentSize.height > CGRectGetHeight(imageScrollView.bounds)) {
-            [CATransaction begin];
-            [CATransaction setDisableActions:YES];
-            CGRect frame = imageScrollView.imageView.frame;
-            imageScrollView.imageView.layer.anchorPoint = CGPointMake(0.5, self.isPullup ? 1 : 0);
-            imageScrollView.imageView.frame = frame;
-            [CATransaction commit];
-        }
-        // 还图片原到顶部
+        // 点击推出，需要先回到顶部
         if (self.dismissByClick) {
             [imageScrollView _scrollToTopAnimated:NO];
+        }
+    }
+    // 无 thumbView
+    else {
+        // 点击退出模式，截取当前屏幕并替换图片
+        if (self.dismissByClick) {
+            UIImage *image = [self.view pb_snapshotAfterScreenUpdates:NO];
+            imageScrollView.imageView.image = image;
         }
     }
 }
@@ -487,7 +500,6 @@ static const NSUInteger reusable_page_count = 3;
 
             CGFloat scale = CGRectGetWidth(thumbView.bounds) / CGRectGetWidth(imageView.bounds) * imageScrollView.zoomScale;
             [imageView.layer setValue:@(scale) forKeyPath:@"transform.scale"];
-            return;
         } else {
             imageView.frame = destFrame;
         }
