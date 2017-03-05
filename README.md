@@ -1,5 +1,5 @@
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/cuzv/PhotoBrowser/blob/master/LICENSE)
-[![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-v0.5.6-green.svg)](https://github.com/CocoaPods/CocoaPods)
+[![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-v0.5.7-green.svg)](https://github.com/CocoaPods/CocoaPods)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Weibo](https://img.shields.io/badge/Weibo-cuzval-yellowgreen.svg)](http://weibo.com/cuzval/)
 [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](http://twitter.com/mochxiao)
@@ -19,7 +19,12 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 ## How does it look like?
 
 <p align="left">
-<img src="./Preview/preview.gif" width=280px">
+<img src="./Preview/1.gif" width=240px">
+
+<img src="./Preview/2.gif" width=240px">
+
+<img src="./Preview/3.gif" width=240px">
+
 </p>
 
 ## Usage
