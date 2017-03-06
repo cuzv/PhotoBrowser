@@ -21,7 +21,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 
 ### 0.4
 
-添加`reload`, `reloadWithCurrentPage:`方法，`numberOfPages`, `currentPage` 属性。
+- 添加`reload`, `reloadWithCurrentPage:`方法，`numberOfPages`, `currentPage` 属性。
 
 ### 0.5
 
@@ -31,4 +31,6 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 - 优化内部实现逻辑（0.5.9）
 
 
+### 0.6
 
+- 调节背景亮度
