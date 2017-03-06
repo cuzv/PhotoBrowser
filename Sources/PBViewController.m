@@ -633,7 +633,11 @@ static const NSUInteger reusable_page_count = 3;
             __weak typeof(self) weak_self = self;
             imageScrollerViewController.imageScrollView.contentOffSetVerticalPercentHandler = ^(CGFloat percent) {
                 __strong typeof(weak_self) strong_self = weak_self;
-                strong_self.blurBackgroundView.alpha = 1.0f - percent;
+                CGFloat alpha = 1.0f - percent * 4;
+                if (alpha < 0) {
+                    alpha = 0;
+                }
+                strong_self.blurBackgroundView.alpha = alpha;
             };
             imageScrollerViewController.imageScrollView.didEndDraggingInProperpositionHandler = ^(CGFloat velocity){
                 __strong typeof(weak_self) strong_self = weak_self;
