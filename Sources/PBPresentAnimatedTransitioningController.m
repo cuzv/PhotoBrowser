@@ -50,11 +50,26 @@
     return 7 << 16;
 }
 
-- (void)_runAnimations:(void (^)(void))animations completion:(void (^)(BOOL flag))completion {
-    [UIView animateWithDuration:0.25 delay:0 options:[self _animationOptions] animations:animations completion:completion];
+- (void)_animateWithTransition:(nullable id <UIViewControllerContextTransitioning>)transitionContext
+                    animations:(void (^)(void))animations
+                    completion:(void (^)(BOOL flag))completion {
+    // Prevent other interactions disturb.
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    [UIView animateWithDuration:[self transitionDuration:transitionContext]
+                          delay:0
+                        options:[self _animationOptions]
+                     animations:animations
+                     completion:^(BOOL finished) {
+                         completion(finished);
+                         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+                     }];
 }
 
-- (void)_runPresentAnimationsWithContainer:(UIView *)container from:(UIView *)fromView to:(UIView *)toView completion:(void (^)(BOOL flag))completion {
+- (void)_presentWithTransition:(id <UIViewControllerContextTransitioning>)transitionContext
+                     container:(UIView *)container
+                          from:(UIView *)fromView
+                            to:(UIView *)toView
+                    completion:(void (^)(BOOL flag))completion {
     self.coverView.frame = container.frame;
     self.coverView.alpha = 0;
     [container addSubview:self.coverView];
@@ -65,40 +80,49 @@
         self.willPresentActionHandler(fromView, toView);
     }
     __weak typeof(self) weak_self = self;
-    [self _runAnimations:^{
-        __strong typeof(weak_self) strong_self = weak_self;
-        strong_self.coverView.alpha = 1;
-        if (strong_self.onPresentActionHandler) {
-            strong_self.onPresentActionHandler(fromView, toView);
-        }
-    } completion:^(BOOL flag) {
-        __strong typeof(weak_self) strong_self = weak_self;
-        if (strong_self.didPresentActionHandler) {
-            strong_self.didPresentActionHandler(fromView, toView);
-        }
-        completion(flag);
-    }];
+    [self _animateWithTransition:transitionContext
+                      animations:^{
+                          __strong typeof(weak_self) strong_self = weak_self;
+                          strong_self.coverView.alpha = 1;
+                          if (strong_self.onPresentActionHandler) {
+                              strong_self.onPresentActionHandler(fromView, toView);
+                          }
+                      }
+                      completion:^(BOOL flag) {
+                          __strong typeof(weak_self) strong_self = weak_self;
+                          if (strong_self.didPresentActionHandler) {
+                              strong_self.didPresentActionHandler(fromView, toView);
+                          }
+                          completion(flag);
+                      }];
 }
 
-- (void)_runDismissAnimationsWithContainer:(UIView *)container from:(UIView *)fromView to:(UIView *)toView completion:(void (^)(BOOL flag))completion {
+- (void)_dismissWithTransition:(id <UIViewControllerContextTransitioning>)transitionContext
+                     container:(UIView *)container
+                          from:(UIView *)fromView
+                            to:(UIView *)toView
+                    completion:(void (^)(BOOL flag))completion {
     [container addSubview:fromView];
     if (self.willDismissActionHandler) {
         self.willDismissActionHandler(fromView, toView);
     }
     __weak typeof(self) weak_self = self;
-    [self _runAnimations:^{
-        __strong typeof(weak_self) strong_self = weak_self;
-        strong_self.coverView.alpha = 0;
-        if (strong_self.onDismissActionHandler) {
-            strong_self.onDismissActionHandler(fromView, toView);
-        }
-    } completion:^(BOOL flag) {
-        __strong typeof(weak_self) strong_self = weak_self;
-        if (strong_self.didDismissActionHandler) {
-            strong_self.didDismissActionHandler(fromView, toView);
-        }
-        completion(flag);
-    }];
+    [self _animateWithTransition:transitionContext
+                      animations:^{
+                          __strong typeof(weak_self) strong_self = weak_self;
+                          strong_self.coverView.alpha = 0;
+                          if (strong_self.onDismissActionHandler) {
+                              strong_self.onDismissActionHandler(fromView, toView);
+                          }
+                      }
+                      completion:^(BOOL flag) {
+                          __strong typeof(weak_self) strong_self = weak_self;
+                          if (strong_self.didDismissActionHandler) {
+                              strong_self.didDismissActionHandler(fromView, toView);
+                          }
+                          completion(flag);
+                      }];
+
 }
 
 #pragma mark - UIViewControllerAnimatedTransitioning
@@ -122,13 +146,21 @@
     }
     
     if (self.isPresenting) {
-        [self _runPresentAnimationsWithContainer:container from:fromController.view to:toController.view completion:^(BOOL flag) {
-            [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
-        }];
+        [self _presentWithTransition:transitionContext
+                           container:container
+                                from:fromController.view
+                                  to:toController.view
+                          completion:^(BOOL flag) {
+                              [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+                          }];
     } else {
-        [self _runDismissAnimationsWithContainer:container from:fromController.view to:toController.view completion:^(BOOL flag) {
-            [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
-        }];
+        [self _dismissWithTransition:transitionContext
+                           container:container
+                                from:fromController.view
+                                  to:toController.view
+                          completion:^(BOOL flag) {
+                              [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+                          }];
     }
 }
 
