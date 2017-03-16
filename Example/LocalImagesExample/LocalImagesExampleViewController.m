@@ -55,6 +55,7 @@
 - (void)_showPhotoBrowser:(UIView *)sender {
     PBViewController *pbViewController = [PBViewController new];
     pbViewController.blurBackground = NO;
+//    pbViewController.hideThumb = NO;
     pbViewController.pb_dataSource = self;
     pbViewController.pb_delegate = self;
     pbViewController.pb_startPage = sender.tag;

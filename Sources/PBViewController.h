@@ -84,5 +84,7 @@
 - (void)reloadWithCurrentPage:(NSInteger)index;
 /// Default value is `YES`
 @property (nonatomic, assign) BOOL blurBackground;
+/// Default value is `YES`
+@property (nonatomic, assign) BOOL hideThumb;
 
 @end

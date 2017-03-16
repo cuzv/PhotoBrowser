@@ -91,6 +91,7 @@ static const NSUInteger reusable_page_count = 3;
     self.transitioningDelegate = self;
     _contentsRect = CGRectMake(0, 0, 1, 1);
     _blurBackground = YES;
+    _hideThumb = YES;
     
     return self;
 }
@@ -542,6 +543,9 @@ static const NSUInteger reusable_page_count = 3;
 }
 
 - (void)_hideThumbView {
+    if (!_hideThumb) {
+        return;
+    }
     NSLog(@"_hideThumbView");
     self.lastThumbView.hidden = NO;
     UIView *currentThumbView = self.currentThumbView;
