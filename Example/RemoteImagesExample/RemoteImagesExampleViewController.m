@@ -61,6 +61,9 @@
     pbViewController.pb_dataSource = self;
     pbViewController.pb_delegate = self;
     pbViewController.pb_startPage = sender.tag;
+//    pbViewController.exit = ^(PBViewController *sender) {
+//        [sender.navigationController popViewControllerAnimated:YES];
+//    };
     [self presentViewController:pbViewController animated:YES completion:nil];
 }
 

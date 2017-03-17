@@ -646,7 +646,11 @@ static const NSUInteger reusable_page_count = 3;
             imageScrollerViewController.imageScrollView.didEndDraggingInProperpositionHandler = ^(CGFloat velocity){
                 __strong typeof(weak_self) strong_self = weak_self;
                 strong_self.velocity = velocity;
-                [strong_self dismissViewControllerAnimated:YES completion:nil];
+                if (strong_self.exit) {
+                    strong_self.exit(self);
+                } else {
+                    [strong_self dismissViewControllerAnimated:YES completion:nil];
+                }
             };
             [controllers addObject:imageScrollerViewController];
         }

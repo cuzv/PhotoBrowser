@@ -86,5 +86,6 @@
 @property (nonatomic, assign) BOOL blurBackground;
 /// Default value is `YES`
 @property (nonatomic, assign) BOOL hideThumb;
-
+/// Custom exit method, if did not provide, use dismiss.
+@property (nonatomic, copy, nullable) void (^exit)(PBViewController * _Nonnull sender);
 @end
