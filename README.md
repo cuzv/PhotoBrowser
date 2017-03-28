@@ -11,50 +11,23 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 ### TODO
 
 -   [x] Present & Dismissal animation
-
 -   [ ] GIF support
-
-
 
 ## How does it look like?
 
 <p align="left">
-<img src="./Preview/1.gif" width=240px">
-
-<img src="./Preview/2.gif" width=240px">
-
-<img src="./Preview/3.gif" width=240px">
-
+<img src="./Preview/1.gif" width=240px">&nbsp;<img src="./Preview/2.gif" width=240px">&nbsp;<img src="./Preview/3.gif" width=240px">
 </p>
 
 ## Usage
 
 - Like the `UITableView` API, We have `DataSource` an `Delegate` for load data and handle action
-
-
 - Tell `PhotoBrowser` how many pages would you like to present by conforms protocol `PBViewControllerDataSource` and implement `numberOfPagesInViewController:` selector
-
-
 - Optional set the initialize page by `pb_startPage` property
-
-
-- Use for static Image
-
-  Conforms protocol `PBViewControllerDataSource` and implement `viewController:imageForPageAtIndex:` selector
-
-- Use for web image
-
-  Conforms protocol `PBViewControllerDataSource` and implement `viewController:presentImageView:forPageAtIndex:progressHandler` selector
-
-- Support animation
-
-      Conforms protocol `PBViewControllerDataSource` and implement `thumbViewForPageAtIndex:` tell the start and ended imageView position
-
-- Action callbacks
-
-    Conforms protocol `PBViewControllerDelegate` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
-
-
+- Use for static Image - Conforms protocol `PBViewControllerDataSource` and implement `viewController:imageForPageAtIndex:` selector
+- Use for web image - Conforms protocol `PBViewControllerDataSource` and implement `viewController:presentImageView:forPageAtIndex:progressHandler` selector
+- Support animation - Conforms protocol `PBViewControllerDataSource` and implement `thumbViewForPageAtIndex:` tell the start and ended imageView position
+- Action callbacks - Conforms protocol `PBViewControllerDelegate` and implement `viewController:didSingleTapedPageAtIndex:presentedImage:` or `viewController:didLongPressedPageAtIndex:presentedImage:` handle single tap or long press action
 
 ## Demo code
 
