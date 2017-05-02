@@ -45,7 +45,7 @@
 - (void)dealloc {
     [self _removeObserver];
     [self _removeNotificationIfNeeded];
-    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
+    PBLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
 }
 
 #pragma mark - respondsToSelector
@@ -257,8 +257,8 @@
     if (fabs(rawPercent) <= 0) {
         return;
     }
-    NSLog(@"rawPercent: %@", @(rawPercent));
-    NSLog(@"velocity: %@", @(velocity));
+    PBLog(@"rawPercent: %@", @(rawPercent));
+    PBLog(@"velocity: %@", @(velocity));
     if (fabs(rawPercent) < 0.15f && fabs(velocity) < 1) {
         return;
     }

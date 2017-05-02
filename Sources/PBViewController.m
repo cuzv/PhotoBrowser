@@ -69,7 +69,7 @@ static const NSUInteger reusable_page_count = 3;
 @implementation PBViewController
 
 - (void)dealloc {
-    NSLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
+    PBLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
 }
 
 #pragma mark - respondsToSelector
@@ -546,7 +546,7 @@ static const NSUInteger reusable_page_count = 3;
     if (!_hideThumb) {
         return;
     }
-    NSLog(@"_hideThumbView");
+    PBLog(@"_hideThumbView");
     self.lastThumbView.hidden = NO;
     UIView *currentThumbView = self.currentThumbView;
     currentThumbView.hidden = YES;
@@ -647,7 +647,7 @@ static const NSUInteger reusable_page_count = 3;
                 __strong typeof(weak_self) strong_self = weak_self;
                 strong_self.velocity = velocity;
                 if (strong_self.exit) {
-                    strong_self.exit(self);
+                    strong_self.exit(strong_self);
                 } else {
                     [strong_self dismissViewControllerAnimated:YES completion:nil];
                 }

@@ -46,3 +46,8 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 ### 0.6.3
 
 - 添加自定义退出操作
+
+### 0.6.4
+
+- Fix Issues #10
+
