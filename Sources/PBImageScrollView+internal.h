@@ -27,22 +27,21 @@
 #ifndef PBImageScrollView_internal_h
 #define PBImageScrollView_internal_h
 
-#ifndef NSLog
-    #if DEBUG
-        #define NSLog(FORMAT, ...)    \
-        do {    \
-            fprintf(stderr,"<%s> %s %s [%d] %s\n",    \
-            (NSThread.isMainThread ? "UI" : "BG"),    \
-            (sel_getName(_cmd)),\
-            [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String],    \
-            __LINE__,    \
-            [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);    \
+#ifndef PBLog
+#    if INPB
+#       define PBLog(FORMAT, ...)    \
+            do {    \
+                fprintf(stderr,"<%s> %s %s [%d] %s\n",    \
+                (NSThread.isMainThread ? "UI" : "BG"),    \
+                (sel_getName(_cmd)),\
+                [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String],    \
+                __LINE__,    \
+                [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);    \
             } while(0)
-    #else
-        #define NSLog(FORMAT, ...)
-    #endif
+#   else
+#        define PBLog(FORMAT, ...)
+#   endif
 #endif
-
 
 #import "PBImageScrollView.h"
 
