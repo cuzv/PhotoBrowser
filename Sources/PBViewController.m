@@ -413,6 +413,14 @@ static const NSUInteger reusable_page_count = 3;
         [imageScrollView setZoomScale:1 animated:NO];
     }
     
+    // 停止播放动画
+    NSArray<UIImage *> *images = imageScrollView.imageView.image.images;
+    if (images && images.count > 1) {
+        UIImage *newImage = images.firstObject;
+        imageScrollView.imageView.image = nil;
+        imageScrollView.imageView.image = newImage;
+    }
+    
     // 有 thumbView
     if (self.currentThumbView) {
         // 裁剪过图片
@@ -546,7 +554,7 @@ static const NSUInteger reusable_page_count = 3;
     if (!_hideThumb) {
         return;
     }
-    PBLog(@"_hideThumbView");
+    PBLog(@"%s", __FUNCTION__);
     self.lastThumbView.hidden = NO;
     UIView *currentThumbView = self.currentThumbView;
     currentThumbView.hidden = YES;

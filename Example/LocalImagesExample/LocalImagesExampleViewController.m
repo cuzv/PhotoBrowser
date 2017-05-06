@@ -9,6 +9,7 @@
 #import "LocalImagesExampleViewController.h"
 #import "PBViewController.h"
 #import "UIView+LayerImage.h"
+#import <SDWebImage/UIImage+GIF.h>
 
 @interface LocalImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;
@@ -86,10 +87,10 @@
     NSValue *frame12 = [NSValue valueWithCGRect:CGRectMake(270, 400, 80, 130)]; // 长方形 (h>w)
     
     NSValue *frame13 = [NSValue valueWithCGRect:CGRectMake(20, 490, 120, 120)]; // 正方形
-
     NSValue *frame14 = [NSValue valueWithCGRect:CGRectMake(150, 490, 100, 160)]; // 等比例
+    NSValue *frame15 = [NSValue valueWithCGRect:CGRectMake(270, 550, 100, 100)]; // GIF
     
-    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10, frame11, frame12, frame13, frame14];
+    return @[frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, frame9, frame10, frame11, frame12, frame13, frame14, frame15];
 }
 
 #pragma mark - PBViewControllerDataSource
@@ -99,7 +100,14 @@
 }
 
 - (UIImage *)viewController:(PBViewController *)viewController imageForPageAtIndex:(NSInteger)index {
-    return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[@(index + 1) stringValue] ofType:@"jpg"]];
+    NSString *path = [[NSBundle mainBundle] pathForResource:[@(index + 1) stringValue] ofType:@"jpg"];
+    if (index == 14) {
+        // GIF Support.
+        NSData *rawData = [NSData dataWithContentsOfFile:path];
+        return [UIImage sd_animatedGIFWithData:rawData];
+    } else {
+        return [UIImage imageWithContentsOfFile:path];
+    }
 }
 
 - (UIView *)thumbViewForPageAtIndex:(NSInteger)index {
