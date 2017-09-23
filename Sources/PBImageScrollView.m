@@ -56,6 +56,9 @@
         return nil;
     }
     
+    if (@available(iOS 11.0, *)) {
+        self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
     self.frame = [UIScreen mainScreen].bounds;
     self.multipleTouchEnabled = YES;
     self.showsVerticalScrollIndicator = YES;
