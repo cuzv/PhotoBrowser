@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "PhotoBrowser"
-  s.version      = "0.6.5"
+  s.version      = "0.7.0"
   s.summary      = "PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewer."
 
   s.homepage     = "https://github.com/cuzv/PhotoBrowser.git"

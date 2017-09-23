@@ -55,3 +55,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 ### 0.6.5
 
 - Close Issues #4 & #12
+
+### 0.7.0
+
+- iOS 11 compatibility

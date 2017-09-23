@@ -55,10 +55,13 @@
     if (!self) {
         return nil;
     }
-    
+
+#ifdef __IPHONE_11_0
     if (@available(iOS 11.0, *)) {
         self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
+#endif
+    
     self.frame = [UIScreen mainScreen].bounds;
     self.multipleTouchEnabled = YES;
     self.showsVerticalScrollIndicator = YES;
