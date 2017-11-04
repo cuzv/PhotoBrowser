@@ -2,7 +2,7 @@
 //  UIView+LayerImage.h
 //  PhotoBrowser
 //
-//  Created by Moch Xiao on 3/1/17.
+//  Created by Roy Shaw on 3/1/17.
 //  Copyright © 2017 Moch. All rights reserved.
 //
 

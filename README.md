@@ -1,8 +1,8 @@
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/cuzv/PhotoBrowser/blob/master/LICENSE)
 [![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-v0.7.0-green.svg)](https://github.com/CocoaPods/CocoaPods)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![Weibo](https://img.shields.io/badge/Weibo-cuzval-yellowgreen.svg)](http://weibo.com/cuzval/)
-[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](http://twitter.com/mochxiao)
+[![Weibo](https://img.shields.io/badge/Weibo-cuzval-yellowgreen.svg)](https://weibo.com/cuzval/)
+[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/cuzval)
 
 # PhotoBrowser
 
@@ -78,7 +78,3 @@ For more information checkout the Example in project.
 ## License
 
 `PhotoBrowser` is available under the MIT license. See the LICENSE file for more info.
-
-## Contact
-
-Follow me on Twitter ([@mochxiao](https://twitter.com/mochxiao))

@@ -2,8 +2,8 @@
 //  ViewController.m
 //  PhotoBrowserSample
 //
-//  Created by Moch Xiao on 8/31/15.
-//  Copyright (c) 2015 Moch Xiao. All rights reserved.
+//  Created by Roy Shaw on 8/31/15.
+//  Copyright (c) 2015 Roy Shaw. All rights reserved.
 //
 
 #import "LocalImagesExampleViewController.h"

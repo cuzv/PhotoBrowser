@@ -2,8 +2,8 @@
 //  DemoViewController.h
 //  PhotoBrowser
 //
-//  Created by Moch Xiao on 5/13/16.
-//  Copyright © 2016 Moch Xiao. All rights reserved.
+//  Created by Roy Shaw on 5/13/16.
+//  Copyright © 2016 Roy Shaw. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
