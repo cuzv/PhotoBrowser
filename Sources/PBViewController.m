@@ -339,7 +339,7 @@ static const NSUInteger reusable_page_count = 3;
             imageView.frame = fromFrame;
             CGFloat heightRatio = (image.size.width / image.size.height) * (CGRectGetHeight(imageView.bounds) / CGRectGetWidth(imageView.bounds));
             imageView.layer.contentsRect = CGRectMake(0, 0, 1, heightRatio);
-            imageView = UIViewContentModeScaleToFill;
+            imageView.contentMode = UIViewContentModeScaleToFill;
         }
         
         // record
