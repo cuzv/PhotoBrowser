@@ -10,6 +10,7 @@
 #import "PBViewController.h"
 #import "UIView+LayerImage.h"
 #import <SDWebImage/UIImage+GIF.h>
+#import "PBImageView.h"
 
 @interface LocalImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;
@@ -55,6 +56,7 @@
 
 - (void)_showPhotoBrowser:(UIView *)sender {
     PBViewController *pbViewController = [PBViewController new];
+    pbViewController.imageViewClass = PBImageView.class;
     pbViewController.blurBackground = NO;
 //    pbViewController.hideThumb = NO;
     pbViewController.pb_dataSource = self;
@@ -120,12 +122,13 @@
 
 #pragma mark - PBViewControllerDelegate
 
-- (void)viewController:(PBViewController *)viewController didSingleTapedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
+- (void)viewController:(PBViewController *)viewController didSingleTapedPageAtIndex:(NSInteger)index presentedImage:(__kindof UIImage *)presentedImage {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)viewController:(PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(UIImage *)presentedImage {
+- (void)viewController:(PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(__kindof UIImage *)presentedImage {
     NSLog(@"didLongPressedPageAtIndex: %@", @(index));
 }
 
 @end
+

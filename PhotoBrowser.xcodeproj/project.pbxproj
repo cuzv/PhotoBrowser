@@ -61,6 +61,7 @@
 		46EA44CA1EBDAACA00416710 /* little_15.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 46EA44C81EBDAACA00416710 /* little_15.jpg */; };
 		46FE95A01E67090D00D36D6E /* UIView+LayerImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 46FE959F1E67090D00D36D6E /* UIView+LayerImage.m */; };
 		688D8F2E0D2DF290D2734E5B /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FDBFEF6AB6111BE128F7140 /* Pods_Example.framework */; };
+		F902516B20CBB8ED00067CB8 /* PBImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F902516A20CBB8ED00067CB8 /* PBImageView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -151,6 +152,8 @@
 		46FE959F1E67090D00D36D6E /* UIView+LayerImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+LayerImage.m"; sourceTree = "<group>"; };
 		50F46F9330F91C01C080BDC8 /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		69D32124846D71E6131AAB59 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
+		F902516920CBB8ED00067CB8 /* PBImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PBImageView.h; sourceTree = "<group>"; };
+		F902516A20CBB8ED00067CB8 /* PBImageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PBImageView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -276,6 +279,8 @@
 			children = (
 				4686F8781CEA30FA00AFEA65 /* LocalImagesExampleViewController.h */,
 				4686F8791CEA30FA00AFEA65 /* LocalImagesExampleViewController.m */,
+				F902516920CBB8ED00067CB8 /* PBImageView.h */,
+				F902516A20CBB8ED00067CB8 /* PBImageView.m */,
 			);
 			path = LocalImagesExample;
 			sourceTree = "<group>";
@@ -535,6 +540,7 @@
 				4686F8881CEA312B00AFEA65 /* main.m in Sources */,
 				4686F8861CEA312B00AFEA65 /* AppDelegate.m in Sources */,
 				4686F8891CEA312B00AFEA65 /* RootViewController.m in Sources */,
+				F902516B20CBB8ED00067CB8 /* PBImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

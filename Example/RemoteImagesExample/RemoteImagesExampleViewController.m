@@ -9,6 +9,7 @@
 #import "RemoteImagesExampleViewController.h"
 #import "PBViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "PBImageView.h"
 
 @interface RemoteImagesExampleViewController () <PBViewControllerDataSource, PBViewControllerDelegate>
 @property (nonatomic, strong) NSArray *frames;
@@ -58,6 +59,7 @@
 
 - (void)_showPhotoBrowser:(UIView *)sender {
     PBViewController *pbViewController = [PBViewController new];
+    pbViewController.imageViewClass = PBImageView.class;
     pbViewController.pb_dataSource = self;
     pbViewController.pb_delegate = self;
     pbViewController.pb_startPage = sender.tag;
@@ -111,8 +113,7 @@
     return self.frames.count;
 }
 
-- (void)viewController:(PBViewController *)viewController presentImageView:(UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(void (^)(NSInteger, NSInteger))progressHandler {
-    
+- (void)viewController:(PBViewController *)viewController presentImageView:(__kindof UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(void (^)(NSInteger, NSInteger))progressHandler {
     NSString *url = [NSString stringWithFormat:@"https://raw.githubusercontent.com/cuzv/PhotoBrowser/master/Example/Assets/%@.jpg", @(index + 1)];
     UIImage *placeholder = self.imageViews[index].image;
     [imageView sd_setImageWithURL:[NSURL URLWithString:url]

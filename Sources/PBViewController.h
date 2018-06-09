@@ -38,12 +38,12 @@
 @optional
 
 /// Return the image, implement one of this or follow method
-- (nonnull UIImage *)viewController:(nonnull PBViewController *)viewController imageForPageAtIndex:(NSInteger)index;
+- (nonnull __kindof UIImage *)viewController:(nonnull PBViewController *)viewController imageForPageAtIndex:(NSInteger)index;
 
 /// Configure the imageView's image, implement one of this or upper method
-- (void)viewController:(nonnull PBViewController *)viewController presentImageView:(nonnull UIImageView *)imageView forPageAtIndex:(NSInteger)index __attribute__((deprecated("use `viewController:presentImageView:forPageAtIndex:progressHandler` instead.")));
+- (void)viewController:(nonnull PBViewController *)viewController presentImageView:(nonnull __kindof UIImageView *)imageView forPageAtIndex:(NSInteger)index __attribute__((deprecated("use `viewController:presentImageView:forPageAtIndex:progressHandler` instead.")));
 /// Configure the imageView's image, implement one of this or upper method
-- (void)viewController:(nonnull PBViewController *)viewController presentImageView:(nonnull UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(nullable void (^)(NSInteger receivedSize, NSInteger expectedSize))progressHandler;
+- (void)viewController:(nonnull PBViewController *)viewController presentImageView:(nonnull __kindof UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(nullable void (^)(NSInteger receivedSize, NSInteger expectedSize))progressHandler;
 
 /// Use for dismiss animation, will be an UIImageView in general.
 - (nullable UIView *)thumbViewForPageAtIndex:(NSInteger)index;
@@ -57,10 +57,10 @@
 @optional
 
 /// Action call back for single tap, presentedImage will be nil untill loaded image
-- (void)viewController:(nonnull PBViewController *)viewController didSingleTapedPageAtIndex:(NSInteger)index presentedImage:(nullable UIImage *)presentedImage;
+- (void)viewController:(nonnull PBViewController *)viewController didSingleTapedPageAtIndex:(NSInteger)index presentedImage:(nullable __kindof UIImage *)presentedImage;
 
 /// Action call back for long press, presentedImage will be nil untill loaded image
-- (void)viewController:(nonnull PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(nullable UIImage *)presentedImage;
+- (void)viewController:(nonnull PBViewController *)viewController didLongPressedPageAtIndex:(NSInteger)index presentedImage:(nullable __kindof UIImage *)presentedImage;
 
 @end
 
@@ -88,4 +88,6 @@
 @property (nonatomic, assign) BOOL hideThumb;
 /// Custom exit method, if did not provide, use dismiss.
 @property (nonatomic, copy, nullable) void (^exit)(PBViewController * _Nonnull sender);
+/// Use for init your own `SubClassOfUIImageView`
+@property (nonatomic, strong, nullable) Class imageViewClass;
 @end

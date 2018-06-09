@@ -92,6 +92,7 @@ static const NSUInteger reusable_page_count = 3;
     _contentsRect = CGRectMake(0, 0, 1, 1);
     _blurBackground = YES;
     _hideThumb = YES;
+    _imageViewClass = UIImageView.class;
     
     return self;
 }
@@ -248,14 +249,14 @@ static const NSUInteger reusable_page_count = 3;
                 return nil;
             };
         } else if ([self.pb_dataSource respondsToSelector:@selector(viewController:presentImageView:forPageAtIndex:progressHandler:)]) {
-            imageScrollerViewController.configureImageViewWithDownloadProgressHandler = ^(UIImageView *imageView, PBImageDownloadProgressHandler handler) {
+            imageScrollerViewController.configureImageViewWithDownloadProgressHandler = ^(__kindof UIImageView *imageView, PBImageDownloadProgressHandler handler) {
                 __strong typeof(weak_self) strong_self = weak_self;
                 if (page < strong_self.numberOfPages) {
                     [strong_self.pb_dataSource viewController:strong_self presentImageView:imageView forPageAtIndex:page progressHandler:handler];
                 }
             };
         } else if ([self.pb_dataSource respondsToSelector:@selector(viewController:presentImageView:forPageAtIndex:)]) {
-            imageScrollerViewController.configureImageViewHandler = ^(UIImageView *imageView) {
+            imageScrollerViewController.configureImageViewHandler = ^(__kindof UIImageView *imageView) {
                 __strong typeof(weak_self) strong_self = weak_self;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -310,9 +311,9 @@ static const NSUInteger reusable_page_count = 3;
 
     currentScrollViewController.view.alpha = 1;
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
-    UIImageView *imageView = imageScrollView.imageView;
+    __kindof UIImageView *imageView = imageScrollView.imageView;
     imageView.image = self.currentThumbImage;
-    UIImage *image = imageView.image;
+    __kindof UIImage *image = imageView.image;
 
     // 长图
     if (self.thumbClippedToTop) {
@@ -368,7 +369,7 @@ static const NSUInteger reusable_page_count = 3;
     }
     
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
-    UIImageView *imageView = imageScrollView.imageView;
+    __kindof UIImageView *imageView = imageScrollView.imageView;
     CGRect originFrame = [imageView.superview convertRect:imageView.frame toView:self.view];
     
     if (CGRectEqualToRect(originFrame, CGRectZero)) {
@@ -461,8 +462,8 @@ static const NSUInteger reusable_page_count = 3;
     
     PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
-    UIImageView *imageView = imageScrollView.imageView;
-    UIImage *currentImage = imageView.image;
+    __kindof UIImageView *imageView = imageScrollView.imageView;
+    __kindof UIImage *currentImage = imageView.image;
     // 图片未加载，默认 CrossDissolve 动画。
     if (!currentImage) {
         return;
@@ -641,6 +642,7 @@ static const NSUInteger reusable_page_count = 3;
         NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:reusable_page_count];
         for (NSInteger index = 0; index < reusable_page_count; index++) {
             PBImageScrollerViewController *imageScrollerViewController = [PBImageScrollerViewController new];
+            imageScrollerViewController.imageViewClass = self.imageViewClass;
             imageScrollerViewController.page = index;
             __weak typeof(self) weak_self = self;
             imageScrollerViewController.imageScrollView.contentOffSetVerticalPercentHandler = ^(CGFloat percent) {
@@ -747,13 +749,13 @@ static const NSUInteger reusable_page_count = 3;
     return [self.pb_dataSource thumbViewForPageAtIndex:self.currentPage];
 }
 
-- (UIImage *)currentThumbImage {
+- (__kindof UIImage *)currentThumbImage {
     UIView *currentThumbView = self.currentThumbView;
     if (!currentThumbView) {
         return nil;
     }
     if ([currentThumbView isKindOfClass:[UIImageView class]]) {
-        return ((UIImageView *)self.currentThumbView).image;
+        return ((__kindof UIImageView *)self.currentThumbView).image;
     }
     if (currentThumbView.layer.contents) {
         return [[UIImage alloc] initWithCGImage:(__bridge CGImageRef _Nonnull)(currentThumbView.layer.contents)];

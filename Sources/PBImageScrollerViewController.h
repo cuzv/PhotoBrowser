@@ -34,15 +34,18 @@ typedef void(^PBImageDownloadProgressHandler)(NSInteger receivedSize, NSInteger 
 @property (nonatomic, assign) NSInteger page;
 
 /// Return the image for current imageView
-@property (nonatomic, copy) UIImage *(^fetchImageHandler)(void);
+@property (nonatomic, copy) __kindof UIImage *(^fetchImageHandler)(void);
 /// Configure image for current imageView
-@property (nonatomic, copy) void (^configureImageViewHandler)(UIImageView *imageView);
+@property (nonatomic, copy) void (^configureImageViewHandler)(__kindof UIImageView *imageView);
 
 /// Configure image for current imageView with progress
-@property (nonatomic, copy) void (^configureImageViewWithDownloadProgressHandler)(UIImageView *imageView, PBImageDownloadProgressHandler handler);
+@property (nonatomic, copy) void (^configureImageViewWithDownloadProgressHandler)(__kindof UIImageView *imageView, PBImageDownloadProgressHandler handler);
 
 @property (nonatomic, strong, readonly) PBImageScrollView *imageScrollView;
 
 - (void)reloadData;
+
+/// Use for init your own `SubClassOfUIImageView`
+@property (nonatomic, strong, nullable) Class imageViewClass;
 
 @end

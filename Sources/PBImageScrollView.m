@@ -32,7 +32,7 @@
 
 @interface PBImageScrollView ()
 
-@property (nonatomic, strong, readwrite) UIImageView *imageView;
+@property (nonatomic, strong, readwrite) __kindof UIImageView *imageView;
 @property (nonatomic, weak) id <NSObject> notification;
 /// velocity: > 0 up, < 0 dwon, == 0 others(no swipe, e.g. tap).
 @property (nonatomic, assign) CGFloat velocity;
@@ -71,8 +71,6 @@
     self.maximumZoomScale = 1.0f;
     self.delegate = self;
     
-    [self addSubview:self.imageView];
-    [self _addObserver];
     [self _addNotificationIfNeeded];
     
     return self;
@@ -82,6 +80,14 @@
     [super traitCollectionDidChange:previousTraitCollection];
     [self _updateFrame];
     [self _recenterImage];
+}
+
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+    [super willMoveToSuperview:newSuperview];
+    if (!self.imageView.superview) {
+        [self addSubview:self.imageView];
+        [self _addObserver];
+    }
 }
 
 - (void)didMoveToWindow {
@@ -322,9 +328,9 @@
 
 #pragma mark - Accessor
 
-- (UIImageView *)imageView {
+- (__kindof UIImageView *)imageView {
     if (!_imageView) {
-        _imageView = [UIImageView new];
+        _imageView = self.imageViewClass ? [self.imageViewClass new] : [UIImageView new];
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         _imageView.clipsToBounds = YES;
     }

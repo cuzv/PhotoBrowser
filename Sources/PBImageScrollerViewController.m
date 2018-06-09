@@ -30,7 +30,7 @@
 
 @interface PBImageScrollerViewController ()
 @property (nonatomic, strong, readwrite) PBImageScrollView *imageScrollView;
-@property (nonatomic, weak, readwrite) UIImageView *imageView;
+@property (nonatomic, weak, readwrite) __kindof UIImageView *imageView;
 @property (nonatomic, strong, readwrite) CAShapeLayer *progressLayer;
 @property (nonatomic, assign) BOOL dismissing;
 @end
@@ -114,11 +114,12 @@
 - (PBImageScrollView *)imageScrollView {
     if (!_imageScrollView) {
         _imageScrollView = [PBImageScrollView new];
+        _imageScrollView.imageViewClass = self.imageViewClass;
     }
     return _imageScrollView;
 }
 
-- (UIImageView *)imageView {
+- (__kindof UIImageView *)imageView {
     return self.imageScrollView.imageView;
 }
 

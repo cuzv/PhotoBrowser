@@ -28,6 +28,8 @@
 
 @interface PBImageScrollView : UIScrollView <UIScrollViewDelegate>
 
-@property (nonatomic, strong, readonly) UIImageView *imageView;
+@property (nonatomic, strong, readonly) __kindof UIImageView *imageView;
+/// Use for init your own `SubClassOfUIImageView`
+@property (nonatomic, strong, nullable) Class imageViewClass;
 
 @end
