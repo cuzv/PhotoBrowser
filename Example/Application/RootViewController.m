@@ -9,7 +9,6 @@
 #import "RootViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 @interface RootViewController ()
-
 @end
 
 @implementation RootViewController

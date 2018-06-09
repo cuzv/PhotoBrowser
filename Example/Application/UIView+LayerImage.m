@@ -3,7 +3,7 @@
 //  PhotoBrowser
 //
 //  Created by Roy Shaw on 3/1/17.
-//  Copyright © 2017 Moch. All rights reserved.
+//  Copyright © 2017 RedRain. All rights reserved.
 //
 
 #import "UIView+LayerImage.h"

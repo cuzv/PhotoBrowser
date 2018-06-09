@@ -63,3 +63,7 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 ### 0.8.0
 
 - Support custom ImageView class to display.
+
+### 0.8.1
+
+- Support Storyboard using `PBImageScrollView`.

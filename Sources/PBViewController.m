@@ -68,7 +68,7 @@ static const NSUInteger reusable_page_count = 3;
 @implementation PBViewController
 
 - (void)dealloc {
-    PBLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
+    PBLog(@"%s", __FUNCTION__);
 }
 
 #pragma mark - respondsToSelector

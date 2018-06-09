@@ -43,37 +43,46 @@
 @implementation PBImageScrollView
 
 - (void)dealloc {
-    [self _removeObserver];
     [self _removeNotificationIfNeeded];
-    PBLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);
+    PBLog(@"%s", __FUNCTION__);
 }
 
 #pragma mark - respondsToSelector
 
-- (instancetype)init {
-    self = [super init];
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
     if (!self) {
         return nil;
     }
+    [self _setup];
+    return self;
+}
 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (!self) {
+        return nil;
+    }
+    [self _setup];
+    return self;
+}
+
+- (void)_setup {
 #ifdef __IPHONE_11_0
     if (@available(iOS 11.0, *)) {
         self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
 #endif
-    
     self.frame = [UIScreen mainScreen].bounds;
     self.multipleTouchEnabled = YES;
     self.showsVerticalScrollIndicator = YES;
     self.showsHorizontalScrollIndicator = YES;
-    self.alwaysBounceVertical = NO;
+    self.alwaysBounceVertical = YES;
+    self.alwaysBounceHorizontal = NO;
     self.minimumZoomScale = 1.0f;
     self.maximumZoomScale = 1.0f;
     self.delegate = self;
-    
     [self _addNotificationIfNeeded];
-    
-    return self;
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
@@ -82,17 +91,20 @@
     [self _recenterImage];
 }
 
-- (void)willMoveToSuperview:(UIView *)newSuperview {
-    [super willMoveToSuperview:newSuperview];
-    if (!self.imageView.superview) {
-        [self addSubview:self.imageView];
+- (void)willMoveToWindow:(UIWindow *)newWindow {
+    [super willMoveToWindow:newWindow];
+    
+    if (newWindow) {
         [self _addObserver];
+    } else {
+        [self _removeObserver];
     }
 }
 
 - (void)didMoveToWindow {
     [super didMoveToWindow];
-    if (!self.window) {
+    
+    if (self.window) {
         [self _updateUserInterfaces];
     }
 }
@@ -166,7 +178,6 @@
     [self _updateFrame];
     [self _recenterImage];
     [self _setMaximumZoomScale];
-    self.alwaysBounceVertical = YES;
 }
 
 - (void)_updateFrame {
@@ -333,6 +344,7 @@
         _imageView = self.imageViewClass ? [self.imageViewClass new] : [UIImageView new];
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         _imageView.clipsToBounds = YES;
+        [self addSubview:_imageView];
     }
     return _imageView;
 }
