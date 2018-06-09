@@ -1,5 +1,5 @@
 //
-//  PBPresentAnimatedTransitioningController.m
+//  PBModalTransitionController.m
 //  PhotoBrowser
 //
 //  Created by Roy Shaw on 5/17/16.
@@ -24,25 +24,13 @@
 //  THE SOFTWARE.
 //
 
-#import "PBPresentAnimatedTransitioningController.h"
+#import "PBModalTransitionController.h"
 
-@interface PBPresentAnimatedTransitioningController ()
+@interface PBModalTransitionController ()
 @property (nonatomic, assign) BOOL isPresenting;
 @end
 
-@implementation PBPresentAnimatedTransitioningController
-
-#pragma mark - Public methods
-
-- (nonnull PBPresentAnimatedTransitioningController *)prepareForPresent {
-    self.isPresenting = YES;
-    return self;
-}
-
-- (nonnull PBPresentAnimatedTransitioningController *)prepareForDismiss {
-    self.isPresenting = NO;
-    return self;
-}
+@implementation PBModalTransitionController
 
 #pragma mark - Private methods
 
@@ -76,22 +64,22 @@
     toView.frame = container.bounds;
     [container addSubview:toView];
     
-    if (self.willPresentActionHandler) {
-        self.willPresentActionHandler(fromView, toView);
+    if (self.willPresent) {
+        self.willPresent(fromView, toView);
     }
     __weak typeof(self) weak_self = self;
     [self _animateWithTransition:transitionContext
                       animations:^{
                           __strong typeof(weak_self) strong_self = weak_self;
                           strong_self.coverView.alpha = 1;
-                          if (strong_self.onPresentActionHandler) {
-                              strong_self.onPresentActionHandler(fromView, toView);
+                          if (strong_self.inPresentation) {
+                              strong_self.inPresentation(fromView, toView);
                           }
                       }
                       completion:^(BOOL flag) {
                           __strong typeof(weak_self) strong_self = weak_self;
-                          if (strong_self.didPresentActionHandler) {
-                              strong_self.didPresentActionHandler(fromView, toView);
+                          if (strong_self.didPresent) {
+                              strong_self.didPresent(fromView, toView);
                           }
                           completion(flag);
                       }];
@@ -103,26 +91,36 @@
                             to:(UIView *)toView
                     completion:(void (^)(BOOL flag))completion {
     [container addSubview:fromView];
-    if (self.willDismissActionHandler) {
-        self.willDismissActionHandler(fromView, toView);
+    if (self.willDismiss) {
+        self.willDismiss(fromView, toView);
     }
     __weak typeof(self) weak_self = self;
     [self _animateWithTransition:transitionContext
                       animations:^{
                           __strong typeof(weak_self) strong_self = weak_self;
                           strong_self.coverView.alpha = 0;
-                          if (strong_self.onDismissActionHandler) {
-                              strong_self.onDismissActionHandler(fromView, toView);
+                          if (strong_self.inDismissal) {
+                              strong_self.inDismissal(fromView, toView);
                           }
                       }
                       completion:^(BOOL flag) {
                           __strong typeof(weak_self) strong_self = weak_self;
-                          if (strong_self.didDismissActionHandler) {
-                              strong_self.didDismissActionHandler(fromView, toView);
+                          if (strong_self.didDismiss) {
+                              strong_self.didDismiss(fromView, toView);
                           }
                           completion(flag);
                       }];
 
+}
+
+- (nonnull PBModalTransitionController *)_prepareForPresent {
+    self.isPresenting = YES;
+    return self;
+}
+
+- (nonnull PBModalTransitionController *)_prepareForDismiss {
+    self.isPresenting = NO;
+    return self;
 }
 
 #pragma mark - UIViewControllerAnimatedTransitioning
@@ -162,6 +160,16 @@
                               [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
                           }];
     }
+}
+
+#pragma mark - UIViewControllerTransitioningDelegate
+
+- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented  presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
+    return [self _prepareForPresent];
+}
+
+- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+    return [self _prepareForDismiss];
 }
 
 #pragma mark - Accessor

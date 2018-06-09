@@ -24,14 +24,13 @@
 		4648792B1E6C0A11009BEF95 /* little_13.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 464879271E6C0A11009BEF95 /* little_13.jpg */; };
 		4648792C1E6C0A11009BEF95 /* little_5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 464879281E6C0A11009BEF95 /* little_5.jpg */; };
 		4648792D1E6C0A11009BEF95 /* little_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 464879291E6C0A11009BEF95 /* little_2.jpg */; };
-		464FF3DD1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.h in Headers */ = {isa = PBXBuildFile; fileRef = 464FF3DB1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.h */; };
-		464FF3DE1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.m in Sources */ = {isa = PBXBuildFile; fileRef = 464FF3DC1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.m */; };
+		464FF3DD1CEB5B390060DD84 /* PBModalTransitionController.h in Headers */ = {isa = PBXBuildFile; fileRef = 464FF3DB1CEB5B390060DD84 /* PBModalTransitionController.h */; };
 		464FF3F21CED60F50060DD84 /* 3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 464FF3EF1CED60F50060DD84 /* 3.jpg */; };
 		464FF3F31CED60F50060DD84 /* 8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 464FF3F01CED60F50060DD84 /* 8.jpg */; };
 		464FF3F41CED60F50060DD84 /* 9.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 464FF3F11CED60F50060DD84 /* 9.jpg */; };
 		4686F8401CEA2C7A00AFEA65 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4686F83F1CEA2C7A00AFEA65 /* Assets.xcassets */; };
-		4686F8551CEA2EC200AFEA65 /* PBImageScrollerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F84A1CEA2EC200AFEA65 /* PBImageScrollerViewController.h */; };
-		4686F8561CEA2EC200AFEA65 /* PBImageScrollerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4686F84B1CEA2EC200AFEA65 /* PBImageScrollerViewController.m */; };
+		4686F8551CEA2EC200AFEA65 /* PBImageScrollViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F84A1CEA2EC200AFEA65 /* PBImageScrollViewController.h */; };
+		4686F8561CEA2EC200AFEA65 /* PBImageScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4686F84B1CEA2EC200AFEA65 /* PBImageScrollViewController.m */; };
 		4686F8571CEA2EC200AFEA65 /* PBImageScrollView+internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F84C1CEA2EC200AFEA65 /* PBImageScrollView+internal.h */; };
 		4686F8581CEA2EC200AFEA65 /* PBImageScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4686F84D1CEA2EC200AFEA65 /* PBImageScrollView.h */; };
 		4686F8591CEA2EC200AFEA65 /* PBImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4686F84E1CEA2EC200AFEA65 /* PBImageScrollView.m */; };
@@ -62,6 +61,7 @@
 		46FE95A01E67090D00D36D6E /* UIView+LayerImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 46FE959F1E67090D00D36D6E /* UIView+LayerImage.m */; };
 		688D8F2E0D2DF290D2734E5B /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FDBFEF6AB6111BE128F7140 /* Pods_Example.framework */; };
 		F902516B20CBB8ED00067CB8 /* PBImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F902516A20CBB8ED00067CB8 /* PBImageView.m */; };
+		F902516D20CBC15000067CB8 /* PBModalTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = F902516C20CBC14F00067CB8 /* PBModalTransitionController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,8 +107,7 @@
 		464879271E6C0A11009BEF95 /* little_13.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = little_13.jpg; sourceTree = "<group>"; };
 		464879281E6C0A11009BEF95 /* little_5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = little_5.jpg; sourceTree = "<group>"; };
 		464879291E6C0A11009BEF95 /* little_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = little_2.jpg; sourceTree = "<group>"; };
-		464FF3DB1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBPresentAnimatedTransitioningController.h; sourceTree = "<group>"; };
-		464FF3DC1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBPresentAnimatedTransitioningController.m; sourceTree = "<group>"; };
+		464FF3DB1CEB5B390060DD84 /* PBModalTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBModalTransitionController.h; sourceTree = "<group>"; };
 		464FF3EF1CED60F50060DD84 /* 3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 3.jpg; sourceTree = "<group>"; };
 		464FF3F01CED60F50060DD84 /* 8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 8.jpg; sourceTree = "<group>"; };
 		464FF3F11CED60F50060DD84 /* 9.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 9.jpg; sourceTree = "<group>"; };
@@ -116,8 +115,8 @@
 		4686F8311CEA2C7A00AFEA65 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4686F83F1CEA2C7A00AFEA65 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4686F8491CEA2EC200AFEA65 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4686F84A1CEA2EC200AFEA65 /* PBImageScrollerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBImageScrollerViewController.h; sourceTree = "<group>"; };
-		4686F84B1CEA2EC200AFEA65 /* PBImageScrollerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBImageScrollerViewController.m; sourceTree = "<group>"; };
+		4686F84A1CEA2EC200AFEA65 /* PBImageScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBImageScrollViewController.h; sourceTree = "<group>"; };
+		4686F84B1CEA2EC200AFEA65 /* PBImageScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBImageScrollViewController.m; sourceTree = "<group>"; };
 		4686F84C1CEA2EC200AFEA65 /* PBImageScrollView+internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PBImageScrollView+internal.h"; sourceTree = "<group>"; };
 		4686F84D1CEA2EC200AFEA65 /* PBImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBImageScrollView.h; sourceTree = "<group>"; };
 		4686F84E1CEA2EC200AFEA65 /* PBImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBImageScrollView.m; sourceTree = "<group>"; };
@@ -154,6 +153,7 @@
 		69D32124846D71E6131AAB59 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		F902516920CBB8ED00067CB8 /* PBImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PBImageView.h; sourceTree = "<group>"; };
 		F902516A20CBB8ED00067CB8 /* PBImageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PBImageView.m; sourceTree = "<group>"; };
+		F902516C20CBC14F00067CB8 /* PBModalTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBModalTransitionController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,14 +225,14 @@
 				4686F84C1CEA2EC200AFEA65 /* PBImageScrollView+internal.h */,
 				4686F84D1CEA2EC200AFEA65 /* PBImageScrollView.h */,
 				4686F84E1CEA2EC200AFEA65 /* PBImageScrollView.m */,
-				4686F84A1CEA2EC200AFEA65 /* PBImageScrollerViewController.h */,
-				4686F84B1CEA2EC200AFEA65 /* PBImageScrollerViewController.m */,
+				4686F84A1CEA2EC200AFEA65 /* PBImageScrollViewController.h */,
+				4686F84B1CEA2EC200AFEA65 /* PBImageScrollViewController.m */,
 				4686F84F1CEA2EC200AFEA65 /* PBViewController.h */,
 				4686F8501CEA2EC200AFEA65 /* PBViewController.m */,
 				4686F8521CEA2EC200AFEA65 /* UIView+PBSnapshot.h */,
 				4686F8531CEA2EC200AFEA65 /* UIView+PBSnapshot.m */,
-				464FF3DB1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.h */,
-				464FF3DC1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.m */,
+				464FF3DB1CEB5B390060DD84 /* PBModalTransitionController.h */,
+				F902516C20CBC14F00067CB8 /* PBModalTransitionController.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -329,10 +329,10 @@
 				4686F85C1CEA2EC200AFEA65 /* PhotoBrowser.h in Headers */,
 				4686F85A1CEA2EC200AFEA65 /* PBViewController.h in Headers */,
 				4686F8581CEA2EC200AFEA65 /* PBImageScrollView.h in Headers */,
-				4686F8551CEA2EC200AFEA65 /* PBImageScrollerViewController.h in Headers */,
+				4686F8551CEA2EC200AFEA65 /* PBImageScrollViewController.h in Headers */,
 				4686F8571CEA2EC200AFEA65 /* PBImageScrollView+internal.h in Headers */,
 				4686F85D1CEA2EC200AFEA65 /* UIView+PBSnapshot.h in Headers */,
-				464FF3DD1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.h in Headers */,
+				464FF3DD1CEB5B390060DD84 /* PBModalTransitionController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,10 +522,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				464FF3DE1CEB5B390060DD84 /* PBPresentAnimatedTransitioningController.m in Sources */,
 				4686F85E1CEA2EC200AFEA65 /* UIView+PBSnapshot.m in Sources */,
-				4686F8561CEA2EC200AFEA65 /* PBImageScrollerViewController.m in Sources */,
+				4686F8561CEA2EC200AFEA65 /* PBImageScrollViewController.m in Sources */,
 				4686F85B1CEA2EC200AFEA65 /* PBViewController.m in Sources */,
+				F902516D20CBC15000067CB8 /* PBModalTransitionController.m in Sources */,
 				4686F8591CEA2EC200AFEA65 /* PBImageScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

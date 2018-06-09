@@ -1,9 +1,9 @@
 //
-//  PBImageScrollerViewController.h
+//  PBPresentAnimatedTransitioningController.h
 //  PhotoBrowser
 //
-//  Created by Roy Shaw on 8/24/15.
-//  Copyright (c) 2015 Roy Shaw (https://github.com/cuzv).
+//  Created by Roy Shaw on 5/17/16.
+//  Copyright © 2016 Roy Shaw (https://github.com/cuzv).
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,28 +24,21 @@
 //  THE SOFTWARE.
 //
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@class PBImageScrollView;
-typedef void(^PBImageDownloadProgressHandler)(NSInteger receivedSize, NSInteger expectedSize);
+typedef void(^PBContextBlock)(UIView * __nonnull fromView, UIView * __nonnull toView);
 
-@interface PBImageScrollerViewController : UIViewController
+@interface PBModalTransitionController : NSObject <UIViewControllerAnimatedTransitioning, UIViewControllerTransitioningDelegate>
 
-@property (nonatomic, assign) NSInteger page;
+@property (nonatomic, copy, nullable) PBContextBlock willPresent;
+@property (nonatomic, copy, nullable) PBContextBlock inPresentation;
+@property (nonatomic, copy, nullable) PBContextBlock didPresent;
+@property (nonatomic, copy, nullable) PBContextBlock willDismiss;
+@property (nonatomic, copy, nullable) PBContextBlock inDismissal;
+@property (nonatomic, copy, nullable) PBContextBlock didDismiss;
 
-/// Return the image for current imageView
-@property (nonatomic, copy) __kindof UIImage *(^fetchImageHandler)(void);
-/// Configure image for current imageView
-@property (nonatomic, copy) void (^configureImageViewHandler)(__kindof UIImageView *imageView);
-
-/// Configure image for current imageView with progress
-@property (nonatomic, copy) void (^configureImageViewWithDownloadProgressHandler)(__kindof UIImageView *imageView, PBImageDownloadProgressHandler handler);
-
-@property (nonatomic, strong, readonly) PBImageScrollView *imageScrollView;
-
-- (void)reloadData;
-
-/// Use for init your own `SubClassOfUIImageView`
-@property (nonatomic, strong, nullable) Class imageViewClass;
+/// Default cover is a dim view, you could override this property to your preferred style view.
+@property (nonatomic, strong, nonnull) UIView *coverView;
 
 @end

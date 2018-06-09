@@ -1,9 +1,9 @@
 //
-//  PBPresentAnimatedTransitioningController.h
+//  PBImageScrollViewController.h
 //  PhotoBrowser
 //
-//  Created by Roy Shaw on 5/17/16.
-//  Copyright © 2016 Roy Shaw (https://github.com/cuzv).
+//  Created by Roy Shaw on 8/24/15.
+//  Copyright (c) 2015 Roy Shaw (https://github.com/cuzv).
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,25 +24,28 @@
 //  THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef void(^PBContextBlock)(UIView * __nonnull fromView, UIView * __nonnull toView);
+@class PBImageScrollView;
+typedef void(^PBImageDownloadProgressHandler)(NSInteger receivedSize, NSInteger expectedSize);
 
-@interface PBPresentAnimatedTransitioningController : NSObject <UIViewControllerAnimatedTransitioning>
+@interface PBImageScrollViewController : UIViewController
 
-@property (nonatomic, copy, nullable) PBContextBlock willPresentActionHandler;
-@property (nonatomic, copy, nullable) PBContextBlock onPresentActionHandler;
-@property (nonatomic, copy, nullable) PBContextBlock didPresentActionHandler;
-@property (nonatomic, copy, nullable) PBContextBlock willDismissActionHandler;
-@property (nonatomic, copy, nullable) PBContextBlock onDismissActionHandler;
-@property (nonatomic, copy, nullable) PBContextBlock didDismissActionHandler;
+@property (nonatomic, assign) NSInteger page;
 
+/// Return the image for current imageView
+@property (nonatomic, copy) __kindof UIImage *(^fetchImageHandler)(void);
+/// Configure image for current imageView
+@property (nonatomic, copy) void (^configureImageViewHandler)(__kindof UIImageView *imageView);
 
-/// Default cover is a dim view, you could override this property to your preferred style view.
-@property (nonatomic, strong, nonnull) UIView *coverView;
+/// Configure image for current imageView with progress
+@property (nonatomic, copy) void (^configureImageViewWithDownloadProgressHandler)(__kindof UIImageView *imageView, PBImageDownloadProgressHandler handler);
 
-- (nonnull PBPresentAnimatedTransitioningController *)prepareForPresent;
-- (nonnull PBPresentAnimatedTransitioningController *)prepareForDismiss;
+@property (nonatomic, strong, readonly) PBImageScrollView *imageScrollView;
+
+- (void)reloadData;
+
+/// Use for init your own `SubClassOfUIImageView`
+@property (nonatomic, strong, nullable) Class imageViewClass;
 
 @end

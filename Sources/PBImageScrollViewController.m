@@ -1,5 +1,5 @@
 //
-//  PBImageScrollerViewController.m
+//  PBImageScrollViewController.m
 //  PhotoBrowser
 //
 //  Created by Roy Shaw on 8/24/15.
@@ -24,18 +24,18 @@
 //  THE SOFTWARE.
 //
 
-#import "PBImageScrollerViewController.h"
+#import "PBImageScrollViewController.h"
 #import "PBImageScrollView.h"
 #import "PBImageScrollView+internal.h"
 
-@interface PBImageScrollerViewController ()
+@interface PBImageScrollViewController ()
 @property (nonatomic, strong, readwrite) PBImageScrollView *imageScrollView;
 @property (nonatomic, weak, readwrite) __kindof UIImageView *imageView;
 @property (nonatomic, strong, readwrite) CAShapeLayer *progressLayer;
 @property (nonatomic, assign) BOOL dismissing;
 @end
 
-@implementation PBImageScrollerViewController
+@implementation PBImageScrollViewController
 
 - (void)dealloc {
     PBLog(@"~~~~~~~~~~~%s~~~~~~~~~~~", __FUNCTION__);

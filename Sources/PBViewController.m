@@ -25,21 +25,20 @@
 //
 
 #import "PBViewController.h"
-#import "PBImageScrollerViewController.h"
+#import "PBImageScrollViewController.h"
 #import "UIView+PBSnapshot.h"
 #import "PBImageScrollView.h"
 #import "PBImageScrollView+internal.h"
-#import "PBPresentAnimatedTransitioningController.h"
+#import "PBModalTransitionController.h"
 
 static const NSUInteger reusable_page_count = 3;
 
 @interface PBViewController () <
     UIPageViewControllerDataSource,
-    UIPageViewControllerDelegate,
-    UIViewControllerTransitioningDelegate
+    UIPageViewControllerDelegate
 >
 
-@property (nonatomic, strong) NSArray<PBImageScrollerViewController *> *reusableImageScrollerViewControllers;
+@property (nonatomic, strong) NSArray<PBImageScrollViewController *> *reusableImageScrollerViewControllers;
 @property (nonatomic, assign, readwrite) NSInteger numberOfPages;
 @property (nonatomic, assign, readwrite) NSInteger currentPage;
 
@@ -57,7 +56,7 @@ static const NSUInteger reusable_page_count = 3;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
-@property (nonatomic, strong) PBPresentAnimatedTransitioningController *transitioningController;
+@property (nonatomic, strong) PBModalTransitionController *transitioningController;
 @property (nonatomic, assign) CGFloat velocity;
 
 @property (nonatomic, assign) CGRect contentsRect;
@@ -88,7 +87,7 @@ static const NSUInteger reusable_page_count = 3;
     
     self.modalPresentationStyle = UIModalPresentationCustom;
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    self.transitioningDelegate = self;
+    self.transitioningDelegate = self.transitioningController;
     _contentsRect = CGRectMake(0, 0, 1, 1);
     _blurBackground = YES;
     _hideThumb = YES;
@@ -168,7 +167,7 @@ static const NSUInteger reusable_page_count = 3;
 
 - (void)_setCurrentPresentPageAnimated:(BOOL)animated {
     self.currentPage = 0 < self.currentPage && self.currentPage < self.numberOfPages ? self.currentPage : 0;
-    PBImageScrollerViewController *firstImageScrollerViewController = [self _imageScrollerViewControllerForPage:self.currentPage];
+    PBImageScrollViewController *firstImageScrollerViewController = [self _imageScrollerViewControllerForPage:self.currentPage];
     [self setViewControllers:@[firstImageScrollerViewController] direction:UIPageViewControllerNavigationDirectionForward animated:animated completion:nil];
     [firstImageScrollerViewController reloadData];
 }
@@ -223,13 +222,13 @@ static const NSUInteger reusable_page_count = 3;
     self.presentingViewController.view.window.windowLevel = UIWindowLevelNormal;
 }
 
-- (PBImageScrollerViewController *)_imageScrollerViewControllerForPage:(NSInteger)page {
+- (PBImageScrollViewController *)_imageScrollerViewControllerForPage:(NSInteger)page {
     if (page > self.numberOfPages - 1 || page < 0) {
         return nil;
     }
     
     // Get the reusable `PBImageScrollerViewController`
-    PBImageScrollerViewController *imageScrollerViewController = self.reusableImageScrollerViewControllers[page % reusable_page_count];
+    PBImageScrollViewController *imageScrollerViewController = self.reusableImageScrollerViewControllers[page % reusable_page_count];
     
     // Set new data
     if (!self.pb_dataSource) {
@@ -273,34 +272,34 @@ static const NSUInteger reusable_page_count = 3;
 
 - (void)_setupTransitioningController {
     __weak typeof(self) weak_self = self;
-    self.transitioningController.willPresentActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.willPresent = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _willPresent];
     };
-    self.transitioningController.onPresentActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.inPresentation = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _onPresent];
     };
-    self.transitioningController.didPresentActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.didPresent = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _didPresented];
     };
-    self.transitioningController.willDismissActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.willDismiss = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _willDismiss];
     };
-    self.transitioningController.onDismissActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.inDismissal = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _onDismiss];
     };
-    self.transitioningController.didDismissActionHandler = ^(UIView *fromView, UIView *toView) {
+    self.transitioningController.didDismiss = ^(UIView *fromView, UIView *toView) {
         __strong typeof(weak_self) strong_self = weak_self;
         [strong_self _didDismiss];
     };
 }
 
 - (void)_willPresent {
-    PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
+    PBImageScrollViewController *currentScrollViewController = self.currentScrollViewController;
     currentScrollViewController.view.alpha = 0;
     self.blurBackgroundView.alpha = 0;
     UIView *thumbView = self.currentThumbView;
@@ -359,7 +358,7 @@ static const NSUInteger reusable_page_count = 3;
 }
 
 - (void)_onPresent {
-    PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
+    PBImageScrollViewController *currentScrollViewController = self.currentScrollViewController;
     self.blurBackgroundView.alpha = 1;
     [self _hideStatusBarIfNeeded];
     
@@ -407,7 +406,7 @@ static const NSUInteger reusable_page_count = 3;
 /// view :    正方形 | 长方形(w>h) | 长方形(h>w)
 /// 3 * 3 = 9 种情况
 - (void)_willDismiss {
-    PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
+    PBImageScrollViewController *currentScrollViewController = self.currentScrollViewController;
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     // 还原 zoom.
     if (imageScrollView.zoomScale != 1) {
@@ -460,7 +459,7 @@ static const NSUInteger reusable_page_count = 3;
     [self _showStatusBarIfNeeded];
     self.blurBackgroundView.alpha = 0;
     
-    PBImageScrollerViewController *currentScrollViewController = self.currentScrollViewController;
+    PBImageScrollViewController *currentScrollViewController = self.currentScrollViewController;
     PBImageScrollView *imageScrollView = currentScrollViewController.imageScrollView;
     __kindof UIImageView *imageView = imageScrollView.imageView;
     __kindof UIImage *currentImage = imageView.image;
@@ -603,11 +602,11 @@ static const NSUInteger reusable_page_count = 3;
 
 #pragma mark - UIPageViewControllerDataSource
 
-- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(PBImageScrollerViewController *)viewController {
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(PBImageScrollViewController *)viewController {
     return [self _imageScrollerViewControllerForPage:viewController.page - 1];
 }
 
-- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(PBImageScrollerViewController *)viewController {
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(PBImageScrollViewController *)viewController {
     return [self _imageScrollerViewControllerForPage:viewController.page + 1];
 }
 
@@ -618,30 +617,20 @@ static const NSUInteger reusable_page_count = 3;
 }
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
-    PBImageScrollerViewController *imageScrollerViewController = pageViewController.viewControllers.firstObject;
+    PBImageScrollViewController *imageScrollerViewController = pageViewController.viewControllers.firstObject;
     self.currentPage = imageScrollerViewController.page;
     [self _updateIndicator];
     [self _hideIndicator];
     [self _hideThumbView];
 }
 
-#pragma mark - UIViewControllerTransitioningDelegate
-
-- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented  presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
-    return [self.transitioningController prepareForPresent];
-}
-
-- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
-    return [self.transitioningController prepareForDismiss];
-}
-
 #pragma mark - Accessor
 
-- (NSArray<PBImageScrollerViewController *> *)reusableImageScrollerViewControllers {
+- (NSArray<PBImageScrollViewController *> *)reusableImageScrollerViewControllers {
     if (!_reusableImageScrollerViewControllers) {
         NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:reusable_page_count];
         for (NSInteger index = 0; index < reusable_page_count; index++) {
-            PBImageScrollerViewController *imageScrollerViewController = [PBImageScrollerViewController new];
+            PBImageScrollViewController *imageScrollerViewController = [PBImageScrollViewController new];
             imageScrollerViewController.imageViewClass = self.imageViewClass;
             imageScrollerViewController.page = index;
             __weak typeof(self) weak_self = self;
@@ -732,7 +721,7 @@ static const NSUInteger reusable_page_count = 3;
     return _longPressGestureRecognizer;
 }
 
-- (PBImageScrollerViewController *)currentScrollViewController {
+- (PBImageScrollViewController *)currentScrollViewController {
     return self.reusableImageScrollerViewControllers[self.currentPage % reusable_page_count];
 }
 
@@ -790,9 +779,9 @@ static const NSUInteger reusable_page_count = 3;
     return 0 < self.velocity;
 }
 
-- (PBPresentAnimatedTransitioningController *)transitioningController {
+- (PBModalTransitionController *)transitioningController {
     if (!_transitioningController) {
-        _transitioningController = [PBPresentAnimatedTransitioningController new];
+        _transitioningController = [PBModalTransitionController new];
     }
     return _transitioningController;
 }
