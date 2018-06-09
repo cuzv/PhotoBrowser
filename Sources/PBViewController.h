@@ -3,7 +3,7 @@
 //  PhotoBrowser
 //
 //  Created by Roy Shaw on 8/24/15.
-//  Copyright (c) 2015 Roy Shaw (https://github.com/cuzv).
+//  Copyright © 2015 Roy Shaw (https://github.com/cuzv).
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,7 @@
 - (void)viewController:(nonnull PBViewController *)viewController presentImageView:(nonnull __kindof UIImageView *)imageView forPageAtIndex:(NSInteger)index progressHandler:(nullable void (^)(NSInteger receivedSize, NSInteger expectedSize))progressHandler;
 
 /// Use for dismiss animation, will be an UIImageView in general.
-- (nullable UIView *)thumbViewForPageAtIndex:(NSInteger)index;
+- (nullable __kindof UIView *)thumbViewForPageAtIndex:(NSInteger)index;
 
 @end
 

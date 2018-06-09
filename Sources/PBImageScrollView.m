@@ -172,7 +172,7 @@
 - (void)_updateFrame {
     self.frame = [UIScreen mainScreen].bounds;
     
-    UIImage *image = self.imageView.image;
+    __kindof UIImage *image = self.imageView.image;
     if (!image) {
         return;
     }
@@ -182,7 +182,7 @@
     self.contentSize = properSize;
 }
 
-- (CGSize)_properPresentSizeForImage:(UIImage *)image {
+- (CGSize)_properPresentSizeForImage:(__kindof UIImage *)image {
     CGFloat ratio = CGRectGetWidth(self.bounds) / image.size.width;
     return CGSizeMake(CGRectGetWidth(self.bounds), ceil(ratio * image.size.height));
 }

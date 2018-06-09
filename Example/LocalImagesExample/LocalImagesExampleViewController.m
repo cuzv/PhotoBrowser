@@ -116,7 +116,7 @@
     if (self.thumb) {
         return self.imageViews[index];
     }
-    
+
     return nil;
 }
 

@@ -3,7 +3,7 @@
 //  PhotoBrowser
 //
 //  Created by Roy Shaw on 8/24/15.
-//  Copyright (c) 2015 Roy Shaw (https://github.com/cuzv).
+//  Copyright © 2015 Roy Shaw (https://github.com/cuzv).
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -240,7 +240,7 @@ static const NSUInteger reusable_page_count = 3;
         imageScrollerViewController.page = page;
         
         if ([self.pb_dataSource respondsToSelector:@selector(viewController:imageForPageAtIndex:)]) {
-            imageScrollerViewController.fetchImageHandler = ^UIImage *(void) {
+            imageScrollerViewController.fetchImageHandler = ^ __kindof UIImage *(void) {
                 __strong typeof(weak_self) strong_self = weak_self;
                 if (page < strong_self.numberOfPages) {
                     return [strong_self.pb_dataSource viewController:strong_self imageForPageAtIndex:page];
@@ -426,7 +426,7 @@ static const NSUInteger reusable_page_count = 3;
         // 裁剪过图片
         if (self.thumbClippedToTop) {
             // 记录 contentsRect
-            UIImage *image = imageScrollView.imageView.image;
+            __kindof UIImage *image = imageScrollView.imageView.image;
             CGFloat heightRatio = (image.size.width / image.size.height) * (CGRectGetHeight(self.currentThumbView.bounds) / CGRectGetWidth(self.currentThumbView.bounds));
             self.contentsRect = CGRectMake(0, 0, 1, heightRatio);
             
@@ -449,7 +449,7 @@ static const NSUInteger reusable_page_count = 3;
     else {
         // 点击退出模式，截取当前屏幕并替换图片
         if (self.dismissByClick) {
-            UIImage *image = [self.view pb_snapshotAfterScreenUpdates:NO];
+            __kindof UIImage *image = [self.view pb_snapshotAfterScreenUpdates:NO];
             imageScrollView.imageView.image = image;
         }
     }

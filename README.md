@@ -1,5 +1,5 @@
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/cuzv/PhotoBrowser/blob/master/LICENSE)
-[![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-v0.7.0-green.svg)](https://github.com/CocoaPods/CocoaPods)
+[![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-v0.8.0-green.svg)](https://github.com/CocoaPods/CocoaPods)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Weibo](https://img.shields.io/badge/Weibo-cuzval-yellowgreen.svg)](https://weibo.com/cuzval/)
 [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/cuzval)
@@ -35,6 +35,8 @@ PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewe
 ``` objective-c
 ...
 PBViewController *pbViewController = [PBViewController new];
+// Use your own subclass of UIImageView to display.
+pbViewController.imageViewClass = PBImageView.class;
 pbViewController.pb_dataSource = self;
 pbViewController.pb_delegate = self;
 pbViewController.pb_startPage = sender.tag;
