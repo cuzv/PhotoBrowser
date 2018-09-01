@@ -2,7 +2,7 @@
 //  ViewController.h
 //  Example
 //
-//  Created by Roy Shaw on 5/17/16.
+//  Created by Shaw on 5/17/16.
 //  Copyright © 2016 Moch. All rights reserved.
 //
 

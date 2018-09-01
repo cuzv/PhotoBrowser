@@ -2,7 +2,7 @@
 //  UIView+LayerImage.h
 //  PhotoBrowser
 //
-//  Created by Roy Shaw on 3/1/17.
+//  Created by Shaw on 3/1/17.
 //  Copyright © 2017 RedRain. All rights reserved.
 //
 

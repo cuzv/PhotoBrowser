@@ -2,8 +2,8 @@
 //  DemoViewController.m
 //  PhotoBrowser
 //
-//  Created by Roy Shaw on 5/13/16.
-//  Copyright © 2016 Roy Shaw. All rights reserved.
+//  Created by Shaw on 5/13/16.
+//  Copyright © 2016 Shaw. All rights reserved.
 //
 
 #import "RemoteImagesExampleViewController.h"
