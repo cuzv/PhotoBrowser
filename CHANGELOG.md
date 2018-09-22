@@ -2,8 +2,6 @@
 
 PhotoBrowser is a light weight photo browser, like the wechat, weibo image viewer.
 
-Now, the pure Swift version named [SlidingPhoto](https://github.com/cuzv/SlidingPhoto) is available.
-
 ### 0.3.1
 
 -   修复 issue [#3 ](https://github.com/cuzv/PhotoBrowser/issues/3)
